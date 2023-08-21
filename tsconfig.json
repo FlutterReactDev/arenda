@@ -35,14 +35,18 @@
         "src/features/*"
       ],
       "@pages/*": [
-        "src/shared/*"
+        "src/pages/*"
       ],
       "@widgets/*": [
         "src/widgets/*"
       ],
       "@entites/*": [
         "src/entites/*"
+      ],
+      "@shared/*":[
+        "src/shared/*"
       ]
+
     }
   },
   "include": [

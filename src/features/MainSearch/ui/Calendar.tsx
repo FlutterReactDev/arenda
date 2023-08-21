@@ -8,12 +8,29 @@ import {
   CalendarMonthName,
   CalendarWeek,
   CalendarDays,
+  CalendarValues,
+  CalendarDate,
 } from "@uselessdev/datepicker";
+import { FC } from "react";
+import { ru } from "date-fns/locale";
 const MONTHS = 2;
-export const DubleCalendar = ({ dates, handleSelectDate }) => {
+
+interface DubleCalendarProps {
+  dates: CalendarValues;
+  handleSelectDate: (dates: CalendarValues | CalendarDate) => void;
+}
+export const DubleCalendar: FC<DubleCalendarProps> = ({
+  dates,
+  handleSelectDate,
+}) => {
   return (
-    <Calendar value={dates} onSelectDate={handleSelectDate} months={MONTHS}>
-      <CalendarControls >
+    <Calendar
+      locale={ru}
+      value={dates}
+      onSelectDate={handleSelectDate}
+      months={MONTHS}
+    >
+      <CalendarControls>
         <CalendarPrevButton />
         <CalendarNextButton />
       </CalendarControls>

@@ -14,12 +14,47 @@ export const theme = extendTheme(CalendarDefaultTheme, {
         },
       },
     },
-
+    CalendarMonth: {
+      parts: ["days"],
+      baseStyle: {
+        days: {
+          gap: "5px",
+        },
+      },
+    },
     CalendarDay: {
       baseStyle: {
-        width: "1rem",
+        rounded: "md",
+        _active: {
+          bgColor: "blackAlpha.600",
+        },
+        _hover: {
+          bgColor: "blackAlpha.600",
+          color: "white",
+        },
+      },
+    },
+    CalendarControl: {
+      parts: ["button"],
 
-        borderRadius: "50%",
+      baseStyle: {
+        button: {
+          h: 6,
+          w: 6,
+
+          rounded: "full",
+          fontSize: "sm",
+          color: "white",
+          bgColor: "red.500",
+
+          _hover: {
+            bgColor: "red.200",
+          },
+
+          _focus: {
+            outline: "none",
+          },
+        },
       },
     },
   },
