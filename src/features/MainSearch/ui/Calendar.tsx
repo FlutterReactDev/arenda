@@ -13,12 +13,12 @@ const MONTHS = 2;
 export const DubleCalendar = ({ dates, handleSelectDate }) => {
   return (
     <Calendar value={dates} onSelectDate={handleSelectDate} months={MONTHS}>
-      <CalendarControls>
+      <CalendarControls >
         <CalendarPrevButton />
         <CalendarNextButton />
       </CalendarControls>
 
-      <CalendarMonths gap={12}>
+      <CalendarMonths gap={8}>
         {[...Array(MONTHS).keys()].map((month) => (
           <CalendarMonth month={month} key={month}>
             <CalendarMonthName />

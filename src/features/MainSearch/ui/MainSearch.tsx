@@ -3,7 +3,6 @@ import {
   Input,
   InputGroup,
   InputRightElement,
-  InputLeftElement,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -12,7 +11,8 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 import { DubleCalendar } from "./Calendar";
 import { useState } from "react";
-import { format } from "date-fns";
+import { CalendarValues } from "@uselessdev/datepicker";
+
 export const MainSearch = () => {
   const [dates, setDates] = useState<CalendarValues>({});
 
@@ -23,33 +23,33 @@ export const MainSearch = () => {
   };
 
   return (
-    <Stack direction="row" gap={0} maxW="3xl" w="100%" minH={14} mt={10}>
-      <Input
-        boxShadow="xs"
-        h={"auto"}
-        borderLeft={"0"}
-        borderLeftRadius={"full"}
-      />
-      <Input boxShadow="xs" h={"auto"} borderRadius={"none"} />
-      <Input boxShadow="xs" h={"auto"} borderRadius={"none"} />
+    <Popover>
+      <Stack direction="row" gap={0} maxW="3xl" w="100%" minH={14} mt={10}>
+        <Input
+          boxShadow="xs"
+          h={"auto"}
+          borderLeft={"0"}
+          borderLeftRadius={"full"}
+        />
+        <PopoverTrigger>
+          <Stack direction="row" gap={0}>
+            <Input boxShadow="xs" h={"auto"} borderRadius={"none"} />
+            <Input boxShadow="xs" h={"auto"} borderRadius={"none"} />
+          </Stack>
+        </PopoverTrigger>
 
-      <Popover>
         <InputGroup>
-          <PopoverTrigger>
-            <Input h={"auto"} borderRightRadius={"full"} />
-            
-          </PopoverTrigger>
-          <InputLeftElement w={14} height={"100%"}>
+          <Input h={"auto"} borderRightRadius={"full"} />
+          <InputRightElement w={14} height={"100%"}>
             <Button colorScheme="red" w={12} h={12} borderRadius={"full"}>
               <SearchIcon />
             </Button>
-          </InputLeftElement>
+          </InputRightElement>
         </InputGroup>
-
-        <PopoverContent w={"100%"}>
+        <PopoverContent borderRadius={"20px"} border={"none"} w={"100%"}>
           <DubleCalendar dates={dates} handleSelectDate={handleSelectDate} />
         </PopoverContent>
-      </Popover>
-    </Stack>
+      </Stack>
+    </Popover>
   );
 };
