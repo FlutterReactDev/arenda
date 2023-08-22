@@ -7,6 +7,7 @@ import {
   DrawerCloseButton,
   DrawerHeader,
   DrawerBody,
+  VStack,
 } from "@chakra-ui/react";
 import {
   Calendar,
@@ -23,6 +24,9 @@ import {
 } from "@uselessdev/datepicker";
 import { ru } from "date-fns/locale";
 import { useState } from "react";
+import { MobileSearchInput } from "./MobileSearchInput";
+import { MobileSearchGuests } from "./MobileSearchGuests";
+import { MobileSearchDatePicker } from "./MobileSearchDatePicker";
 
 enum ContentType {
   DATEPICKER = "DATEPICKER",
@@ -34,20 +38,23 @@ export const MobileSearch = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [dates, setDates] = useState<CalendarValues | CalendarDate>({});
   const [contentType, setContentType] = useState();
+
   const handleSelectDate = (dates: CalendarValues | CalendarDate) => {
     setDates(dates);
   };
+
   const MONTHS = 12;
   return (
-    <Box>
-      <Box onClick={onOpen}>Open Click</Box>
-      <Drawer size="full" onClose={onClose} isOpen={isOpen}>
+    <VStack w={"full"} gap={"2"}>
+      <MobileSearchInput />
+      <MobileSearchDatePicker />
+      <MobileSearchGuests />
+      {/* <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>{` drawer contents`}</DrawerHeader>
-          <DrawerBody>
-            {}
+          <DrawerBody> 
             <Calendar
               locale={ru}
               value={dates as CalendarValues}
@@ -71,7 +78,7 @@ export const MobileSearch = () => {
             </Calendar>
           </DrawerBody>
         </DrawerContent>
-      </Drawer>
-    </Box>
+      </Drawer> */}
+    </VStack>
   );
 };

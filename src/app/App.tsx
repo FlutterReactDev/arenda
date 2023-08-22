@@ -1,5 +1,5 @@
 import {
-  Center,
+
   Heading,
   Text,
   Box,
@@ -34,9 +34,9 @@ export const App = () => {
           Квартиры, отели, гостевые дома — 200 тысяч вариантов для поездок по
           России и зарубежью
         </Text>
-        <Center>
-          <MainSearch />
-        </Center>
+
+        <MainSearch />
+
         <Box>
           <Heading color="blackAlpha.900" size="xl" textAlign="center" mt={16}>
             Куда поехать

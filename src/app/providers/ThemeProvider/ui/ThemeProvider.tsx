@@ -10,7 +10,7 @@ export const theme = extendTheme(CalendarDefaultTheme, {
         calendar: {
           width: "100%",
           boxShadow: "none",
-          borderRadius: "20px",
+          borderRadius: "lg",
         },
       },
     },
