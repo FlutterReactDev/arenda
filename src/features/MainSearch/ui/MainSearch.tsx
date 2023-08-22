@@ -1,5 +1,5 @@
 import { DesktopView } from "@shared/ui/DesktopView";
-import { DesktopSearch } from "./DesktopSearch";
+import { DesktopSearch } from "./DesktopSearch/DesktopSearch";
 import { Box } from "@chakra-ui/react";
 import { MobileView } from "@shared/ui/MobileView";
 export const MainSearch = () => {
