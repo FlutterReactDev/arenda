@@ -40,7 +40,7 @@ export const MobileSearchInput = () => {
       </Box>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent h="100dvh">
           <DrawerCloseButton />
           <DrawerHeader>Выбрать направления</DrawerHeader>
         </DrawerContent>

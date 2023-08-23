@@ -84,7 +84,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
       </HStack>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent h="100dvh">
           <DrawerCloseButton />
           <DrawerHeader>Выбрать дату</DrawerHeader>
           <Button
