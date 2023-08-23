@@ -7,6 +7,7 @@ import { LegacyRef, useRef } from "react";
 
 export const DesktopSearch = () => {
   const containerRef = useRef() as LegacyRef<HTMLDivElement>;
+
   return (
     <Box>
       <Stack
@@ -17,6 +18,8 @@ export const DesktopSearch = () => {
         minH={14}
         mt={10}
         position={"relative"}
+        boxShadow={"2xl"}
+        rounded={"full"}
       >
         <DesktopSearchInput />
         <DesktopDatepicker containerRef={containerRef} />

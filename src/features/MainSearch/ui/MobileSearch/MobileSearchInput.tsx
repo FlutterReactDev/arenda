@@ -24,6 +24,7 @@ export const MobileSearchInput = () => {
         display={"flex"}
         flexDirection="column"
         justifyContent="center"
+        cursor="pointer"
       >
         <Text
           fontWeight="medium"

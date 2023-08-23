@@ -33,6 +33,43 @@ export const theme = extendTheme(CalendarDefaultTheme, {
           color: "white",
         },
       },
+      variants: {
+        selected: {
+          bgColor: "gray.500",
+          color: "white",
+
+          _hover: {
+            bgColor: "gray.300",
+          },
+        },
+
+        range: {
+          bgColor: "gray.400",
+          color: "white",
+
+          _hover: {
+            bgColor: "pink.100",
+          },
+
+          _disabled: {
+            _hover: {
+              bgColor: "pink.300",
+            },
+          },
+        },
+
+        outside: {
+          color: "gray.300",
+        },
+        today: {
+          border:"1px solid",
+          borderColor:"gray.500",
+          bgColor:"transparent",
+          _hover: {
+            bgColor: "gray.500",
+          },
+        },
+      },
     },
     CalendarControl: {
       parts: ["button"],

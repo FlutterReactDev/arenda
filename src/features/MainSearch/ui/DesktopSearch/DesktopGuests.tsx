@@ -24,10 +24,10 @@ export const DesktopGuests = () => {
       }}
       onBlur={onClose}
       tabIndex={1}
+      borderLeft={"1px solid"}
+          borderColor="gray.200"
     >
       <HStack
-        border={"1px solid"}
-        borderColor="gray.200"
         gap={0}
         cursor={"pointer"}
         borderRightRadius={"full"}
@@ -35,10 +35,17 @@ export const DesktopGuests = () => {
         pr={"1"}
       >
         <Box p={"2"} h={"full"}>
-          <Text color="blackAlpha.700" fontSize={"sm"}>
+          <Text
+            fontWeight="medium"
+            fontSize="14px"
+            lineHeight="20px"
+            color={"gray.300"}
+          >
             Гости
           </Text>
-          <Text>2 Взрослых</Text>
+          <Text fontWeight="medium" fontSize="17px">
+            2 Взрослых
+          </Text>
         </Box>
 
         <Button colorScheme="red" w={12} h={12} borderRadius={"full"}>

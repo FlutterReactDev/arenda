@@ -12,31 +12,43 @@ import {
   Flex,
   Link,
 } from "@chakra-ui/react";
+import { useState } from "react";
 
 // interface DesktopSearchInputProps {}
 
 export const DesktopSearchInput = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-
+  const [isHidden, setIsHidden] = useState(false);
   return (
     <Box
       position="relative"
       w="full"
-      onFocus={onOpen}
+      onFocus={() => {
+        onOpen();
+        setIsHidden(true);
+      }}
       onBlur={onClose}
       tabIndex={1}
     >
-      <InputGroup w="full" h={"full"}>
+      <InputGroup w="full" h={"full"} border={"none"}>
         <Input
-          boxShadow="xs"
           h={"auto"}
-          borderLeft={"0"}
+          border={"none"}
           borderLeftRadius={"full"}
+          outline={"none"}
           placeholder="Куда едем"
           padding={0}
           paddingLeft={"5"}
-          paddingTop={"3"}
+          paddingTop={"4"}
           minW={"full"}
+          _placeholder={{
+            fontWeight: "medium",
+            fontSize: "17px",
+            color: "black",
+          }}
+          _focusVisible={{
+            boxShadow:"none"
+          }}
         />
 
         <InputLeftElement
@@ -45,7 +57,14 @@ export const DesktopSearchInput = () => {
           width={"auto"}
           height={"auto"}
         >
-          <Text fontSize="sm">Курорт, город или адрес</Text>
+          <Text
+            fontWeight="medium"
+            fontSize="14px"
+            lineHeight="20px"
+            color={"gray.300"}
+          >
+            Курорт, город или адрес
+          </Text>
         </InputLeftElement>
       </InputGroup>
       <Box
@@ -53,10 +72,18 @@ export const DesktopSearchInput = () => {
         bottom={"-10px"}
         left={0}
         transform={"translateY(100%)"}
-        zIndex={isOpen ? "popover" : "hide"}
+        zIndex={!isHidden ? "hide" : "popover"}
         w="full"
       >
-        <ScaleFade initialScale={0.9} in={isOpen}>
+        <ScaleFade
+          onAnimationComplete={() => {
+            if (!isOpen) {
+              setIsHidden(false);
+            }
+          }}
+          initialScale={0.9}
+          in={isOpen}
+        >
           <Box
             maxW="full"
             w={"full"}

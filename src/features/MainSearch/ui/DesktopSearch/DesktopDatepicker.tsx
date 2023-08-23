@@ -18,13 +18,16 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
 }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [dates, setDates] = useState<CalendarValues | CalendarDate>({});
-
+  const [isHidden, setIsHidden] = useState(false);
   const handleSelectDate = (dates: CalendarValues | CalendarDate) => {
     setDates(dates);
   };
   return (
     <Box
-      onFocus={onOpen}
+      onFocus={() => {
+        onOpen();
+        setIsHidden(true);
+      }}
       onBlur={onClose}
       tabIndex={1}
       position="relative"
@@ -36,26 +39,39 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           p={"2"}
           w={"100%"}
           h={"full"}
-          border={"1px solid"}
+          borderLeft={"1px solid"}
           borderColor="gray.200"
-          borderRight={"none"}
         >
-          <Text color="blackAlpha.700" fontSize={"sm"}>
+          <Text
+            fontWeight="medium"
+            fontSize="14px"
+            lineHeight="20px"
+            color={"gray.300"}
+          >
             Заезд
           </Text>
-          <Text>Когда</Text>
+          <Text fontWeight="medium" fontSize="17px">
+            Когда
+          </Text>
         </Box>
         <Box
           p={"2"}
           w={"100%"}
           h={"full"}
-          border={"1px solid"}
+          borderLeft={"1px solid"}
           borderColor="gray.200"
         >
-          <Text color="blackAlpha.700" fontSize={"sm"}>
-            Заезд
+          <Text
+            fontWeight="medium"
+            fontSize="14px"
+            lineHeight="20px"
+            color={"gray.300"}
+          >
+            Выезд
           </Text>
-          <Text>Когда</Text>
+          <Text fontWeight="medium" fontSize="17px">
+            Когда
+          </Text>
         </Box>
       </HStack>
       <Portal containerRef={containerRef as RefObject<HTMLElement>}>
@@ -64,10 +80,18 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           bottom={"-10px"}
           left={0}
           transform={"translateY(100%)"}
-          zIndex={isOpen ? "popover" : "hide"}
+          zIndex={!isHidden ? "hide" : "popover"}
           w="full"
         >
-          <ScaleFade initialScale={0.9} in={isOpen}>
+          <ScaleFade
+            onAnimationComplete={() => {
+              if (!isOpen) {
+                setIsHidden(false);
+              }
+            }}
+            initialScale={0.9}
+            in={isOpen}
+          >
             <Box
               maxW="full"
               w={"full"}
