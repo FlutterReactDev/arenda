@@ -29,62 +29,64 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
   const { dates, handleSelectDate } = props;
 
   return (
-    <Box w={"full"}>
-      <HStack w="full" gap={"2"}>
-        <Box
-          rounded={"full"}
-          h={"50px"}
-          px={"4"}
-          w={"full"}
-          onClick={onOpen}
-          border={"1px solid"}
-          borderColor={"gray.200"}
-          display={"flex"}
-          flexDirection="column"
-          justifyContent="center"
-          cursor="pointer"
-        >
-          <Text
-            fontWeight="medium"
-            fontSize="12px"
-            lineHeight="20px"
-            color={"gray.300"}
+    <>
+      <Box w={"full"}>
+        <HStack w="full" gap={"2"}>
+          <Box
+            rounded={"full"}
+            h={"50px"}
+            px={"4"}
+            w={"full"}
+            onClick={onOpen}
+            border={"1px solid"}
+            borderColor={"gray.200"}
+            display={"flex"}
+            flexDirection="column"
+            justifyContent="center"
+            cursor="pointer"
           >
-            Заезд
-          </Text>
-          <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
-            Когда
-          </Text>
-        </Box>
-        <Box
-          rounded={"full"}
-          h={"50px"}
-          px={"4"}
-          onClick={onOpen}
-          border={"1px solid"}
-          w={"full"}
-          borderColor={"gray.200"}
-          display={"flex"}
-          flexDirection="column"
-          justifyContent="center"
-          cursor="pointer"
-        >
-          <Text
-            fontWeight="medium"
-            fontSize="12px"
-            lineHeight="20px"
-            color={"gray.300"}
+            <Text
+              fontWeight="medium"
+              fontSize="12px"
+              lineHeight="20px"
+              color={"gray.300"}
+            >
+              Заезд
+            </Text>
+            <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
+              Когда
+            </Text>
+          </Box>
+          <Box
+            rounded={"full"}
+            h={"50px"}
+            px={"4"}
+            onClick={onOpen}
+            border={"1px solid"}
+            w={"full"}
+            borderColor={"gray.200"}
+            display={"flex"}
+            flexDirection="column"
+            justifyContent="center"
+            cursor="pointer"
           >
-            Заезд
-          </Text>
-          <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
-            Когда
-          </Text>
-        </Box>
-      </HStack>
+            <Text
+              fontWeight="medium"
+              fontSize="12px"
+              lineHeight="20px"
+              color={"gray.300"}
+            >
+              Заезд
+            </Text>
+            <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
+              Когда
+            </Text>
+          </Box>
+        </HStack>
+      </Box>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent h="100dvh">
+        <DrawerContent>
           <DrawerCloseButton />
           <DrawerHeader>Выбрать дату</DrawerHeader>
           <Button
@@ -112,6 +114,6 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
           </DrawerBody>
         </DrawerContent>
       </Drawer>
-    </Box>
+    </>
   );
 };
