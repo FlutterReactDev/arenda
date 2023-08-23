@@ -25,7 +25,7 @@ export const App = () => {
   return (
     <>
       <Header />
-      <Drawer isOpen={true} >
+      <Drawer onClose={() => {}} isOpen={true} >
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
