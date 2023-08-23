@@ -8,8 +8,14 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerBody,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  Flex,
+  Center,
+  VStack,
 } from "@chakra-ui/react";
-
+import { SearchIcon } from "@chakra-ui/icons";
 export const MobileSearchInput = () => {
   const { onClose, onOpen, isOpen } = useDisclosure();
 
@@ -45,6 +51,114 @@ export const MobileSearchInput = () => {
           <DrawerBody>
             <DrawerCloseButton />
             <DrawerHeader>Выбрать направления</DrawerHeader>
+
+            <DrawerBody p="0">
+              <InputGroup>
+                <Input placeholder="Курорт, город или адрес" />
+                <InputLeftElement>
+                  <SearchIcon />
+                </InputLeftElement>
+              </InputGroup>
+
+              <Box
+                mt={"4"}
+                border="1px solid"
+                borderColor="gray.400"
+                borderRadius="lg"
+                p="4"
+              >
+                <VStack alignItems={"start"}>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                </VStack>
+              </Box>
+              <Box
+                mt={"4"}
+                border="1px solid"
+                borderColor="gray.400"
+                borderRadius="lg"
+                p="4"
+              >
+                <VStack alignItems={"start"}>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                  <Flex alignItems="center" gap="2" cursor="pointer">
+                    <Center
+                      w="8"
+                      h="8"
+                      rounded="full"
+                      bgColor={"gray.600"}
+                      color="white"
+                    >
+                      <SearchIcon />
+                    </Center>
+
+                    <Text>Что то Что то Что то</Text>
+                  </Flex>
+                </VStack>
+              </Box>
+            </DrawerBody>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

@@ -26,7 +26,7 @@ export const DesktopSearch = () => {
         <DesktopGuests />
       </Stack>
       <Center>
-        <HStack gap={"2"} mt={5}>
+        <HStack gap={"2"} mt={10}>
           <Text>Например:</Text>
           <Tag rounded={"full"}>Санкт-Петербург</Tag>
           <Tag rounded={"full"}>Санкт-Петербург</Tag>

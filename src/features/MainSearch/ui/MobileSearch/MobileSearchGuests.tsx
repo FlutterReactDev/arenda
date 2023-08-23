@@ -8,6 +8,8 @@ import {
   Box,
   Text,
   DrawerBody,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 
 export const MobileSearchGuests = () => {
@@ -41,10 +43,21 @@ export const MobileSearchGuests = () => {
       </Box>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent >
+        <DrawerContent>
           <DrawerBody>
             <DrawerCloseButton />
-            <DrawerHeader>Выбрать направления</DrawerHeader>
+            <DrawerHeader>Выбор гостей</DrawerHeader>
+            <DrawerBody p="0">
+              <HStack justifyContent="space-between">
+                <Button rounded={"full"} p={4}>
+                  +
+                </Button>
+                <Box as="span">2 Взрослых</Box>
+                <Button rounded={"full"} p={4}>
+                  -
+                </Button>
+              </HStack>
+            </DrawerBody>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
