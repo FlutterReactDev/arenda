@@ -7,6 +7,7 @@ import {
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
+  DrawerBody,
 } from "@chakra-ui/react";
 
 export const MobileSearchInput = () => {
@@ -40,9 +41,11 @@ export const MobileSearchInput = () => {
       </Box>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent h="100dvh">
-          <DrawerCloseButton />
-          <DrawerHeader>Выбрать направления</DrawerHeader>
+        <DrawerContent>
+          <DrawerBody>
+            <DrawerCloseButton />
+            <DrawerHeader>Выбрать направления</DrawerHeader>
+          </DrawerBody>
         </DrawerContent>
       </Drawer>
     </Box>
