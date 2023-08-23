@@ -17,6 +17,7 @@ import {
   DrawerHeader,
   DrawerOverlay,
   Button,
+  Portal,
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/MainSearch";
 import { Footer } from "@widgets/Footer";
@@ -32,6 +33,7 @@ export const App = () => {
       <Button onClick={() => setOpen(true)}>
         OPen drower
       </Button>
+      <Portal>
       <Drawer onClose={() => setOpen(false)} isOpen={open}>
         <DrawerOverlay />
         <DrawerContent>
@@ -50,6 +52,8 @@ export const App = () => {
           </DrawerBody>
         </DrawerContent>
       </Drawer>
+      </Portal>
+      
       <main>
         <Heading color="blackAlpha.900" size="3xl" textAlign="center" mt={32}>
           Найдём, где остановиться!
