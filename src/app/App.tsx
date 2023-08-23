@@ -16,16 +16,23 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Button,
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/MainSearch";
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
-
+import { useState } from "react";
 export const App = () => {
+  const [open, setOpen] = useState(false);
+
+
   return (
     <>
       <Header />
-      <Drawer onClose={() => {}} isOpen={true} >
+      <Button onClick={() => setOpen(true)}>
+        OPen drower
+      </Button>
+      <Drawer onClose={() => setOpen(false)} isOpen={open}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
