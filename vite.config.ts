@@ -5,7 +5,7 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   define: {
-    _BASE_API_URL_: "/",
+    _BASE_API_URL_:JSON.stringify("https://178.217.174.94/api"),
   },
   resolve: {
     alias: {

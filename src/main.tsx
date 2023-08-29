@@ -3,16 +3,16 @@ import ReactDOM from "react-dom/client";
 import { App } from "@app/App";
 import { ThemeProvider } from "@app/providers/ThemeProvider";
 import { StoreProvider } from "@app/providers/StoreProvider";
-import { BrowserRouter } from "react-router-dom";
+import { RouterProvider } from "@app/providers/RouterProvier";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <StoreProvider>
-      <BrowserRouter>
+      <RouterProvider>
         <ThemeProvider>
           <App />
         </ThemeProvider>
-      </BrowserRouter>
+      </RouterProvider>
     </StoreProvider>
   </React.StrictMode>
 );
