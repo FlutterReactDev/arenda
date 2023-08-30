@@ -9,7 +9,7 @@ export const Routing = () => {
       <Route
         path="/"
         element={
-          <Suspense fallback="Что за хуйня">
+          <Suspense fallback="Loading">
             <HomePage />
           </Suspense>
         }
