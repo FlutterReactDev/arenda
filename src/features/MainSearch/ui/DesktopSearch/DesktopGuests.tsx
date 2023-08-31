@@ -23,9 +23,9 @@ export const DesktopGuests = () => {
         setIsHidden(true);
       }}
       onBlur={onClose}
-      tabIndex={1}
+      tabIndex={3}
       borderLeft={"1px solid"}
-          borderColor="gray.200"
+      borderColor="gray.200"
     >
       <HStack
         gap={0}

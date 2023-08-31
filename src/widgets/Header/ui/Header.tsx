@@ -224,6 +224,8 @@ const MobileNavItem = ({ label, children, href }: NavItem) => {
         href={href ?? "#"}
         justifyContent="space-between"
         alignItems="center"
+        display={"flex"}
+        
         _hover={{
           textDecoration: "none",
         }}

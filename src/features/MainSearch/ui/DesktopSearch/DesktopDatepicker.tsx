@@ -29,9 +29,8 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
         setIsHidden(true);
       }}
       onBlur={onClose}
-      tabIndex={1}
+      tabIndex={2}
       position="relative"
-      maxW="215px"
       w="full"
     >
       <HStack gap={0} h={"full"} w="full" cursor={"pointer"} onClick={onOpen}>
@@ -82,6 +81,7 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           transform={"translateY(100%)"}
           zIndex={!isHidden ? "hide" : "popover"}
           w="full"
+          tabIndex={2}
         >
           <ScaleFade
             onAnimationComplete={() => {

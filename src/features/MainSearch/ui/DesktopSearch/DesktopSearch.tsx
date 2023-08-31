@@ -1,4 +1,12 @@
-import { Text, Stack, HStack, Tag, Box, Center } from "@chakra-ui/react";
+import {
+  Text,
+  Stack,
+  HStack,
+  Tag,
+  Box,
+  Center,
+  useDisclosure,
+} from "@chakra-ui/react";
 
 import { DesktopSearchInput } from "./DesktopSearchInput";
 import { DesktopGuests } from "./DesktopGuests";
@@ -7,19 +15,22 @@ import { LegacyRef, useRef } from "react";
 
 export const DesktopSearch = () => {
   const containerRef = useRef() as LegacyRef<HTMLDivElement>;
-
+  const { onOpen, isOpen, onClose } = useDisclosure();
   return (
     <Box>
       <Stack
         ref={containerRef}
         direction="row"
         gap={0}
-        w="870px"
+        w={isOpen ? "870px" : "700px"}
+        transition={"0.3s"}
         minH={14}
         mt={10}
         position={"relative"}
-        boxShadow={"2xl"}
+        boxShadow={"xl"}
         rounded={"full"}
+        onFocus={onOpen}
+        onBlur={onClose}
       >
         <DesktopSearchInput />
         <DesktopDatepicker containerRef={containerRef} />
