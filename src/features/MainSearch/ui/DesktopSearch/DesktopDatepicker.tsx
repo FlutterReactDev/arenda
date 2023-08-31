@@ -31,6 +31,7 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
       onBlur={onClose}
       tabIndex={2}
       position="relative"
+      maxW="215px"
       w="full"
     >
       <HStack gap={0} h={"full"} w="full" cursor={"pointer"} onClick={onOpen}>
