@@ -1,6 +1,6 @@
-import { Box, Button, ButtonProps } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 import { DateObj, RenderProps } from "dayzed";
-import React, { useMemo, memo } from "react";
+import React, { useMemo, memo, SyntheticEvent } from "react";
 import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
 import { isEqual } from "date-fns";
 
@@ -9,34 +9,24 @@ interface DayOfMonthProps extends DatepickerProps {
   isInRange?: boolean | null;
   disabledDates?: Set<number>;
   dateObj: DateObj;
-  onMouseEnter?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  onMouseEnter?: (date: Date) => void;
   isLast?: boolean | null;
+  getDateProps: (date: DateObj, event: SyntheticEvent<Element, Event>) => void;
 }
-
-type HoverStyle =
-  | (ButtonProps["_hover"] & { _disabled: ButtonProps["_disabled"] })
-  | undefined;
 
 const halfGap = 0.125; //default Chakra-gap-space-1 is 0.25rem
 
 export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
   ({
     dateObj,
-    propsConfigs,
     isInRange,
     disabledDates,
-    renderProps,
     onMouseEnter,
     isLast,
+    getDateProps,
   }) => {
     const { date, selected, selectable, today } = dateObj;
-    const { getDateProps } = renderProps;
-    const {
-      defaultBtnProps,
-      isInRangeBtnProps,
-      selectedBtnProps,
-      todayBtnProps,
-    } = propsConfigs?.dayOfMonthBtnProps || {};
+
     const disabled = !selectable || disabledDates?.has(date.getTime());
     const styleBtnProps: DayOfMonthBtnStyleProps = useMemo(
       () => ({
@@ -49,7 +39,7 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           w: "full",
           // this intends to fill the visual gap from Grid to improve the UX
           // so the button active area is actually larger than what it's seen
-          ...defaultBtnProps,
+
           _after: {
             content: "''",
             position: "absolute",
@@ -59,45 +49,43 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
             right: `-${halfGap}rem`,
             borderWidth: `${halfGap}rem`,
             borderColor: "transparent",
-            ...defaultBtnProps?._after,
           },
           _hover: {
             bg: "purple.400",
-            ...defaultBtnProps?._hover,
+
             _disabled: {
               bg: "gray.100",
               // temperory hack to persist the typescript checking
-              ...(defaultBtnProps?._hover as HoverStyle)?._disabled,
             },
           },
         },
         isInRangeBtnProps: {
           background: "purple.200",
-
-          ...isInRangeBtnProps,
         },
         selectedBtnProps: {
           background: "red.500",
-          ...selectedBtnProps,
         },
         todayBtnProps: {
           borderColor: "blue.400",
-          ...todayBtnProps,
         },
       }),
-      [defaultBtnProps, isInRangeBtnProps, selectedBtnProps, todayBtnProps]
+      []
     );
+
+    const onMouseHover = () => {
+      onMouseEnter && onMouseEnter(date);
+    };
+    const onClick = (e: SyntheticEvent<Element, Event>) => {
+      getDateProps(dateObj, e);
+    };
 
     return (
       <Button
-        {...getDateProps({
-          dateObj,
-          disabled: disabled,
-        })}
-        onMouseEnter={onMouseEnter}
+        onClick={onClick}
+        onMouseEnter={onMouseHover}
         isDisabled={disabled}
         {...styleBtnProps.defaultBtnProps}
-        {...(isInRange && !disabled && styleBtnProps.isInRangeBtnProps)}
+        {...(isInRange && styleBtnProps.isInRangeBtnProps)}
         {...(today && styleBtnProps.todayBtnProps)}
       >
         <Box
@@ -126,7 +114,8 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       oldProps.dateObj.selectable == newProps.dateObj.selectable &&
       oldProps.isInRange == newProps.isInRange &&
       oldProps.onMouseEnter == newProps.onMouseEnter &&
-      oldProps.isLast == newProps.isLast
+      oldProps.isLast == newProps.isLast &&
+      oldProps.getDateProps == newProps.getDateProps
     );
   }
 );

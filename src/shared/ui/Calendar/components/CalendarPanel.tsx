@@ -1,18 +1,12 @@
-import {
-  HStack,
-  VStack,
-  Heading,
-  Divider,
-  SimpleGrid,
-  Box,
-  Stack,
-} from "@chakra-ui/react";
-import { useDayzed, Props as DayzedHookProps } from "dayzed";
+import { VStack, SimpleGrid, Box, Stack } from "@chakra-ui/react";
+import { useDayzed, Props as DayzedHookProps, DateObj } from "dayzed";
 
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, SyntheticEvent } from "react";
 import { CalendarConfigs, DatepickerProps } from "../utils/commonTypes";
-import { DatepickerBackBtns, DatepickerForwardBtns } from "./DateNavBtns";
+
 import { DayOfMonth } from "./DayOfMonth";
+import { Weekday } from "./Weekday";
+import { MonthName } from "./MonthName";
 
 export interface CalendarPanelProps extends DatepickerProps {
   dayzedHookProps: Omit<DayzedHookProps, "children" | "render">;
@@ -27,14 +21,22 @@ export interface CalendarPanelProps extends DatepickerProps {
 export const CalendarPanel: React.FC<CalendarPanelProps> = ({
   dayzedHookProps,
   configs,
-  propsConfigs,
+
   disabledDates,
   onMouseEnterHighlight,
   isInRange,
   hoveredDate,
 }) => {
   const renderProps = useDayzed(dayzedHookProps);
-  const { calendars, getBackProps, getForwardProps } = renderProps;
+  const { calendars } = renderProps;
+
+  const { onDateSelected } = dayzedHookProps;
+  const onSelect = (
+    dateObj: DateObj,
+    event: SyntheticEvent<Element, Event>
+  ) => {
+    onDateSelected(dateObj, event);
+  };
 
   const weekdayNames = useMemo(() => {
     const firstDayOfWeek = configs.firstDayOfWeek;
@@ -47,13 +49,15 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
     return dayNames;
   }, [configs.firstDayOfWeek, configs.dayNames]);
 
-  // looking for a useRef() approach to replace it
-
+  const onMouseEnter = useCallback(
+    (date: Date) => {
+      onMouseEnterHighlight && onMouseEnterHighlight(date);
+    },
+    [onMouseEnterHighlight]
+  );
   if (calendars.length <= 0) {
     return null;
   }
-  const onMouseEnter = (date: Date) =>
-    useCallback(() => onMouseEnterHighlight && onMouseEnterHighlight(date), []);
 
   return (
     <Stack
@@ -70,27 +74,11 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
             padding="0.5rem 0.75rem"
             w="full"
           >
-            <HStack w="full" justifyContent={"center"}>
-              <DatepickerBackBtns
-                calendars={calendars}
-                getBackProps={getBackProps}
-                propsConfigs={propsConfigs}
-              />
-              <Heading
-                size="sm"
-                minWidth={"5rem"}
-                textAlign="center"
-                {...propsConfigs?.dateHeadingProps}
-              >
-                {configs.monthNames[calendar.month]} {calendar.year}
-              </Heading>
-              <DatepickerForwardBtns
-                calendars={calendars}
-                getForwardProps={getForwardProps}
-                propsConfigs={propsConfigs}
-              />
-            </HStack>
-            <Divider />
+            <MonthName
+              key={`${calendar.month}-${calendar.year}-${calendarIdx}`}
+              monthName={configs.monthNames[calendar.month]}
+            />
+
             <SimpleGrid
               h="full"
               w="full"
@@ -101,16 +89,10 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
               alignSelf={"center"}
               justifySelf={"center"}
             >
-              {weekdayNames.map((day, dayIdx) => (
-                <Box
-                  fontSize="sm"
-                  fontWeight="semibold"
-                  key={dayIdx}
-                  {...propsConfigs?.weekdayLabelProps}
-                >
-                  {day}
-                </Box>
-              ))}
+              <Weekday
+                weekdayNames={weekdayNames}
+                key={`${calendar.month}-${calendar.year}-${calendarIdx}`}
+              />
               {calendar.weeks.map((week, weekIdx) => {
                 return week.map((dateObj, index) => {
                   const key = `${calendar.month}-${calendar.year}-${weekIdx}-${index}`;
@@ -122,16 +104,17 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                     <DayOfMonth
                       key={key}
                       dateObj={dateObj}
-                      propsConfigs={propsConfigs}
                       renderProps={renderProps}
-                      isInRange={isInRange && isInRange(date)}
+                      isInRange={(isInRange && isInRange(date)) || false}
                       isLast={
-                        hoveredDate &&
-                        dayzedHookProps.selected.length == 1 &&
+                        hoveredDate != null &&
+                        Array.isArray(dayzedHookProps?.selected) &&
+                        dayzedHookProps?.selected.length == 1 &&
                         hoveredDate?.getTime() == date.getTime()
                       }
+                      getDateProps={onSelect}
                       disabledDates={disabledDates}
-                      onMouseEnter={onMouseEnter(date)}
+                      onMouseEnter={onMouseEnter}
                     />
                   );
                 });

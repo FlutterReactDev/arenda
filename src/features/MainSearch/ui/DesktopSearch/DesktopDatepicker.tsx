@@ -17,8 +17,9 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
   containerRef,
 }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [dates, setDates] = useState<Date[]>([new Date(), new Date()]);
+  const [dates, setDates] = useState<Date[]>([]);
   const [isHidden, setIsHidden] = useState(false);
+  console.log(dates);
 
   return (
     <Box

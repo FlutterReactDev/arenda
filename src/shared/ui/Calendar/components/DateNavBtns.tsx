@@ -16,17 +16,23 @@ const DefaultBtnStyle: ButtonProps = {
 export const DatepickerBackBtns: React.FC<DatepickerBackBtnsProps> = memo(
   (props) => {
     const { calendars, getBackProps } = props;
-    const customBtnProps = props.propsConfigs?.dateNavBtnProps;
+
     return (
       <Fragment>
-        <Button
-          {...getBackProps({ calendars })}
-          {...DefaultBtnStyle}
-          {...customBtnProps}
-        >
+        <Button {...getBackProps({ calendars })} {...DefaultBtnStyle}>
           {"<"}
         </Button>
       </Fragment>
+    );
+  },
+  function arePropsEqual(oldProps, newProps) {
+    return (
+      oldProps.calendars == newProps.calendars &&
+      oldProps.getBackProps == newProps.getBackProps &&
+      oldProps.maxDate == newProps.maxDate &&
+      oldProps.minDate == newProps.minDate &&
+      oldProps.maxDate == newProps.maxDate &&
+      oldProps.propsConfigs == newProps.propsConfigs
     );
   }
 );
@@ -41,25 +47,11 @@ export interface DatepickerForwardBtnsProps extends DatepickerProps {
 export const DatepickerForwardBtns: React.FC<DatepickerForwardBtnsProps> = memo(
   (props) => {
     const { calendars, getForwardProps } = props;
-    const customBtnProps = props.propsConfigs?.dateNavBtnProps;
+
     return (
       <Fragment>
-        <Button
-          {...getForwardProps({ calendars })}
-          {...DefaultBtnStyle}
-          {...customBtnProps}
-        >
+        <Button {...getForwardProps({ calendars })} {...DefaultBtnStyle}>
           {">"}
-        </Button>
-        <Button
-          {...getForwardProps({
-            calendars,
-            offset: 12,
-          })}
-          {...DefaultBtnStyle}
-          {...customBtnProps}
-        >
-          {">>"}
         </Button>
       </Fragment>
     );

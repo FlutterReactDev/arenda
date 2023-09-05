@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Props as DayzedHookProps } from "dayzed";
-import { Month_Names_Short, Weekday_Names_Short } from "./utils/calendarUtils";
+import { Month_Names_Full, Weekday_Names_Short } from "./utils/calendarUtils";
 import { Flex } from "@chakra-ui/react";
 import { CalendarPanel } from "./components/CalendarPanel";
 import {
@@ -21,20 +21,19 @@ interface RangeCalendarPanelProps {
 export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = ({
   dayzedHookProps,
   configs,
-  propsConfigs,
   selected,
 }) => {
   const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
 
   // Calendar level
-  const onMouseLeave = () => {
+  const onMouseLeave = useCallback(() => {
     setHoveredDate(null);
-  };
+  }, []);
 
   // Date level
-  const onMouseEnterHighlight = (date: Date) => {
+  const onMouseEnterHighlight = useCallback((date: Date) => {
     setHoveredDate(date);
-  };
+  }, []);
 
   const isInRange = useCallback(
     (date: Date) => {
@@ -54,7 +53,7 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = ({
       }
       return null;
     },
-    [hoveredDate]
+    [hoveredDate, selected]
   );
 
   return (
@@ -62,7 +61,6 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = ({
       <CalendarPanel
         dayzedHookProps={dayzedHookProps}
         configs={configs}
-        propsConfigs={propsConfigs}
         isInRange={isInRange}
         hoveredDate={hoveredDate}
         onMouseEnterHighlight={onMouseEnterHighlight}
@@ -87,28 +85,22 @@ export interface RangeDatepickerProps extends DatepickerProps {
 
 const DefaultConfigs: CalendarConfigs = {
   dateFormat: "MM/dd/yyyy",
-  monthNames: Month_Names_Short,
+  monthNames: Month_Names_Full,
   dayNames: Weekday_Names_Short,
   firstDayOfWeek: 0,
 };
 
 export const RangeDatepicker: React.FC<RangeDatepickerProps> = ({
-  configs,
-  propsConfigs = {},
   monthsToDisplay = 2,
-  ...props
+  selectedDates,
+  onDateChange,
+  onClose,
 }) => {
-  const { selectedDates, minDate, maxDate, onDateChange, onClose } = props;
-
   // chakra popover utils
-  const [offset, setOffset] = useState(0);
-
-  const calendarConfigs: CalendarConfigs = {
-    ...DefaultConfigs,
-    ...configs,
-  };
-
+  console.log(selectedDates);
+  
   const handleOnDateSelected: OnDateSelected = ({ selectable, date }) => {
+    console.log(selectedDates);
     if (!selectable) {
       return;
     }
@@ -116,6 +108,8 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = ({
 
     if (selectedDates.length) {
       if (selectedDates.length === 1) {
+        console.log("asdasdasdasdasdasdasds");
+
         const firstTime = selectedDates[0];
         if (firstTime < date) {
           newDates.push(date);
@@ -123,11 +117,13 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = ({
           newDates.unshift(date);
         }
         onDateChange(newDates);
-        onClose && onClose();
+        // onClose && onClose();
         return;
       }
 
       if (newDates.length === 2) {
+       
+
         onDateChange([date]);
         return;
       }
@@ -146,14 +142,10 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = ({
         selected: selectedDates,
         monthsToDisplay,
         date: new Date(),
-        minDate: minDate,
-        maxDate: maxDate,
-        offset: offset,
-        onOffsetChanged: setOffset,
-        firstDayOfWeek: calendarConfigs.firstDayOfWeek,
+        minDate: new Date(),
+        firstDayOfWeek: 0,
       }}
-      configs={calendarConfigs}
-      propsConfigs={propsConfigs}
+      configs={DefaultConfigs}
       selected={selectedDates}
     />
   );
