@@ -1,4 +1,4 @@
-import { Box, Button } from "@chakra-ui/react";
+import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { DateObj, RenderProps } from "dayzed";
 import React, { useMemo, memo, SyntheticEvent } from "react";
 import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
@@ -12,6 +12,7 @@ interface DayOfMonthProps extends DatepickerProps {
   onMouseEnter?: (date: Date) => void;
   isLast?: boolean | null;
   getDateProps: (date: DateObj, event: SyntheticEvent<Element, Event>) => void;
+  distance: number | null;
 }
 
 const halfGap = 0.125; //default Chakra-gap-space-1 is 0.25rem
@@ -24,8 +25,10 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     onMouseEnter,
     isLast,
     getDateProps,
+    distance,
   }) => {
     const { date, selected, selectable, today } = dateObj;
+    console.log(today);
 
     const disabled = !selectable || disabledDates?.has(date.getTime());
     const styleBtnProps: DayOfMonthBtnStyleProps = useMemo(
@@ -33,7 +36,7 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
         defaultBtnProps: {
           variant: "ghost",
 
-          borderRadius: "none",
+          borderRadius: "xl",
           p: 0,
           h: "full",
           w: "full",
@@ -50,23 +53,21 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
             borderWidth: `${halfGap}rem`,
             borderColor: "transparent",
           },
-          _hover: {
-            bg: "purple.400",
-
-            _disabled: {
-              bg: "gray.100",
-              // temperory hack to persist the typescript checking
-            },
-          },
+          // _hover: {
+          //   bg: "",
+          // },
         },
         isInRangeBtnProps: {
-          background: "purple.200",
+          background: "red.200",
+          color: "white",
         },
         selectedBtnProps: {
           background: "red.500",
+          color: "white",
         },
         todayBtnProps: {
-          borderColor: "blue.400",
+          border: "1px solid",
+          borderColor: "red.500",
         },
       }),
       []
@@ -80,28 +81,37 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     };
 
     return (
-      <Button
-        onClick={onClick}
-        onMouseEnter={onMouseHover}
-        isDisabled={disabled}
-        {...styleBtnProps.defaultBtnProps}
-        {...(isInRange && styleBtnProps.isInRangeBtnProps)}
-        {...(today && styleBtnProps.todayBtnProps)}
+      <Tooltip
+        hasArrow
+        isOpen={!!isLast}
+        placement="top"
+        label={`${distance} суток`}
       >
-        <Box
-          display="flex"
-          alignItems={"center"}
-          justifyContent={"center"}
-          as="span"
-          w={12}
-          h={12}
-          borderRadius={"full"}
-          {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
+        <Button
+          onClick={onClick}
+          onMouseEnter={onMouseHover}
+          isDisabled={disabled}
+          {...styleBtnProps.defaultBtnProps}
         >
-          {date.getDate()}
-          {isLast && "Последний"}
-        </Box>
-      </Button>
+          <Box
+            display="flex"
+            alignItems={"center"}
+            justifyContent={"center"}
+            as="span"
+            w={14}
+            h={14}
+            borderRadius={"xl"}
+            {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
+            {...(isInRange && styleBtnProps.isInRangeBtnProps)}
+            {...(today && styleBtnProps.todayBtnProps)}
+            _hover={{
+              bg: "black",
+            }}
+          >
+            {date.getDate()}
+          </Box>
+        </Button>
+      </Tooltip>
     );
   },
   function arePropsEqual(oldProps, newProps) {
@@ -115,7 +125,8 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       oldProps.isInRange == newProps.isInRange &&
       oldProps.onMouseEnter == newProps.onMouseEnter &&
       oldProps.isLast == newProps.isLast &&
-      oldProps.getDateProps == newProps.getDateProps
+      oldProps.getDateProps == newProps.getDateProps &&
+      oldProps.distance == newProps.distance
     );
   }
 );
