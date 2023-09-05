@@ -56,7 +56,7 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = memo(
 
     const getDistanceDay = useCallback(
       (date: Date) => {
-        if (hoveredDate) {
+        if (hoveredDate && Array.isArray(selected) && selected.length == 1) {
           if (isEqual(date, hoveredDate) && Array.isArray(selected)) {
             return Math.abs(differenceInDays(date, selected[0]));
           }
