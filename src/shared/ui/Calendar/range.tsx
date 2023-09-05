@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { Props as DayzedHookProps } from "dayzed";
 import { Month_Names_Short, Weekday_Names_Short } from "./utils/calendarUtils";
 import { Flex } from "@chakra-ui/react";
@@ -36,23 +36,26 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = ({
     setHoveredDate(date);
   };
 
-  const isInRange = (date: Date) => {
-    if (selected) {
-      const firstSelected = selected[0];
+  const isInRange = useCallback(
+    (date: Date) => {
+      if (selected) {
+        const firstSelected = selected[0];
 
-      if (selected.length === 2) {
-        const secondSelected = selected[1];
-        return firstSelected < date && secondSelected > date;
-      } else {
-        return (
-          hoveredDate &&
-          ((firstSelected < date && hoveredDate >= date) ||
-            (date < firstSelected && date >= hoveredDate))
-        );
+        if (selected.length === 2) {
+          const secondSelected = selected[1];
+          return firstSelected < date && secondSelected > date;
+        } else {
+          return (
+            hoveredDate &&
+            ((firstSelected < date && hoveredDate >= date) ||
+              (date < firstSelected && date >= hoveredDate))
+          );
+        }
       }
-    }
-    return null;
-  };
+      return null;
+    },
+    [hoveredDate]
+  );
 
   return (
     <Flex h="full" onMouseLeave={onMouseLeave}>

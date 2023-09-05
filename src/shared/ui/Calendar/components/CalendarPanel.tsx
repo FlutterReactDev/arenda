@@ -9,7 +9,7 @@ import {
 } from "@chakra-ui/react";
 import { useDayzed, Props as DayzedHookProps } from "dayzed";
 
-import React, { useMemo } from "react";
+import React, { useMemo, useCallback } from "react";
 import { CalendarConfigs, DatepickerProps } from "../utils/commonTypes";
 import { DatepickerBackBtns, DatepickerForwardBtns } from "./DateNavBtns";
 import { DayOfMonth } from "./DayOfMonth";
@@ -52,6 +52,8 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
   if (calendars.length <= 0) {
     return null;
   }
+  const onMouseEnter = (date: Date) =>
+    useCallback(() => onMouseEnterHighlight && onMouseEnterHighlight(date), []);
 
   return (
     <Stack
@@ -129,9 +131,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = ({
                         hoveredDate?.getTime() == date.getTime()
                       }
                       disabledDates={disabledDates}
-                      onMouseEnter={() => {
-                        if (onMouseEnterHighlight) onMouseEnterHighlight(date);
-                      }}
+                      onMouseEnter={onMouseEnter(date)}
                     />
                   );
                 });
