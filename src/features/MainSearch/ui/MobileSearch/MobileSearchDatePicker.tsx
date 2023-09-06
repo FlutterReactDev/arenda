@@ -85,7 +85,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
       </Box>
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent p="0">
           <DrawerCloseButton />
           <DrawerHeader>Выбрать дату</DrawerHeader>
           <Button
@@ -95,7 +95,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
           >
             Очистить дату
           </Button>
-          <DrawerBody>
+          <DrawerBody  p="0">
             <Suspense
               fallback={
                 <Box h="full">
