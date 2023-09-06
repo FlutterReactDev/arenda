@@ -28,7 +28,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     distance,
   }) => {
     const { date, selected, selectable, today } = dateObj;
-    console.log(today);
 
     const disabled = !selectable || disabledDates?.has(date.getTime());
     const styleBtnProps: DayOfMonthBtnStyleProps = useMemo(
@@ -53,9 +52,10 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
             borderWidth: `${halfGap}rem`,
             borderColor: "transparent",
           },
-          // _hover: {
-          //   bg: "",
-          // },
+          _hover: {
+            bg: "red.500",
+            color: "white",
+          },
         },
         isInRangeBtnProps: {
           background: "red.200",
@@ -92,6 +92,9 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           onMouseEnter={onMouseHover}
           isDisabled={disabled}
           {...styleBtnProps.defaultBtnProps}
+          {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
+          {...(isInRange && styleBtnProps.isInRangeBtnProps)}
+          {...(today && styleBtnProps.todayBtnProps)}
         >
           <Box
             display="flex"
@@ -101,12 +104,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
             w={14}
             h={14}
             borderRadius={"xl"}
-            {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
-            {...(isInRange && styleBtnProps.isInRangeBtnProps)}
-            {...(today && styleBtnProps.todayBtnProps)}
-            _hover={{
-              bg: "black",
-            }}
           >
             {date.getDate()}
           </Box>
