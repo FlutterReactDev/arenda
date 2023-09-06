@@ -1,52 +1,21 @@
-import {
-  Calendar,
-  CalendarValues,
-  CalendarControls,
-  CalendarPrevButton,
-  CalendarNextButton,
-  CalendarMonths,
-  CalendarMonth,
-  CalendarMonthName,
-  CalendarWeek,
-  CalendarDays,
-  CalendarDate,
-} from "@uselessdev/datepicker";
-import { ru } from "date-fns/locale";
+import { RangeDatepicker } from "@shared/ui/Calendar";
 import { FC } from "react";
 
 interface MobileCalendar {
-  dates: CalendarValues;
-  handleSelectDate: (value: CalendarValues | CalendarDate) => void;
+  dates: Date[];
+  handleSelectDate: (date: Date[]) => void;
 }
 
 const CalendarMobile: FC<MobileCalendar> = (props) => {
   const { dates, handleSelectDate } = props;
-  const MONTHS = 6;
-  return (
-    <Calendar
-      locale={ru}
-      value={dates as CalendarValues}
-      onSelectDate={handleSelectDate}
-      months={MONTHS}
-      highlightToday
-    >
-      <CalendarControls>
-        <CalendarPrevButton />
-        <CalendarNextButton />
-      </CalendarControls>
 
-      <CalendarMonths display={"flex"} flexDirection={"column"} gap={6}>
-        {[...Array(MONTHS).keys()].map((month) => (
-          <CalendarMonth month={month} key={month}>
-            <CalendarMonthName />
-            <CalendarWeek />
-            <CalendarDays />
-          </CalendarMonth>
-        ))}
-      </CalendarMonths>
-    </Calendar>
+  return (
+    <RangeDatepicker
+      selectedDates={dates}
+      onDateChange={handleSelectDate}
+      monthsToDisplay={12}
+    />
   );
 };
 
-
-export default CalendarMobile
+export default CalendarMobile;

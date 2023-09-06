@@ -115,6 +115,8 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         onDateChange((selectedDates: Date[]) => {
+          console.log(selectedDates);
+          
           const newDates = [...selectedDates];
           if (selectedDates.length) {
             if (selectedDates.length === 1) {

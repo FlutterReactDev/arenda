@@ -13,13 +13,12 @@ import {
   DrawerBody,
   Spinner,
 } from "@chakra-ui/react";
-import { CalendarValues, CalendarDate } from "@uselessdev/datepicker";
 
 import { FC, Suspense } from "react";
 import { MobileCalendar } from "../MobileCalendar";
 interface MobileSearchDatePickerProps {
-  dates: CalendarValues;
-  handleSelectDate: (value: CalendarValues | CalendarDate) => void;
+  dates: Date[];
+  handleSelectDate: (date: Date[]) => void;
 }
 
 export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
@@ -92,7 +91,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
           <Button
             borderRadius={"none"}
             size={"lg"}
-            onClick={() => handleSelectDate({})}
+            onClick={() => handleSelectDate([])}
           >
             Очистить дату
           </Button>

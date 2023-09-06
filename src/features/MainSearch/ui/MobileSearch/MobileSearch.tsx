@@ -1,5 +1,4 @@
 import { VStack } from "@chakra-ui/react";
-import { CalendarDate, CalendarValues } from "@uselessdev/datepicker";
 
 import { useState } from "react";
 import { MobileSearchInput } from "./MobileSearchInput";
@@ -7,9 +6,9 @@ import { MobileSearchGuests } from "./MobileSearchGuests";
 import { MobileSearchDatePicker } from "./MobileSearchDatePicker";
 
 export const MobileSearch = () => {
-  const [calendarDates, setCalendarDates] = useState<CalendarValues | CalendarDate>({});
+  const [calendarDates, setCalendarDates] = useState<Date[]>([]);
 
-  const handleSelectDate = (dates: CalendarValues | CalendarDate) => {
+  const handleSelectDate = (dates: Date[]) => {
     setCalendarDates(dates);
   };
 
@@ -17,7 +16,7 @@ export const MobileSearch = () => {
     <VStack w={"full"} gap={"2"}>
       <MobileSearchInput />
       <MobileSearchDatePicker
-        dates={calendarDates as CalendarValues}
+        dates={calendarDates}
         handleSelectDate={handleSelectDate}
       />
       <MobileSearchGuests />
