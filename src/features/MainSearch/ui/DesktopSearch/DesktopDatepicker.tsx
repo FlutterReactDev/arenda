@@ -82,7 +82,7 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           zIndex={!isHidden ? "hide" : "popover"}
           w="full"
           tabIndex={2}
-          h={"96"}
+         
         >
           <SlideFade
             onAnimationComplete={() => {

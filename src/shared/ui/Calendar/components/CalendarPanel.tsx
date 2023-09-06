@@ -109,6 +109,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
                 justifyItems={"center"}
                 alignSelf={"center"}
                 justifySelf={"center"}
+                spacing={1}
               >
                 <Weekday
                   weekdayNames={weekdayNames}
