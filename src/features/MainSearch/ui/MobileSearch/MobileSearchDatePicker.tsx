@@ -14,9 +14,8 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
-import { FC, Suspense, useState } from "react";
+import { FC, Suspense } from "react";
 import { MobileCalendar } from "../MobileCalendar";
-import { RangeDatepicker } from "@shared/ui/Calendar";
 interface MobileSearchDatePickerProps {
   dates: Date[];
   handleSelectDate: (date: Date[]) => void;
@@ -26,9 +25,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
   props
 ) => {
   const { onClose, onOpen, isOpen } = useDisclosure();
-  // const { dates, handleSelectDate } = props;
-  const [dates, setDates] = useState<Date[]>([new Date(), new Date()]);
-  console.log(dates);
+  const { dates, handleSelectDate } = props;
 
   return (
     <>
@@ -94,20 +91,25 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
           <Button
             borderRadius={"none"}
             size={"lg"}
-            onClick={() => setDates([])}
+            onClick={() => handleSelectDate([])}
           >
             Очистить дату
           </Button>
           <DrawerBody>
-            {/* <MobileCalendar
+            <Suspense
+              fallback={
+                <Box h="full">
+                  <Center h={"full"}>
+                    <Spinner size={"xl"} color="red.500" />
+                  </Center>
+                </Box>
+              }
+            >
+              <MobileCalendar
                 dates={dates}
-                handleSelectDate={setDates}
-              /> */}
-            <RangeDatepicker
-              selectedDates={dates}
-              onDateChange={setDates}
-              monthsToDisplay={12}
-            />
+                handleSelectDate={handleSelectDate}
+              />
+            </Suspense>
           </DrawerBody>
         </DrawerContent>
       </Drawer>
