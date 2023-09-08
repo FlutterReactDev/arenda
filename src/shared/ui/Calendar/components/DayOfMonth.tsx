@@ -40,6 +40,8 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       () => ({
         defaultBtnProps: {
           variant: "ghost",
+          w: "full",
+          h: "full",
           _after: {
             content: "''",
             position: "absolute",
@@ -49,6 +51,13 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
             right: `-${halfGap}rem`,
             borderWidth: `${halfGap}rem`,
             borderColor: "transparent",
+          },
+          _hover: {
+            bg: "red.500",
+            color: "white",
+          },
+          _active: {
+            bg: "red.500",
           },
         },
         isInRangeBtnProps: {
@@ -99,17 +108,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
           {...(isInRange && styleBtnProps.isInRangeBtnProps)}
           {...(today && styleBtnProps.todayBtnProps)}
-          {...(!isLessThan880 && {
-            _hover: {
-              bg: "red.500",
-              color: "white",
-            },
-          })}
-          {...(isLessThan880 && {
-            _hover: {
-              bg: "none",
-            },
-          })}
         >
           <Box
             display="flex"
@@ -141,7 +139,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       oldProps.onMouseEnter == newProps.onMouseEnter &&
       oldProps.isLast == newProps.isLast &&
       oldProps.getDateProps == newProps.getDateProps &&
-      // oldProps.distance == newProps.distance &&
       oldProps.isSelectedLast == newProps.isSelectedLast &&
       oldProps.showTooltipOnHover == newProps.showTooltipOnHover &&
       oldProps.showTooltipOnSelect == newProps.showTooltipOnSelect
