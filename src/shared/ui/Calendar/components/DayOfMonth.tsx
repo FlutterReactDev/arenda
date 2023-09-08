@@ -112,11 +112,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
               color: "white",
             },
           })}
-          {...(isLessThan880 && {
-            _hover: {
-              bg: "none",
-            },
-          })}
           {...styleBtnProps.defaultBtnProps}
           {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
           {...(isInRange && styleBtnProps.isInRangeBtnProps)}
