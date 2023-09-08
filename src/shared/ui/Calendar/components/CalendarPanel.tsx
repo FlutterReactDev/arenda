@@ -1,4 +1,11 @@
-import { VStack, SimpleGrid, Box, Stack, Button } from "@chakra-ui/react";
+import {
+  VStack,
+  SimpleGrid,
+  Box,
+  Stack,
+  Button,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useDayzed, Props as DayzedHookProps, DateObj } from "dayzed";
 
 import React, { useMemo, useCallback, SyntheticEvent, memo } from "react";
@@ -36,7 +43,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
   }) => {
     const renderProps = useDayzed(dayzedHookProps);
     const { calendars, getBackProps, getForwardProps } = renderProps;
-
+    const [isLessThan880] = useMediaQuery("(max-width: 880px)");
     const { onDateSelected } = dayzedHookProps;
 
     const weekdayNames = useMemo(() => {
@@ -70,7 +77,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     return (
       <Stack
         className="datepicker-calendar"
-        direction={["column", "column", "row"]}
+        direction={isLessThan880 ? "column" : "row"}
         w="full"
         h="full"
         position={"relative"}
