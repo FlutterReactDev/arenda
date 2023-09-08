@@ -65,6 +65,10 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
         selectedBtnProps: {
           background: "red.500",
           color: "white",
+          _hover: {
+            background: "red.500",
+            color: "white",
+          },
         },
         todayBtnProps: {
           border: "1px solid",
@@ -102,16 +106,21 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           onClick={onClick}
           onMouseEnter={onMouseHover}
           isDisabled={disabled}
-          {...styleBtnProps.defaultBtnProps}
-          {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
-          {...(isInRange && styleBtnProps.isInRangeBtnProps)}
-          {...(today && styleBtnProps.todayBtnProps)}
           {...(!isLessThan880 && {
             _hover: {
               bg: "red.500",
               color: "white",
             },
           })}
+          {...(isLessThan880 && {
+            _hover: {
+              bg: "none",
+            },
+          })}
+          {...styleBtnProps.defaultBtnProps}
+          {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
+          {...(isInRange && styleBtnProps.isInRangeBtnProps)}
+          {...(today && styleBtnProps.todayBtnProps)}
         >
           <Box
             display="flex"
