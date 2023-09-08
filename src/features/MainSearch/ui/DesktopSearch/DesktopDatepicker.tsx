@@ -19,7 +19,6 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [dates, setDates] = useState<Date[]>([]);
   const [isHidden, setIsHidden] = useState(false);
-  console.log(dates);
 
   return (
     <Box
@@ -82,7 +81,6 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           zIndex={!isHidden ? "hide" : "popover"}
           w="full"
           tabIndex={2}
-         
         >
           <SlideFade
             onAnimationComplete={() => {
@@ -109,6 +107,8 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
                 onClose={onClose}
                 selectedDates={dates}
                 onDateChange={setDates}
+                showTooltipOnHover
+                showTooltipOnSelect={false}
               />
             </Box>
           </SlideFade>

@@ -14,6 +14,8 @@ const CalendarMobile: FC<MobileCalendar> = (props) => {
       selectedDates={dates}
       onDateChange={handleSelectDate}
       monthsToDisplay={12}
+      showTooltipOnHover={false}
+      showTooltipOnSelect
     />
   );
 };

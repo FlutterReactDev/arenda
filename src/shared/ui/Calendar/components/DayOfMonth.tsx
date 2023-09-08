@@ -11,8 +11,11 @@ interface DayOfMonthProps extends DatepickerProps {
   dateObj: DateObj;
   onMouseEnter?: (date: Date) => void;
   isLast?: boolean | null;
+  showTooltipOnHover: boolean;
+  showTooltipOnSelect: boolean;
   getDateProps: (date: DateObj, event: SyntheticEvent<Element, Event>) => void;
   distance: number | null;
+  isSelectedLast: boolean;
 }
 
 const halfGap = 0.125; //default Chakra-gap-space-1 is 0.25rem
@@ -26,6 +29,9 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     isLast,
     getDateProps,
     distance,
+    showTooltipOnHover,
+    showTooltipOnSelect,
+    isSelectedLast,
   }) => {
     const { date, selected, selectable, today } = dateObj;
 
@@ -34,14 +40,6 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       () => ({
         defaultBtnProps: {
           variant: "ghost",
-
-          borderRadius: "xl",
-          p: 0,
-          h: "full",
-          w: "full",
-          // this intends to fill the visual gap from Grid to improve the UX
-          // so the button active area is actually larger than what it's seen
-
           _after: {
             content: "''",
             position: "absolute",
@@ -80,10 +78,20 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       getDateProps(dateObj, e);
     };
 
+    const isOpen = () => {
+      if (showTooltipOnHover) {
+        return !!isLast;
+      }
+
+      if (showTooltipOnSelect) {
+        return isSelectedLast;
+      }
+    };
+
     return (
       <Tooltip
         hasArrow
-        isOpen={!!isLast}
+        isOpen={isOpen()}
         placement="top"
         label={`${distance} суток`}
       >
@@ -123,7 +131,8 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       oldProps.onMouseEnter == newProps.onMouseEnter &&
       oldProps.isLast == newProps.isLast &&
       oldProps.getDateProps == newProps.getDateProps &&
-      oldProps.distance == newProps.distance
+      oldProps.distance == newProps.distance &&
+      oldProps.isSelectedLast == newProps.isSelectedLast
     );
   }
 );

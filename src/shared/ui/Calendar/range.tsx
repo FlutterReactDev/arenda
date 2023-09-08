@@ -17,10 +17,19 @@ interface RangeCalendarPanelProps {
   configs: CalendarConfigs;
   propsConfigs?: PropsConfigs;
   selected?: Date[];
+  showTooltipOnHover: boolean;
+  showTooltipOnSelect: boolean;
 }
 
 export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = memo(
-  ({ dayzedHookProps, configs, selected }) => {
+  ({
+    dayzedHookProps,
+    configs,
+    selected,
+    showTooltipOnHover,
+
+    showTooltipOnSelect,
+  }) => {
     const [hoveredDate, setHoveredDate] = useState<Date | null>(null);
 
     // Calendar level
@@ -56,15 +65,28 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = memo(
 
     const getDistanceDay = useCallback(
       (date: Date) => {
-        if (hoveredDate && Array.isArray(selected) && selected.length == 1) {
+        if (
+          showTooltipOnHover &&
+          hoveredDate &&
+          Array.isArray(selected) &&
+          selected.length == 1
+        ) {
           if (isEqual(date, hoveredDate) && Array.isArray(selected)) {
             return Math.abs(differenceInDays(date, selected[0]));
           }
         }
 
+        if (
+          showTooltipOnSelect &&
+          Array.isArray(selected) &&
+          selected.length == 2
+        ) {
+          return Math.abs(differenceInDays(selected[1], selected[0]));
+        }
+
         return null;
       },
-      [hoveredDate, selected]
+      [hoveredDate, selected, showTooltipOnHover, showTooltipOnSelect]
     );
 
     return (
@@ -76,6 +98,8 @@ export const RangeCalendarPanel: React.FC<RangeCalendarPanelProps> = memo(
           hoveredDate={hoveredDate}
           getDistanceDay={getDistanceDay}
           onMouseEnterHighlight={onMouseEnterHighlight}
+          showTooltipOnSelect={showTooltipOnSelect}
+          showTooltipOnHover={showTooltipOnHover}
         />
       </Flex>
     );
@@ -94,6 +118,8 @@ export interface RangeDatepickerProps extends DatepickerProps {
   name?: string;
   usePortal?: boolean;
   monthsToDisplay?: number;
+  showTooltipOnHover: boolean;
+  showTooltipOnSelect: boolean;
 }
 
 const DefaultConfigs: CalendarConfigs = {
@@ -104,7 +130,14 @@ const DefaultConfigs: CalendarConfigs = {
 };
 
 export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
-  ({ monthsToDisplay = 2, selectedDates, onDateChange, onClose }) => {
+  ({
+    monthsToDisplay = 2,
+    selectedDates,
+    onDateChange,
+    onClose,
+    showTooltipOnHover = true,
+    showTooltipOnSelect = false,
+  }) => {
     // chakra popover utils
 
     const handleOnDateSelected: OnDateSelected = useCallback(
@@ -113,7 +146,6 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           return;
         }
 
-        console.log(date);
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         onDateChange((selectedDates: Date[]) => {
@@ -157,6 +189,8 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           firstDayOfWeek: 0,
         }}
         configs={DefaultConfigs}
+        showTooltipOnHover={showTooltipOnHover}
+        showTooltipOnSelect={showTooltipOnSelect}
         selected={selectedDates}
       />
     );

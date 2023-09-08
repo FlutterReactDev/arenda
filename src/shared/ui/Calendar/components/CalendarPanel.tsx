@@ -8,6 +8,7 @@ import { DayOfMonth } from "./DayOfMonth";
 import { Weekday } from "./Weekday";
 import { MonthName } from "./MonthName";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { isEqual } from "date-fns";
 
 export interface CalendarPanelProps extends DatepickerProps {
   dayzedHookProps: Omit<DayzedHookProps, "children" | "render">;
@@ -17,6 +18,8 @@ export interface CalendarPanelProps extends DatepickerProps {
   isInRange?: (date: Date) => boolean | null;
   getDistanceDay: (date: Date) => number | null;
   hoveredDate: Date | null;
+  showTooltipOnHover: boolean;
+  showTooltipOnSelect: boolean;
 }
 
 export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
@@ -28,6 +31,8 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     isInRange,
     hoveredDate,
     getDistanceDay,
+    showTooltipOnHover,
+    showTooltipOnSelect,
   }) => {
     const renderProps = useDayzed(dayzedHookProps);
     const { calendars, getBackProps, getForwardProps } = renderProps;
@@ -134,10 +139,17 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
                           dayzedHookProps?.selected.length == 1 &&
                           hoveredDate?.getTime() == date.getTime()
                         }
+                        isSelectedLast={
+                          Array.isArray(dayzedHookProps?.selected) &&
+                          dayzedHookProps?.selected.length == 2 &&
+                          isEqual(date, dayzedHookProps.selected[1])
+                        }
                         getDateProps={onSelect}
                         disabledDates={disabledDates}
                         onMouseEnter={onMouseEnter}
                         distance={getDistanceDay(date)}
+                        showTooltipOnHover={showTooltipOnHover}
+                        showTooltipOnSelect={showTooltipOnSelect}
                       />
                     );
                   });
