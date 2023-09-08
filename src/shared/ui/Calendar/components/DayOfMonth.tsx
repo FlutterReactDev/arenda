@@ -34,7 +34,7 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     isSelectedLast,
   }) => {
     const { date, selected, selectable, today } = dateObj;
-    const [isLessThan880] = useMediaQuery("(max-width: 880px)");
+    // const [isLessThan880] = useMediaQuery("(max-width: 880px)");
     const disabled = !selectable || disabledDates?.has(date.getTime());
     const styleBtnProps: DayOfMonthBtnStyleProps = useMemo(
       () => ({
@@ -99,17 +99,17 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
           {...(isInRange && styleBtnProps.isInRangeBtnProps)}
           {...(today && styleBtnProps.todayBtnProps)}
-          {...(!isLessThan880 && {
-            _hover: {
-              bg: "red.500",
-              color: "white",
-            },
-          })}
-          {...(isLessThan880 && {
-            _hover: {
-              bg: "none",
-            },
-          })}
+          // {...(!isLessThan880 && {
+          //   _hover: {
+          //     bg: "red.500",
+          //     color: "white",
+          //   },
+          // })}
+          // {...(isLessThan880 && {
+          //   _hover: {
+          //     bg: "none",
+          //   },
+          // })}
         >
           <Box
             display="flex"
@@ -127,6 +127,9 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     );
   },
   function arePropsEqual(oldProps, newProps) {
+    console.log(oldProps.isSelectedLast == newProps.isSelectedLast);
+    console.log(oldProps.distance, newProps.distance);
+
     return (
       isEqual(oldProps.dateObj.date, newProps.dateObj.date) &&
       oldProps.dateObj.selected == newProps.dateObj.selected &&
@@ -138,8 +141,10 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       oldProps.onMouseEnter == newProps.onMouseEnter &&
       oldProps.isLast == newProps.isLast &&
       oldProps.getDateProps == newProps.getDateProps &&
-      oldProps.distance == newProps.distance &&
-      oldProps.isSelectedLast == newProps.isSelectedLast
+      // oldProps.distance == newProps.distance &&
+      oldProps.isSelectedLast == newProps.isSelectedLast &&
+      oldProps.showTooltipOnHover == newProps.showTooltipOnHover &&
+      oldProps.showTooltipOnSelect == newProps.showTooltipOnSelect
     );
   }
 );
