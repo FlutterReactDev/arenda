@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip, useMediaQuery } from "@chakra-ui/react";
+import { Box, Button, Tooltip } from "@chakra-ui/react";
 import { DateObj, RenderProps } from "dayzed";
 import React, { useMemo, memo, SyntheticEvent } from "react";
 import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
@@ -34,7 +34,7 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     isSelectedLast,
   }) => {
     const { date, selected, selectable, today } = dateObj;
-    const [isLessThan880] = useMediaQuery("(max-width: 880px)");
+
     const disabled = !selectable || disabledDates?.has(date.getTime());
     const styleBtnProps: DayOfMonthBtnStyleProps = useMemo(
       () => ({
