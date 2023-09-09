@@ -1,4 +1,4 @@
-import { Box, Button, Tooltip, useMediaQuery } from "@chakra-ui/react";
+import { Button, Tooltip, useMediaQuery } from "@chakra-ui/react";
 import { DateObj, RenderProps } from "dayzed";
 import React, { useMemo, memo, SyntheticEvent } from "react";
 import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
@@ -40,8 +40,9 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       () => ({
         defaultBtnProps: {
           variant: "outline",
-          w: "full",
-          h: "full",
+          w: "100%",
+          h: "12",
+
           _after: {
             content: "''",
             position: "absolute",
@@ -117,25 +118,12 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
           {...(isInRange && styleBtnProps.isInRangeBtnProps)}
           {...(today && styleBtnProps.todayBtnProps)}
         >
-          <Box
-            display="flex"
-            alignItems={"center"}
-            justifyContent={"center"}
-            as="span"
-            w={14}
-            h={14}
-            borderRadius={"xl"}
-          >
-            {date.getDate()}
-          </Box>
+          {date.getDate()}
         </Button>
       </Tooltip>
     );
   },
   function arePropsEqual(oldProps, newProps) {
-    console.log(oldProps.isSelectedLast == newProps.isSelectedLast);
-    console.log(oldProps.distance, newProps.distance);
-
     return (
       isEqual(oldProps.dateObj.date, newProps.dateObj.date) &&
       oldProps.dateObj.selected == newProps.dateObj.selected &&
