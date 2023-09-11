@@ -95,7 +95,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
           >
             Очистить дату
           </Button>
-          <DrawerBody  p="0">
+          <DrawerBody p="0">
             <Suspense
               fallback={
                 <Box h="full">

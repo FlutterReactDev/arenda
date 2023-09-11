@@ -16,6 +16,7 @@ import { Weekday } from "./Weekday";
 import { MonthName } from "./MonthName";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { isEqual } from "date-fns";
+import { DesktopView } from "@shared/ui/DesktopView";
 
 export interface CalendarPanelProps extends DatepickerProps {
   dayzedHookProps: Omit<DayzedHookProps, "children" | "render">;
@@ -44,6 +45,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     const renderProps = useDayzed(dayzedHookProps);
     const { calendars, getBackProps, getForwardProps } = renderProps;
     const [isLessThan880] = useMediaQuery("(max-width: 880px)");
+    const [isLarger880] = useMediaQuery("(min-width: 880px)");
     const { onDateSelected } = dayzedHookProps;
 
     const weekdayNames = useMemo(() => {
@@ -73,31 +75,42 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     if (calendars.length <= 0) {
       return null;
     }
+    const adaptive = () => {
+      if (isLarger880) {
+        return "row";
+      }
+      if (isLessThan880) {
+        return "column";
+      }
+    };
 
     return (
       <Stack
         className="datepicker-calendar"
-        direction={isLessThan880 ? "column" : "row"}
+        direction={adaptive()}
         w="full"
         h="full"
         position={"relative"}
       >
-        <Button
-          {...getBackProps({ calendars })}
-          position={"absolute"}
-          top={"20px"}
-          left={"20px"}
-        >
-          <ChevronLeftIcon />
-        </Button>
-        <Button
-          {...getForwardProps({ calendars })}
-          position={"absolute"}
-          top={"20px"}
-          right={"20px"}
-        >
-          <ChevronRightIcon />
-        </Button>
+        <DesktopView>
+          <Button
+            {...getBackProps({ calendars })}
+            position={"absolute"}
+            top={"20px"}
+            left={"20px"}
+          >
+            <ChevronLeftIcon />
+          </Button>
+          <Button
+            {...getForwardProps({ calendars })}
+            position={"absolute"}
+            top={"20px"}
+            right={"20px"}
+          >
+            <ChevronRightIcon />
+          </Button>
+        </DesktopView>
+
         {calendars.map((calendar, calendarIdx) => {
           return (
             <VStack

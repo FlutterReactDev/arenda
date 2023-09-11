@@ -1,12 +1,12 @@
 import { RangeDatepicker } from "@shared/ui/Calendar";
-import { FC } from "react";
+import { FC, memo } from "react";
 
 interface MobileCalendar {
   dates: Date[];
   handleSelectDate: (date: Date[]) => void;
 }
 
-const CalendarMobile: FC<MobileCalendar> = (props) => {
+const CalendarMobile: FC<MobileCalendar> = memo((props) => {
   const { dates, handleSelectDate } = props;
 
   return (
@@ -18,6 +18,6 @@ const CalendarMobile: FC<MobileCalendar> = (props) => {
       showTooltipOnSelect
     />
   );
-};
+});
 
 export default CalendarMobile;
