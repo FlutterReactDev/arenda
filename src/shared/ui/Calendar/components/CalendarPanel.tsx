@@ -24,7 +24,7 @@ export interface CalendarPanelProps extends DatepickerProps {
   disabledDates?: Set<number>;
   onMouseEnterHighlight?: (date: Date) => void;
   isInRange?: (date: Date) => boolean | null;
-  getDistanceDay: (date: Date) => number | null;
+  getDistanceDay?: (date: Date) => number | null;
   hoveredDate: Date | null;
   showTooltipOnHover: boolean;
   showTooltipOnSelect: boolean;
@@ -167,7 +167,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
                         getDateProps={onSelect}
                         disabledDates={disabledDates}
                         onMouseEnter={onMouseEnter}
-                        distance={getDistanceDay(date)}
+                        distance={getDistanceDay && getDistanceDay(date)}
                         showTooltipOnHover={showTooltipOnHover}
                         showTooltipOnSelect={showTooltipOnSelect}
                       />

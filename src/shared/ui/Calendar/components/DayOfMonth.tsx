@@ -14,7 +14,7 @@ interface DayOfMonthProps extends DatepickerProps {
   showTooltipOnHover: boolean;
   showTooltipOnSelect: boolean;
   getDateProps: (date: DateObj, event: SyntheticEvent<Element, Event>) => void;
-  distance: number | null;
+  distance: number | null | undefined;
   isSelectedLast: boolean;
 }
 
@@ -94,6 +94,7 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
       if (showTooltipOnSelect) {
         return isSelectedLast;
       }
+      return false;
     };
 
     return (
