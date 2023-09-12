@@ -3,9 +3,10 @@ import { baseApi } from "@shared/api/rtk";
 const userApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     login: build.mutation({
-      query: () => ({
+      query: (data) => ({
         url: "/Login",
-        body: {},
+        body: data,
+        method: "POST",
       }),
     }),
 

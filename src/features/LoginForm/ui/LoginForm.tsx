@@ -9,7 +9,7 @@ import {
   FormErrorMessage,
   Stack,
 } from "@chakra-ui/react";
-import { LoginSchema } from "@entites/User";
+import { LoginSchema, useLoginMutation } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PhoneInput } from "@shared/ui/PhoneInput";
 import { useForm, Controller } from "react-hook-form";
@@ -25,9 +25,10 @@ const LoginForm = () => {
   } = useForm<Yup.InferType<typeof LoginSchema>>({
     resolver: yupResolver(LoginSchema),
   });
+  const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
-  const onSubmit = (data: Yup.InferType<typeof LoginSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
+    await login(data);
   };
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
@@ -64,7 +65,13 @@ const LoginForm = () => {
           </InputGroup>
           <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
         </FormControl>
-        <Button w="full" mt={2} type="submit" colorScheme="red">
+        <Button
+          w="full"
+          mt={2}
+          type="submit"
+          colorScheme="red"
+          isLoading={isLoading}
+        >
           Войти
         </Button>
       </Stack>
