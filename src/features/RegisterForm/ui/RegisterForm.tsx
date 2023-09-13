@@ -1,30 +1,39 @@
 import {
   Box,
+  Button,
+  Checkbox,
   FormControl,
   FormLabel,
-  HStack,
   Input,
+  Radio,
+  RadioGroup,
   Select,
   Stack,
 } from "@chakra-ui/react";
 import { Gender, RegisterSchema } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
-  const { handleSubmit, register } = useForm<
+  const { handleSubmit, register, control } = useForm<
     Yup.InferType<typeof RegisterSchema>
   >({
     resolver: yupResolver(RegisterSchema),
   });
 
+  const { fields, append } = useFieldArray({
+    control,
+    name: "test",
+  });
+
   const onSubmit = (data: Yup.InferType<typeof RegisterSchema>) => {
     console.log(data);
+    append([{ value: 1 }, { value: 1 }, { value: 1 }]);
   };
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={4}>
-        <HStack>
+        <Stack direction={["column", "column", "row"]}>
           <Box w={"full"}>
             <FormControl>
               <FormLabel>Имя</FormLabel>
@@ -41,7 +50,7 @@ const RegisterForm = () => {
               />
             </FormControl>
           </Box>
-        </HStack>
+        </Stack>
         <FormControl>
           <FormLabel>Пол</FormLabel>
           <Select {...register("gender")} placeholder="Пол">
@@ -67,6 +76,12 @@ const RegisterForm = () => {
           />
         </FormControl>
         <FormControl>
+          <FormLabel>Язык</FormLabel>
+          <Select {...register("languageID")}>
+            <option value={1}>Кыргысзкий</option>
+          </Select>
+        </FormControl>
+        <FormControl>
           <FormLabel>E-mail</FormLabel>
           <Input
             placeholder="Укажите почту"
@@ -90,6 +105,17 @@ const RegisterForm = () => {
             type={"password"}
           />
         </FormControl>
+        <FormControl>
+          <FormLabel>Номер телефона</FormLabel>
+          <Box>
+            <Radio value="1" />
+            <Radio value="1" />
+            <Radio value="1" />
+          </Box>
+        </FormControl>
+        <Button type="submit" w="full" colorScheme="red">
+          Зарегистрироваться
+        </Button>
       </Stack>
     </Box>
   );

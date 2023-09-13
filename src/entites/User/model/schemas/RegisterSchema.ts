@@ -13,4 +13,5 @@ export const RegisterSchema = Yup.object({
     [Yup.ref("password")],
     "Passwords must match"
   ),
+  phone: Yup.string(),
 });

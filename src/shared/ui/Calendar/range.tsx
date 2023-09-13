@@ -10,7 +10,7 @@ import {
   OnDateSelected,
   PropsConfigs,
 } from "./utils/commonTypes";
-import { differenceInDays, isEqual, subDays } from "date-fns";
+import { addYears, differenceInDays, isEqual, subDays } from "date-fns";
 
 interface RangeCalendarPanelProps {
   dayzedHookProps: DayzedHookProps;
@@ -190,6 +190,7 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           monthsToDisplay,
           date: new Date(),
           minDate: subDays(new Date(), 1),
+          maxDate:addYears(new Date(),1),
           firstDayOfWeek: 0,
         }}
         configs={DefaultConfigs}

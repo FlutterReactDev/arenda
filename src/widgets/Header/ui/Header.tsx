@@ -70,11 +70,14 @@ export const Header = () => {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        size={["full", "sm", "lg", "xl"]}
+        size={["full", "md", "lg", "xl"]}
       >
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent transition={"0.3s max-width"}>
-          <ModalHeader>Вход</ModalHeader>
+          <ModalHeader>
+            {modalType == ModalType.LOGIN && "Вход"}
+            {modalType == ModalType.REGISTER && "Регистрация"}
+          </ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <Suspense
