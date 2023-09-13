@@ -9,11 +9,10 @@ import {
 } from "@chakra-ui/react";
 import { Gender, RegisterSchema } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { SingleDatepicker } from "@shared/ui/Calendar";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
-  const { handleSubmit, register, control } = useForm<
+  const { handleSubmit, register } = useForm<
     Yup.InferType<typeof RegisterSchema>
   >({
     resolver: yupResolver(RegisterSchema),
