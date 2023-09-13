@@ -70,7 +70,7 @@ export const Header = () => {
       <Modal
         isOpen={isOpen}
         onClose={onClose}
-        size={modalType == ModalType.LOGIN ? "md" : "4xl"}
+        size={["full", "sm", "lg", "xl"]}
       >
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent transition={"0.3s max-width"}>
