@@ -13,5 +13,10 @@ export const RegisterSchema = Yup.object({
     [Yup.ref("password")],
     "Passwords must match"
   ),
-  phone: Yup.string(),
+  phoneNumbers: Yup.array(
+    Yup.object({
+      phoneNumber: Yup.string().required(),
+      isMain: Yup.boolean().required(),
+    })
+  ),
 });

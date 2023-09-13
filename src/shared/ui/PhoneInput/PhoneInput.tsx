@@ -1,4 +1,10 @@
-import { Input, InputProps } from "@chakra-ui/react";
+import { PhoneIcon } from "@chakra-ui/icons";
+import {
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputProps,
+} from "@chakra-ui/react";
 import { FC } from "react";
 import { usePhoneInput } from "react-international-phone";
 
@@ -18,11 +24,17 @@ export const PhoneInput: FC<InputProps> = (props) => {
   });
 
   return (
-    <Input
-      {...props}
-      value={phoneInput.phone}
-      onChange={phoneInput.handlePhoneValueChange}
-      ref={phoneInput.inputRef}
-    />
+    <InputGroup>
+      <InputLeftElement>
+        <PhoneIcon />
+      </InputLeftElement>
+      <Input
+        {...props}
+        type="tel"
+        value={phoneInput.phone}
+        onChange={phoneInput.handlePhoneValueChange}
+        ref={phoneInput.inputRef}
+      />
+    </InputGroup>
   );
 };
