@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "esModuleInterop": false,
@@ -25,33 +21,17 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
     "paths": {
-      "@app/*": [
-        "src/app/*"
-      ],
-      "@assets/*": [
-        "src/assets/*"
-      ],
-      "@features/*": [
-        "src/features/*"
-      ],
-      "@pages/*": [
-        "src/pages/*"
-      ],
-      "@widgets/*": [
-        "src/widgets/*"
-      ],
-      "@entites/*": [
-        "src/entites/*"
-      ],
-      "@shared/*":[
-        "src/shared/*"
-      ]
-
+      "@app/*": ["src/app/*"],
+      "@assets/*": ["src/assets/*"],
+      "@features/*": ["src/features/*"],
+      "@pages/*": ["src/pages/*"],
+      "@widgets/*": ["src/widgets/*"],
+      "@entites/*": ["src/entites/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
-  "include": [
-    "src"
-  ],
+  "include": ["src"],
+
   "references": [
     {
       "path": "./tsconfig.node.json"

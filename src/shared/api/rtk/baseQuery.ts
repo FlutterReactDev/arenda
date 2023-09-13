@@ -1,4 +1,3 @@
-import { _BASE_API_URL_ } from "@app/types/global";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { USER_TOKEN } from "@shared/constants/user";
 
