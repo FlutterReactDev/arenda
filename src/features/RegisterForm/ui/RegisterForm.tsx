@@ -26,13 +26,13 @@ const RegisterForm = () => {
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={4}>
         <HStack>
-          <Box>
+          <Box w={"full"}>
             <FormControl>
               <FormLabel>Имя</FormLabel>
               <Input placeholder="Имя" {...register("name")} type="text" />
             </FormControl>
           </Box>
-          <Box>
+          <Box w={"full"}>
             <FormControl>
               <FormLabel>Фамилия</FormLabel>
               <Input
@@ -50,21 +50,45 @@ const RegisterForm = () => {
             <option value={Gender.FEMALE}>Женский</option>
           </Select>
         </FormControl>
-        <FormControl>
-          <FormLabel>Пол</FormLabel>
-          <Select {...register("gender")} placeholder="Пол">
-            <option value={Gender.MALE}>Мужской</option>
-            <option value={Gender.FEMALE}>Женский</option>
-          </Select>
-        </FormControl>
+
         <FormControl>
           <FormLabel>Дата рождения</FormLabel>
-          <Controller
-            control={control}
-            name="dateOfBirth"
-            render={({ field: { onChange, value } }) => (
-              <SingleDatepicker onChange={onChange} selected={value} />
-            )}
+          <Input
+            {...register("dateOfBirth")}
+            type={"date"}
+            placeholder="Дата рождения"
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Страна</FormLabel>
+          <Input
+            placeholder="Укажите страну"
+            {...register("country")}
+            type={"text"}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>E-mail</FormLabel>
+          <Input
+            placeholder="Укажите почту"
+            {...register("email")}
+            type={"email"}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Пароль</FormLabel>
+          <Input
+            placeholder="Введите пароль"
+            {...register("password")}
+            type={"password"}
+          />
+        </FormControl>
+        <FormControl>
+          <FormLabel>Подтвердите пароль</FormLabel>
+          <Input
+            placeholder="Введите пароль"
+            {...register("password")}
+            type={"password"}
           />
         </FormControl>
       </Stack>

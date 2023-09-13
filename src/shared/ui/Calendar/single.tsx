@@ -15,7 +15,7 @@ import { Month_Names_Full, Weekday_Names_Short } from "./utils/calendarUtils";
 import { CalendarIcon } from "@chakra-ui/icons";
 interface SingleDatepickerProps {
   onChange: (date: Date) => void;
-
+  placeholder: string;
   selected: Date;
 }
 
@@ -27,7 +27,7 @@ const DefaultConfigs: CalendarConfigs = {
 };
 
 export const SingleDatepicker: FC<SingleDatepickerProps> = (props) => {
-  const { onChange, selected } = props;
+  const { onChange, selected, placeholder } = props;
   const { onOpen, onClose, isOpen } = useDisclosure();
   const handleOnDateSelected: OnDateSelected = ({ selectable, date }) => {
     if (!selectable) return;
@@ -39,16 +39,25 @@ export const SingleDatepicker: FC<SingleDatepickerProps> = (props) => {
   };
 
   return (
-    <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start"> 
+    <Popover
+      isOpen={isOpen}
+      onOpen={onOpen}
+      onClose={onClose}
+      placement="bottom-start"
+    >
       <PopoverTrigger>
         <InputGroup>
           <InputRightElement cursor="pointer">
             <CalendarIcon />
           </InputRightElement>
-          <Input value={selected && format(selected, "yyyy-mm-dd")} />
+          <Input
+            placeholder={placeholder}
+            value={selected && format(selected, "yyyy-mm-dd")}
+            type="date"
+          />
         </InputGroup>
       </PopoverTrigger>
-      <PopoverContent w="full" >
+      <PopoverContent w="full">
         <CalendarPanel
           dayzedHookProps={{
             selected,
