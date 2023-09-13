@@ -5,6 +5,7 @@ import {
   Stack,
   Button,
   useMediaQuery,
+  HStack,
 } from "@chakra-ui/react";
 import { useDayzed, Props as DayzedHookProps, DateObj } from "dayzed";
 
@@ -13,10 +14,10 @@ import { CalendarConfigs, DatepickerProps } from "../utils/commonTypes";
 
 import { DayOfMonth } from "./DayOfMonth";
 import { Weekday } from "./Weekday";
-import { MonthName } from "./MonthName";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { isEqual } from "date-fns";
-import { DesktopView } from "@shared/ui/DesktopView";
+import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
+import { CalendarHeader } from "./CalendarHeader";
 
 export interface CalendarPanelProps extends DatepickerProps {
   dayzedHookProps: Omit<DayzedHookProps, "children" | "render">;
@@ -28,6 +29,7 @@ export interface CalendarPanelProps extends DatepickerProps {
   hoveredDate: Date | null;
   showTooltipOnHover: boolean;
   showTooltipOnSelect: boolean;
+  showNavigationButton: boolean;
 }
 
 export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
@@ -41,6 +43,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     getDistanceDay,
     showTooltipOnHover,
     showTooltipOnSelect,
+    showNavigationButton,
   }) => {
     const renderProps = useDayzed(dayzedHookProps);
     const { calendars, getBackProps, getForwardProps } = renderProps;
@@ -91,25 +94,32 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
         w="full"
         h="full"
         position={"relative"}
+        pt={10}
       >
-        <DesktopView>
-          <Button
-            {...getBackProps({ calendars })}
-            position={"absolute"}
-            top={"20px"}
-            left={"20px"}
-          >
-            <ChevronLeftIcon />
-          </Button>
-          <Button
-            {...getForwardProps({ calendars })}
-            position={"absolute"}
-            top={"20px"}
-            right={"20px"}
-          >
-            <ChevronRightIcon />
-          </Button>
-        </DesktopView>
+        {showNavigationButton && (
+          <>
+            <HStack spacing={2} position={"absolute"} top={"8px"} left={"8px"}>
+              <Button {...getBackProps({ calendars, offset: 12 })} size={"md"}>
+                <ArrowLeftIcon />
+              </Button>
+              <Button {...getBackProps({ calendars })} size={"sm"}>
+                <ChevronLeftIcon />
+              </Button>
+            </HStack>
+
+            <HStack spacing={2} position={"absolute"} top={"8px"} right={"8px"}>
+              <Button {...getForwardProps({ calendars })} size={"sm"}>
+                <ChevronRightIcon />
+              </Button>
+              <Button
+                {...getForwardProps({ calendars, offset: 12 })}
+                size={"md"}
+              >
+                <ArrowRightIcon />
+              </Button>
+            </HStack>
+          </>
+        )}
 
         {calendars.map((calendar, calendarIdx) => {
           return (
@@ -119,12 +129,11 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
               padding="0.5rem 0.75rem"
               w="full"
             >
-              <MonthName
+              <CalendarHeader
                 key={`${calendar.month}-${calendar.year}-${calendarIdx}`}
                 monthName={configs.monthNames[calendar.month]}
+                year={calendar.year}
               />
-              {/* <Button {...getForwardProps({ calendars })}>{">"}</Button> */}
-
               <SimpleGrid
                 h="full"
                 w="full"

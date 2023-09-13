@@ -16,6 +16,7 @@ const CalendarMobile: FC<MobileCalendar> = memo((props) => {
       monthsToDisplay={12}
       showTooltipOnHover={false}
       showTooltipOnSelect
+      isMobile
     />
   );
 });

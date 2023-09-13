@@ -1,7 +1,6 @@
 import {
   Box,
   FormControl,
-  FormHelperText,
   FormLabel,
   HStack,
   Input,
@@ -11,14 +10,12 @@ import {
 import { Gender, RegisterSchema } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { SingleDatepicker } from "@shared/ui/Calendar";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors },
-  } = useForm<Yup.InferType<typeof RegisterSchema>>({
+  const { handleSubmit, register, control } = useForm<
+    Yup.InferType<typeof RegisterSchema>
+  >({
     resolver: yupResolver(RegisterSchema),
   });
 
@@ -62,7 +59,13 @@ const RegisterForm = () => {
         </FormControl>
         <FormControl>
           <FormLabel>Дата рождения</FormLabel>
-          <SingleDatepicker />
+          <Controller
+            control={control}
+            name="dateOfBirth"
+            render={({ field: { onChange, value } }) => (
+              <SingleDatepicker onChange={onChange} selected={value} />
+            )}
+          />
         </FormControl>
       </Stack>
     </Box>

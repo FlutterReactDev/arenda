@@ -1,1 +1,1 @@
-export { RegisterForm } from "./ui/RegisterFrom.chunk";
+export { RegisterForm } from "./ui/RegisterForm.chunk";

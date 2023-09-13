@@ -67,9 +67,13 @@ export const Header = () => {
         </Flex>
       </Flex>
 
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal
+        isOpen={isOpen}
+        onClose={onClose}
+        size={modalType == ModalType.LOGIN ? "md" : "4xl"}
+      >
         <ModalOverlay backdropFilter="blur(10px)" />
-        <ModalContent>
+        <ModalContent transition={"0.3s max-width"}>
           <ModalHeader>Вход</ModalHeader>
           <ModalCloseButton />
           <ModalBody>

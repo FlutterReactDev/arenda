@@ -1,5 +1,7 @@
 import {
   Input,
+  InputGroup,
+  InputRightElement,
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -10,11 +12,11 @@ import { FC } from "react";
 import { CalendarPanel } from "./components/CalendarPanel";
 import { CalendarConfigs, OnDateSelected } from "./utils/commonTypes";
 import { Month_Names_Full, Weekday_Names_Short } from "./utils/calendarUtils";
+import { CalendarIcon } from "@chakra-ui/icons";
 interface SingleDatepickerProps {
   onChange: (date: Date) => void;
-  value: Date;
+
   selected: Date;
-  onClose: () => void;
 }
 
 const DefaultConfigs: CalendarConfigs = {
@@ -25,7 +27,7 @@ const DefaultConfigs: CalendarConfigs = {
 };
 
 export const SingleDatepicker: FC<SingleDatepickerProps> = (props) => {
-  const { onChange, selected, value } = props;
+  const { onChange, selected } = props;
   const { onOpen, onClose, isOpen } = useDisclosure();
   const handleOnDateSelected: OnDateSelected = ({ selectable, date }) => {
     if (!selectable) return;
@@ -37,11 +39,16 @@ export const SingleDatepicker: FC<SingleDatepickerProps> = (props) => {
   };
 
   return (
-    <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose}>
+    <Popover isOpen={isOpen} onOpen={onOpen} onClose={onClose} placement="bottom-start"> 
       <PopoverTrigger>
-        <Input value={selected && format(selected, "yyyy-mm-dd")} />
+        <InputGroup>
+          <InputRightElement cursor="pointer">
+            <CalendarIcon />
+          </InputRightElement>
+          <Input value={selected && format(selected, "yyyy-mm-dd")} />
+        </InputGroup>
       </PopoverTrigger>
-      <PopoverContent w="full">
+      <PopoverContent w="full" >
         <CalendarPanel
           dayzedHookProps={{
             selected,
@@ -54,6 +61,7 @@ export const SingleDatepicker: FC<SingleDatepickerProps> = (props) => {
           showTooltipOnHover={false}
           showTooltipOnSelect={false}
           hoveredDate={null}
+          showNavigationButton
         />
       </PopoverContent>
     </Popover>
