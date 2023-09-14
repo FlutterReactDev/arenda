@@ -2,12 +2,13 @@ import {
   Box,
   Button,
   FormControl,
+  FormErrorMessage,
   FormLabel,
   Input,
   Select,
   Stack,
 } from "@chakra-ui/react";
-import { useGetLanguagesQuery } from "@entites/CommonReference";
+
 import { AddPhoneForm, PhonesList } from "@entites/Phone";
 import { Gender, PhoneSchema, RegisterSchema } from "@entites/User";
 
@@ -15,14 +16,17 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
-  const { handleSubmit, register, control } = useForm<
-    Yup.InferType<typeof RegisterSchema>
-  >({
+  const {
+    handleSubmit,
+    register,
+    control,
+    formState: { errors },
+  } = useForm<Yup.InferType<typeof RegisterSchema>>({
     resolver: yupResolver(RegisterSchema),
+    mode: "onChange",
   });
-  const { data } = useGetLanguagesQuery();
 
-  const { append, fields, update } = useFieldArray({
+  const { append, fields, update, remove } = useFieldArray({
     control,
     name: "phoneNumbers",
   });
@@ -50,8 +54,15 @@ const RegisterForm = () => {
 
   const onPhoneAdd = ({ phone }: Yup.InferType<typeof PhoneSchema>) => {
     if (!fields.filter((field) => field.phoneNumber == phone).length) {
+      if (fields.length == 0) {
+        return append({ phoneNumber: phone, isMain: true });
+      }
       append({ phoneNumber: phone, isMain: false });
     }
+  };
+  const onPhoneDelete = (phone: string) => {
+    const phoneIndex = fields.findIndex((field) => field.phoneNumber == phone);
+    remove(phoneIndex);
   };
 
   return (
@@ -126,15 +137,26 @@ const RegisterForm = () => {
             <FormLabel>Подтвердите пароль</FormLabel>
             <Input
               placeholder="Введите пароль"
-              {...register("password")}
+              {...register("passwordConfirmation")}
               type={"password"}
             />
           </FormControl>
-          {fields.length && (
-            <PhonesList fields={fields} onChange={onPhoneChange} />
-          )}
+          <FormControl isInvalid={!!errors.phoneNumbers?.message}>
+            <FormLabel>Номера телефонов</FormLabel>
+            {fields.length != 0 && (
+              <PhonesList
+                fields={fields}
+                onDelete={onPhoneDelete}
+                onChange={onPhoneChange}
+              />
+            )}
 
-          <AddPhoneForm onChange={onPhoneAdd} />
+            <FormErrorMessage>{errors.phoneNumbers?.message}</FormErrorMessage>
+            <Box mt={4}>
+              <AddPhoneForm onChange={onPhoneAdd} />
+            </Box>
+          </FormControl>
+
           <Button type="submit" w="full" colorScheme="red">
             Зарегистрироваться
           </Button>

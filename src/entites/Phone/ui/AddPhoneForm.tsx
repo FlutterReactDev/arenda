@@ -6,7 +6,6 @@ import {
   Button,
   FormControl,
   FormErrorMessage,
-  FormLabel,
   HStack,
 } from "@chakra-ui/react";
 import { FC } from "react";
@@ -30,7 +29,6 @@ export const AddPhoneForm: FC<AddPhoneFormProps> = (props) => {
   };
   return (
     <FormControl isInvalid={!!errors.phone?.message}>
-      <FormLabel>Номер телефона</FormLabel>
       <HStack alignItems={"flex-end"}>
         <Controller
           name="phone"

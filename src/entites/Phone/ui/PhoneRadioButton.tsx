@@ -1,4 +1,4 @@
-import { Box, UseRadioProps, useRadio } from "@chakra-ui/react";
+import { Box, HStack, UseRadioProps, useRadio } from "@chakra-ui/react";
 import { FC, PropsWithChildren } from "react";
 export const PhoneRadioButton: FC<PropsWithChildren<UseRadioProps>> = (
   props
@@ -11,7 +11,7 @@ export const PhoneRadioButton: FC<PropsWithChildren<UseRadioProps>> = (
   return (
     <Box as="label">
       <input {...input} />
-      <Box
+      <HStack
         {...checkbox}
         cursor="pointer"
         borderWidth="1px"
@@ -20,11 +20,13 @@ export const PhoneRadioButton: FC<PropsWithChildren<UseRadioProps>> = (
         _checked={{
           borderColor: "red.600",
         }}
-        px={5}
-        py={3}
+        px={4}
+        py={2}
+        w={"full"}
+        justifyContent={"space-between"}
       >
         {props.children}
-      </Box>
+      </HStack>
     </Box>
   );
 };

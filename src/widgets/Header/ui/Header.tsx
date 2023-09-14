@@ -67,11 +67,7 @@ export const Header = () => {
         </Flex>
       </Flex>
 
-      <Modal
-        isOpen={isOpen}
-        onClose={onClose}
-        size={["full", "lg", "lg", "2xl"]}
-      >
+      <Modal isOpen={isOpen} onClose={onClose} size={["full", "xl", "2xl"]}>
         <ModalOverlay backdropFilter="blur(10px)" />
         <ModalContent transition={"0.3s max-width"}>
           <ModalHeader>

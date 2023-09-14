@@ -1,9 +1,9 @@
-import { HStack, useRadioGroup } from "@chakra-ui/react";
+import { IconButton, useRadioGroup, Text, SimpleGrid } from "@chakra-ui/react";
 import { FieldArrayWithId } from "react-hook-form";
 import { FC } from "react";
 
 import { PhoneRadioButton } from "..";
-
+import { DeleteIcon } from "@chakra-ui/icons";
 interface PhonesListProps {
   onChange: (nextValue: string) => void;
   fields: FieldArrayWithId<
@@ -18,29 +18,44 @@ interface PhonesListProps {
     "phoneNumbers",
     "id"
   >[];
+  onDelete: (phone: string) => void;
 }
 
 export const PhonesList: FC<PhonesListProps> = (props) => {
-  const { fields, onChange } = props;
-
+  const { fields, onChange, onDelete } = props;
+  const getDefaultValue = () => {
+    if (fields.length == 1) {
+      return fields[0]?.phoneNumber;
+    }
+  };
   const { getRadioProps } = useRadioGroup({
     name: "phoneNumbers",
-    defaultValue: fields && fields[0]?.phoneNumber,
+    defaultValue: getDefaultValue() || undefined,
     onChange: (nextValue) => {
       onChange(nextValue);
     },
   });
+
   return (
-    <HStack flexWrap={"wrap"}>
+    <SimpleGrid columns={[1, 2, 3]} spacing={2}>
       {fields.map(({ id, phoneNumber }) => {
         const radio = getRadioProps({ value: phoneNumber });
 
         return (
           <PhoneRadioButton key={id} {...radio}>
-            {phoneNumber}
+            <Text fontSize={"sm"} fontWeight="medium">
+              {phoneNumber}
+            </Text>
+
+            <IconButton
+              onClick={() => onDelete(phoneNumber)}
+              aria-label={"delete phone"}
+            >
+              <DeleteIcon />
+            </IconButton>
           </PhoneRadioButton>
         );
       })}
-    </HStack>
+    </SimpleGrid>
   );
 };

@@ -18,5 +18,11 @@ export const RegisterSchema = Yup.object({
       phoneNumber: Yup.string().required(),
       isMain: Yup.boolean().required(),
     })
-  ),
+  )
+    .test("notEmpty", "Добавьте номер телефона", (phones) => {
+      return !!phones?.length;
+    })
+    .test("isOneMain", "Выберите основный номер телефона", (phones) => {
+      return phones?.some((phone) => phone.isMain);
+    }),
 });
