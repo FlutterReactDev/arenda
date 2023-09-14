@@ -10,8 +10,8 @@ interface PhonesListProps {
     {
       phoneNumbers?:
         | {
+            isMain?: boolean | undefined;
             phoneNumber: string;
-            isMain: NonNullable<boolean | undefined>;
           }[]
         | undefined;
     },
@@ -37,7 +37,7 @@ export const PhonesList: FC<PhonesListProps> = (props) => {
   });
 
   return (
-    <SimpleGrid columns={[1, 2, 3]} spacing={2}>
+    <SimpleGrid columns={[1, 2, 3]} spacingY={5} spacing={2}>
       {fields.map(({ id, phoneNumber }) => {
         const radio = getRadioProps({ value: phoneNumber });
 

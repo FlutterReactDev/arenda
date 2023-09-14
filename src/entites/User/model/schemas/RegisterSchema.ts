@@ -1,22 +1,25 @@
 import * as Yup from "yup";
 import { Gender } from "../types/UserType";
 export const RegisterSchema = Yup.object({
-  name: Yup.string().required(),
-  surname: Yup.string().required(),
-  gender: Yup.number().required().oneOf([Gender.MALE, Gender.FEMALE]),
-  dateOfBirth: Yup.date().required(),
-  country: Yup.string().required(),
-  languageID: Yup.number().required(),
-  email: Yup.string().email().required(),
-  password: Yup.string().min(6).required(),
-  passwordConfirmation: Yup.string().oneOf(
-    [Yup.ref("password")],
-    "Passwords must match"
-  ),
+  name: Yup.string().required("Необходимо указать имя"),
+  surname: Yup.string().required("Необходимо указать фамилию"),
+  gender: Yup.number()
+    .required("Необходимо указать пол")
+    .oneOf([Gender.MALE, Gender.FEMALE]),
+  dateOfBirth: Yup.date().required("Необходимо указать дату рождения"),
+  country: Yup.string().required("Необходимо указать страну"),
+  languageID: Yup.number().required("Необходимо выбрать язык"),
+  email: Yup.string().email().required("Необходимо указать почту"),
+  password: Yup.string()
+    .min(6, "Необходимо указать пaроль не меньше 6 символов")
+    .required("Необходимо указать пaроль"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password")], "Пороли должны быть похожи")
+    .required("Необходимо указать пороль"),
   phoneNumbers: Yup.array(
     Yup.object({
       phoneNumber: Yup.string().required(),
-      isMain: Yup.boolean().required(),
+      isMain: Yup.boolean(),
     })
   )
     .test("notEmpty", "Добавьте номер телефона", (phones) => {

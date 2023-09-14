@@ -10,12 +10,18 @@ import {
 } from "@chakra-ui/react";
 
 import { AddPhoneForm, PhonesList } from "@entites/Phone";
-import { Gender, PhoneSchema, RegisterSchema } from "@entites/User";
+import {
+  Gender,
+  PhoneSchema,
+  RegisterSchema,
+  useRegisterMutation,
+} from "@entites/User";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
+  const [userRegister, { isLoading }] = useRegisterMutation();
   const {
     handleSubmit,
     register,
@@ -48,8 +54,15 @@ const RegisterForm = () => {
     });
   };
 
-  const onSubmit = (data: Yup.InferType<typeof RegisterSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: Yup.InferType<typeof RegisterSchema>) => {
+    await userRegister({
+      ...data,
+      phoneNumbers: data.phoneNumbers?.map((phone) => ({
+        phoneNumber: phone.phoneNumber.replace(/ /g, ""),
+
+        ...(phone.isMain && { isMain: true }),
+      })),
+    });
   };
 
   const onPhoneAdd = ({ phone }: Yup.InferType<typeof PhoneSchema>) => {
@@ -71,31 +84,33 @@ const RegisterForm = () => {
         <Stack spacing={4}>
           <Stack direction={["column", "column", "row"]}>
             <Box w={"full"}>
-              <FormControl>
+              <FormControl isInvalid={!!errors.name?.message}>
                 <FormLabel>Имя</FormLabel>
                 <Input placeholder="Имя" {...register("name")} type="text" />
+                <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
               </FormControl>
             </Box>
             <Box w={"full"}>
-              <FormControl>
+              <FormControl isInvalid={!!errors.surname?.message}>
                 <FormLabel>Фамилия</FormLabel>
                 <Input
                   placeholder="Фамилия"
                   {...register("surname")}
                   type="text"
                 />
+                <FormErrorMessage>{errors.surname?.message}</FormErrorMessage>
               </FormControl>
             </Box>
           </Stack>
-          <FormControl>
+          <FormControl isInvalid={!!errors.gender?.message}>
             <FormLabel>Пол</FormLabel>
-            <Select {...register("gender")} placeholder="Пол">
+            <Select {...register("gender")}>
               <option value={Gender.MALE}>Мужской</option>
               <option value={Gender.FEMALE}>Женский</option>
             </Select>
+            <FormErrorMessage>{errors.gender?.message}</FormErrorMessage>
           </FormControl>
-
-          <FormControl>
+          <FormControl isInvalid={!!errors.dateOfBirth?.message}>
             <FormLabel>Дата рождения</FormLabel>
             <Input
               {...register("dateOfBirth")}
@@ -103,43 +118,50 @@ const RegisterForm = () => {
               placeholder="Дата рождения"
             />
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errors.country?.message}>
             <FormLabel>Страна</FormLabel>
             <Input
               placeholder="Укажите страну"
               {...register("country")}
               type={"text"}
             />
+            <FormErrorMessage>{errors.country?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errors.languageID?.message}>
             <FormLabel>Язык</FormLabel>
             <Select {...register("languageID")}>
               <option value={1}>Кыргысзкий</option>
             </Select>
+            <FormErrorMessage>{errors.languageID?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errors.email?.message}>
             <FormLabel>E-mail</FormLabel>
             <Input
               placeholder="Укажите почту"
               {...register("email")}
               type={"email"}
             />
+            <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errors.password?.message}>
             <FormLabel>Пароль</FormLabel>
             <Input
               placeholder="Введите пароль"
               {...register("password")}
               type={"password"}
             />
+            <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
           </FormControl>
-          <FormControl>
+          <FormControl isInvalid={!!errors.confirmPassword?.message}>
             <FormLabel>Подтвердите пароль</FormLabel>
             <Input
               placeholder="Введите пароль"
-              {...register("passwordConfirmation")}
+              {...register("confirmPassword")}
               type={"password"}
             />
+            <FormErrorMessage>
+              {errors.confirmPassword?.message}
+            </FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.phoneNumbers?.message}>
             <FormLabel>Номера телефонов</FormLabel>
@@ -157,7 +179,12 @@ const RegisterForm = () => {
             </Box>
           </FormControl>
 
-          <Button type="submit" w="full" colorScheme="red">
+          <Button
+            type="submit"
+            w="full"
+            colorScheme="red"
+            isLoading={isLoading}
+          >
             Зарегистрироваться
           </Button>
         </Stack>

@@ -23,6 +23,6 @@ Yup.addMethod(
 );
 
 export const LoginSchema = Yup.object({
-  phone: Yup.string().phone(),
+  phoneNumber: Yup.string().phone().required(),
   password: Yup.string().min(6).required(),
 });

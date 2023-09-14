@@ -28,15 +28,15 @@ const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
-    await login(data);
+    await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") });
   };
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>
-        <FormControl isInvalid={!!errors?.phone?.message}>
+        <FormControl isInvalid={!!errors?.phoneNumber?.message}>
           <FormLabel>Номер телефона</FormLabel>
           <Controller
-            name="phone"
+            name="phoneNumber"
             control={control}
             render={({ field: { onChange, onBlur, value } }) => {
               return (
@@ -45,7 +45,7 @@ const LoginForm = () => {
             }}
           />
 
-          <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
+          <FormErrorMessage>{errors.phoneNumber?.message}</FormErrorMessage>
         </FormControl>
         <FormControl isInvalid={!!errors.password?.message}>
           <FormLabel>Пароль</FormLabel>
