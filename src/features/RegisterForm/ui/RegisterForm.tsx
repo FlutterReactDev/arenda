@@ -4,28 +4,54 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Radio,
   Select,
   Stack,
 } from "@chakra-ui/react";
+import { useGetLanguagesQuery } from "@entites/CommonReference";
+import { AddPhoneForm, PhonesList } from "@entites/Phone";
 import { Gender, PhoneSchema, RegisterSchema } from "@entites/User";
-import { AddPhoneForm } from "@features/PhoneAddForm";
+
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useForm } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
-  const { handleSubmit, register } = useForm<
+  const { handleSubmit, register, control } = useForm<
     Yup.InferType<typeof RegisterSchema>
   >({
     resolver: yupResolver(RegisterSchema),
   });
+  const { data } = useGetLanguagesQuery();
+
+  const { append, fields, update } = useFieldArray({
+    control,
+    name: "phoneNumbers",
+  });
+
+  const onPhoneChange = (nextValue: string) => {
+    fields.map(({ phoneNumber }, index) => {
+      update(index, {
+        phoneNumber,
+        isMain: false,
+      });
+    });
+    fields.map(({ phoneNumber }, index) => {
+      if (phoneNumber == nextValue) {
+        update(index, {
+          phoneNumber,
+          isMain: true,
+        });
+      }
+    });
+  };
 
   const onSubmit = (data: Yup.InferType<typeof RegisterSchema>) => {
     console.log(data);
   };
 
-  const onPhoneAdd = (data: Yup.InferType<typeof PhoneSchema>) => {
-    console.log(data);
+  const onPhoneAdd = ({ phone }: Yup.InferType<typeof PhoneSchema>) => {
+    if (!fields.filter((field) => field.phoneNumber == phone).length) {
+      append({ phoneNumber: phone, isMain: false });
+    }
   };
 
   return (
@@ -104,6 +130,10 @@ const RegisterForm = () => {
               type={"password"}
             />
           </FormControl>
+          {fields.length && (
+            <PhonesList fields={fields} onChange={onPhoneChange} />
+          )}
+
           <AddPhoneForm onChange={onPhoneAdd} />
           <Button type="submit" w="full" colorScheme="red">
             Зарегистрироваться
