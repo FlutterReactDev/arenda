@@ -7,7 +7,7 @@ const AddObjectPage = () => {
   return (
     <Box bgColor={"gray.100"}>
       <Header />
-      <Box as="main" pt={8} pb={10}>
+      <Box as="main" pt={8} pb={20}>
         <Container maxW="container.xl">
           <Heading textAlign={"center"}>
             Сдавайте своё жильё на Turak.kg
