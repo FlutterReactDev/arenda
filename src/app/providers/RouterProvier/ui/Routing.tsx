@@ -1,5 +1,6 @@
 import { AddObjectPage } from "@pages/AddObjectPage";
 import { HomePage } from "@pages/HomePage";
+import { MapPage } from "@pages/MapPage";
 import { TestPage } from "@pages/TestPage";
 import { PageLoader } from "@shared/ui/PageLoader";
 import { Suspense } from "react";
@@ -25,6 +26,7 @@ export const Routing = () => {
           </Suspense>
         }
       />
+      <Route path="/map" element={<MapPage />} />
     </Routes>
   );
 };
