@@ -56,27 +56,35 @@ export const MapPage = () => {
     <Box h="100dvh">
       <Map2GIS
         initialMapOptions={{
-          center: [74.62712071263891, 42.856867565222004],
-          zoom: 13,
+          center: [77.17531854453188, 42.6445241832498],
+          zoom: 15,
           key: "10153539-2026-4a0c-b7a3-52ddb3fed411",
+          rotation:20,
+          keepCenterWhileUserZoomRotate:true,
+          scaleControl:true
+
         }}
         onClick={(data) => {
           console.log(data);
         }}
       >
-        <HtmlMarker2GIS coordinates={[77.17569679531643, 42.64475773607496]}>
+        <HtmlMarker2GIS
+          minZoom={6}
+          coordinates={[77.17569679531643, 42.64475773607496]}
+        >
           <Popover openDelay={0} closeDelay={0}>
             <PopoverTrigger>
               <Card
                 boxShadow={"lg"}
                 border="1px solid"
                 borderColor={"red.600"}
-                p={5}
+                p={2}
                 onClick={() => {
                   console.log("click");
                 }}
+                transform={" translate(-50%, -100%)"}
               >
-                <Heading>20 000 сом</Heading>
+                <Heading size={"xs"}>20 000 сом</Heading>
               </Card>
             </PopoverTrigger>
             <PopoverContent>
@@ -140,17 +148,17 @@ export const MapPage = () => {
             </PopoverContent>
           </Popover>
         </HtmlMarker2GIS>
-        <HtmlMarker2GIS coordinates={[77.17555741158148, 42.64561161009302]}>
+        {/* <HtmlMarker2GIS coordinates={[77.17555741158148, 42.64561161009302]}>
           <Card
             boxShadow={"lg"}
             border="1px solid"
             borderColor={"red.600"}
-            p={5}
+            p={2}
             onClick={() => {
               console.log("click");
             }}
           >
-            <Heading>10 000 сом</Heading>
+            <Heading size={"xs"}>10 000 сом</Heading>
           </Card>
         </HtmlMarker2GIS>
         <HtmlMarker2GIS coordinates={[77.17678937825993, 42.64530871154138]}>
@@ -158,14 +166,14 @@ export const MapPage = () => {
             boxShadow={"lg"}
             border="1px solid"
             borderColor={"red.600"}
-            p={5}
+            p={2}
             onClick={() => {
               console.log("click");
             }}
           >
-            <Heading>15 000 сом</Heading>
+            <Heading size={"xs"}>15 000 сом</Heading>
           </Card>
-        </HtmlMarker2GIS>
+        </HtmlMarker2GIS> */}
       </Map2GIS>
     </Box>
   );
