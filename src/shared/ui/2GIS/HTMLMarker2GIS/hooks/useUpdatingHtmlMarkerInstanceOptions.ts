@@ -1,7 +1,7 @@
 import { HtmlMarker } from '@2gis/mapgl/global'
 import { useEffect } from 'react'
 
-import { GetInstance } from '../../../hooks'
+import { GetInstance } from '../../hooks'
 import { HtmlMarkerOptionsWithoutHtml } from '../HtmlMarker2GIS'
 
 /**

@@ -5,7 +5,8 @@ import path from "path";
 export default defineConfig({
   plugins: [react()],
   define: {
-    _BASE_API_URL_:JSON.stringify("https://178.217.174.94/api"),
+    _BASE_API_URL_: JSON.stringify("https://178.217.174.94/api"),
+    _2GIS_KEY_: JSON.stringify("10153539-2026-4a0c-b7a3-52ddb3fed411"),
   },
   resolve: {
     alias: {

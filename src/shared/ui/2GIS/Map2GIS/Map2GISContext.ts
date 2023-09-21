@@ -1,7 +1,7 @@
 import { Map } from '@2gis/mapgl/global'
 import React, { useContext } from 'react'
 
-import { MapGLBundle } from '../../models'
+import { MapGLBundle } from '../models'
 
 /** Значение контекста **/
 export type Map2GISContextValue = {

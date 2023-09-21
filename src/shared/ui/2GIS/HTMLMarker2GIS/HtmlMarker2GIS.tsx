@@ -2,10 +2,7 @@ import { HtmlMarker, HtmlMarkerOptions } from "@2gis/mapgl/global";
 import { FC, memo, ReactNode, useEffect, useRef } from "react";
 import ReactDOM from "react-dom";
 
-import {
-  useInstance,
-  useReCreateInstanceWithSetterlessProps,
-} from "../hooks";
+import { useInstance, useReCreateInstanceWithSetterlessProps } from "../hooks";
 import { getOptions } from "../utils";
 import { useMapContext } from "../Map2GIS";
 import { NonHtmlMarkerOptions, SETTERLESS_PROPS_KEYS } from "./constants";
@@ -31,6 +28,7 @@ const HtmlMarker2GISComponent: FC<HtmlMarker2GISProps> = (props) => {
 
   const { mapGLBundle, mapInstance } = useMapContext();
   const [getInstance, setInstance] = useInstance<HtmlMarker>();
+ 
 
   // формируем реф с опциями html маркера
   useEffect(() => {
