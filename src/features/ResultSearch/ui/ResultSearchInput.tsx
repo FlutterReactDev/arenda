@@ -5,17 +5,21 @@ import {
   Box,
   Text,
   Input,
-  ScaleFade,
   List,
   Flex,
   ListIcon,
+  InputProps,
+  SlideFade,
 } from "@chakra-ui/react";
 import { useState } from "react";
 
 export const ResultSearchInput = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isHidden, setIsHidden] = useState(false);
-
+  const isSelected: InputProps = {
+    boxShadow: "0 0 15px 0 rgba(0,0,0,.14)",
+    bgColor: "white",
+  };
   return (
     <Box
       position="relative"
@@ -26,17 +30,30 @@ export const ResultSearchInput = () => {
       }}
       onBlur={onClose}
       tabIndex={1}
+      pl={2}
+      h={"full"}
+      minH={"full"}
     >
       <Input
         placeholder="Курорт, город или адрес"
         border={"none"}
         rounded={"full"}
+        h={"full"}
+        p={"4"}
+        pl={"6"}
+        minH={"full"}
         _focus={{
           outline: "none",
           border: "none",
           boxShadow: "0 0 15px 0 rgba(0,0,0,.14)",
-          bgColor: "white",
         }}
+        _placeholder={{
+          fontWeight: "medium",
+          fontSize: "14px",
+          lineHeight: "20px",
+        }}
+        tabIndex={-1}
+        {...(isHidden && isSelected)}
       />
       <Box
         position="absolute"
@@ -47,13 +64,13 @@ export const ResultSearchInput = () => {
         w="full"
         display={!isHidden ? "none" : "block"}
       >
-        <ScaleFade
+        <SlideFade
           onAnimationComplete={() => {
             if (!isOpen) {
               setIsHidden(false);
             }
           }}
-          initialScale={0.9}
+          offsetY={"60px"}
           in={isOpen}
         >
           <Box
@@ -73,7 +90,7 @@ export const ResultSearchInput = () => {
               </Flex>
             </List>
           </Box>
-        </ScaleFade>
+        </SlideFade>
       </Box>
     </Box>
   );

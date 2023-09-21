@@ -1,5 +1,5 @@
 import { ObjectCard } from "@entites/Object";
-import { Box, Grid, GridItem, VStack, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, VStack } from "@chakra-ui/react";
 
 import { SearchMap } from "@entites/Map";
 import { Header } from "@widgets/Header";
@@ -27,14 +27,14 @@ export const SearchResultPage = () => {
           zIndex={9}
           boxShadow={"md"}
         >
-          <Box h={"16"} as="header" bgColor={"white"}>
+          <Box as="header" bgColor={"white"} py={2} h={"24"}>
             <ResultSearch />
           </Box>
         </GridItem>
         <GridItem
           position={"sticky"}
           overflow={"hidden"}
-          top={16}
+          top={24}
           h={"100dvh"}
           pl={4}
           area={"filter"}
@@ -47,7 +47,7 @@ export const SearchResultPage = () => {
             rounded={"md"}
           ></Box>
         </GridItem>
-        <GridItem area={"main"} minH={"100dvh"}>
+        <GridItem area={"main"} minH={"100vh"}>
           <VStack spacing={10}>
             <ObjectCard />
             <ObjectCard />
@@ -60,9 +60,9 @@ export const SearchResultPage = () => {
         <GridItem
           position={"sticky"}
           overflow={"hidden"}
-          top={16}
+          top={24}
           area={"map"}
-          h={"100dvh"}
+          h={"100vh"}
         >
           <Box w="full" h="full">
             <SearchMap
