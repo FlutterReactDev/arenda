@@ -1,6 +1,10 @@
 import { AddObjectPage } from "@pages/AddObjectPage";
+import {
+  AddObjectStepperPage,
+  ProtectAddObjectRoute,
+} from "@pages/AddObjectStepperPage";
 import { HomePage } from "@pages/HomePage";
-import { MapPage } from "@pages/MapPage";
+
 import { SearchResultPage } from "@pages/SearchResultPage";
 import { TestPage } from "@pages/TestPage";
 import { PageLoader } from "@shared/ui/PageLoader";
@@ -20,15 +24,23 @@ export const Routing = () => {
       />
       <Route path="/test" element={<TestPage />} />
       <Route
-        path="/addObject"
+        path="/add-object"
         element={
           <Suspense fallback={<PageLoader />}>
             <AddObjectPage />
           </Suspense>
         }
       />
-      <Route path="/map" element={<MapPage />} />
+
       <Route path="/search-result" element={<SearchResultPage />} />
+      <Route
+        path="/add-object-info"
+        element={
+          <ProtectAddObjectRoute>
+            <AddObjectStepperPage />
+          </ProtectAddObjectRoute>
+        }
+      />
     </Routes>
   );
 };

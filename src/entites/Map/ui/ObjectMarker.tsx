@@ -1,25 +1,27 @@
 import { TriangleDownIcon } from "@chakra-ui/icons";
 import { Card, Box, Text } from "@chakra-ui/react";
+
 import { FC } from "react";
+
 interface ObjectMarker {
   text: string;
+  coordinates: number[];
 }
 export const ObjectMarker: FC<ObjectMarker> = (props) => {
   const { text } = props;
+
   return (
     <Card
       boxShadow={"lg"}
       bgColor={"red.400"}
       color={"white"}
-      p={1}
-      onClick={() => {
-        console.log("click");
-      }}
-      userSelect={'none'}
+      userSelect={"none"}
       transform={" translate(-50%, -200%)"}
       position={"relative"}
+      cursor={"pointer"}
+      p={1}
     >
-      <Text fontSize={"small"}>{text}</Text>
+      <Text fontSize={"12px"}>{text}</Text>
       <Box
         as="span"
         color="red.400"

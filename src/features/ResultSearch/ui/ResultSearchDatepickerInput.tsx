@@ -5,11 +5,10 @@ interface ResultSearchDatepickerInputProps {
   label: string;
   date: Date | undefined;
   isSelected: boolean;
-  onClick: () => void;
 }
 export const ResultSearchDatepickerInput: FC<ResultSearchDatepickerInputProps> =
   memo((props) => {
-    const { date, label, isSelected, onClick } = props;
+    const { date, label, isSelected } = props;
 
     const isSelecteStyle: BoxProps = {
       boxShadow: "0 0 15px 0 rgba(0,0,0,.14)",
@@ -26,12 +25,10 @@ export const ResultSearchDatepickerInput: FC<ResultSearchDatepickerInputProps> =
         transition={"0.2s box-shadow"}
         cursor={"pointer"}
         {...(isSelected && isSelecteStyle)}
-        tabIndex={2}
         _focus={{
           outline: "none",
           border: "none",
         }}
-        onClick={onClick}                                                                                                                  
       >
         <Text
           fontWeight="medium"

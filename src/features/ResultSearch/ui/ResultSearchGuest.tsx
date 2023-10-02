@@ -56,6 +56,7 @@ export const ResultSearchGuest = memo(() => {
         left={0}
         transform={"translateY(100%)"}
         zIndex={!isHidden ? "hide" : "popover"}
+        display={!isHidden ? "none" : "block"}
         w="full"
       >
         <SlideFade

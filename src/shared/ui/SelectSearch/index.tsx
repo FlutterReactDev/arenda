@@ -19,20 +19,20 @@ import { FC, useCallback, useMemo, useState } from "react";
 import { ChevronDownIcon, SearchIcon, CheckIcon } from "@chakra-ui/icons";
 import fuzzySearch from "./lib/fuzzySearch";
 
-interface Option {
+export interface Option {
   value: string | number;
   label: string;
 }
 
-interface SelectSearchProps {
-  onChange: (value: string | number) => void;
-  value: string | number;
-  options: Option[];
+export interface SelectSearchProps {
+  onChange: (option: Option) => void;
+  value: string | number | undefined;
+  options: Option[] | undefined;
   placeholder: string;
   icon: ComponentWithAs<"svg", IconProps>;
 }
 
-interface ListItemStyleProps {
+export interface ListItemStyleProps {
   defaultStyles: ListItemProps;
   selectedStyles: ListItemProps;
 }
@@ -47,10 +47,8 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
     },
     [value]
   );
-  const getValue = (value: string | number) => {
-    return (
-      options.filter((option) => option.value == value)[0]?.label || undefined
-    );
+  const getValue = (value: string | number | undefined) => {
+    return options?.filter((option) => option.value == value)[0]?.label || "";
   };
   const listItemStyles: ListItemStyleProps = useMemo(
     () => ({
@@ -76,8 +74,9 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
     }),
     []
   );
-  const onClick = (value: string | number) => {
-    onChange(value);
+  const onClick = (option: Option) => {
+    onChange(option);
+    onClose();
   };
   const onQueryChange = (value: string) => {
     setQuery(value);
@@ -102,6 +101,7 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
           bgColor="white"
           placeholder={placeholder}
           value={getValue(value)}
+          readOnly
         />
         <InputRightElement>
           <ChevronDownIcon />
@@ -132,7 +132,6 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
           <Box
             maxW="full"
             w={"full"}
-            h="full"
             background="white"
             border="1px solid"
             borderColor="gray.400"
@@ -150,25 +149,39 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
               />
             </InputGroup>
 
-            <List mt={2}>
-              {fuzzySearch(options, query).map(({ value, label }) => {
-                const selected = isSelected(value);
+            <List
+              mt={2}
+              overflowY={!isHidden ? "hidden" : "auto"}
+              minH={"max-content"}
+              maxH={"80"}
+            >
+              {
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                //@ts-ignore
+                fuzzySearch(options, query).map(({ value, label }) => {
+                  const selected = isSelected(value);
 
-                return (
-                  <ListItem
-                    {...listItemStyles.defaultStyles}
-                    {...(selected && listItemStyles.selectedStyles)}
-                    onClick={() => onClick(value)}
-                    key={value}
-                  >
-                    <ListIcon
-                      as={CheckIcon}
-                      color={(selected && "white") || "transparent"}
-                    />
-                    {label}
-                  </ListItem>
-                );
-              })}
+                  return (
+                    <ListItem
+                      {...listItemStyles.defaultStyles}
+                      {...(selected && listItemStyles.selectedStyles)}
+                      onClick={() =>
+                        onClick({
+                          value,
+                          label,
+                        })
+                      }
+                      key={value}
+                    >
+                      <ListIcon
+                        as={CheckIcon}
+                        color={(selected && "white") || "transparent"}
+                      />
+                      {label}
+                    </ListItem>
+                  );
+                })
+              }
             </List>
           </Box>
         </SlideFade>

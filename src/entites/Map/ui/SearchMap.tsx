@@ -22,6 +22,9 @@ export const SearchMap: FC<SearchMapProps> = memo((props) => {
 
         minZoom: 5,
       }}
+      onMouseover={(data) => {
+        console.log(data);
+      }}
     >
       <ObjectsMapCluster inputHtmlMarkers={inputHtmlMarkers} />
     </Map2GIS>

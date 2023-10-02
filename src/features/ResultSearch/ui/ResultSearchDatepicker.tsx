@@ -24,10 +24,17 @@ export const ResultSearchDatepicker: FC<DesktopDatepickerProps> = memo(
     );
 
     useEffect(() => {
-      if (!isOpen) {
-        setSelectedInput(null);
+      if (isOpen && selectedInput == null) {
+        setSelectedInput(DatePickerInput.CheckIn);
       }
     }, [isOpen]);
+
+    useEffect(() => {
+      if (!isOpen && !isHidden) {
+        setSelectedInput(null);
+      }
+    }, [isOpen, isHidden]);
+
     useEffect(() => {
       if (isOpen) {
         if (!dates[0]) {
@@ -38,16 +45,6 @@ export const ResultSearchDatepicker: FC<DesktopDatepickerProps> = memo(
       }
     }, [dates]);
 
-    const onCheckIn = () => {
-      setSelectedInput(DatePickerInput.CheckIn);
-    };
-
-    const onDeparture = () => {
-      console.log("1");
-
-      setSelectedInput(DatePickerInput.Departure);
-    };
-
     return (
       <Box
         position="relative"
@@ -57,25 +54,23 @@ export const ResultSearchDatepicker: FC<DesktopDatepickerProps> = memo(
           setIsHidden(true);
         }}
         onBlur={onClose}
-        tabIndex={2}
         _focus={{
           outline: "none",
           border: "none",
           boxShadow: "none",
         }}
+        tabIndex={2}
       >
         <HStack>
           <ResultSearchDatepickerInput
             isSelected={selectedInput == DatePickerInput.CheckIn}
             label="Заезд"
             date={dates[0]}
-            onClick={onCheckIn}
           />
           <ResultSearchDatepickerInput
             isSelected={selectedInput == DatePickerInput.Departure}
             label="Выезд"
             date={dates[1]}
-            onClick={onDeparture}
           />
         </HStack>
         <Portal containerRef={containerRef as RefObject<HTMLElement>}>
@@ -86,6 +81,7 @@ export const ResultSearchDatepicker: FC<DesktopDatepickerProps> = memo(
             transform={"translate(-50%,100%)"}
             zIndex={!isHidden ? "hide" : "popover"}
             w="80%"
+            tabIndex={2}
             display={!isHidden ? "none" : "block"}
           >
             <SlideFade

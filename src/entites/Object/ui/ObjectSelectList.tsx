@@ -8,18 +8,19 @@ interface ObjectTypes {
 interface ObjectSelectListProps {
   onChange: (nextValue: string) => void;
   objectTypes: ObjectTypes[];
+  value: number | undefined;
 }
 export const ObjectSelectList: FC<ObjectSelectListProps> = (props) => {
-  const { objectTypes, onChange } = props;
+  const { objectTypes, onChange, value } = props;
 
   const getDefaultValue = useCallback(() => {
-    return objectTypes[0].value;
+    return objectTypes[0].id.toString();
   }, [objectTypes]);
 
   const { getRadioProps, getRootProps } = useRadioGroup({
     name: "objectType",
     defaultValue: getDefaultValue() || undefined,
-    value: undefined,
+    value: value?.toString(),
     onChange: (nextValue) => {
       onChange(nextValue);
     },
@@ -28,7 +29,7 @@ export const ObjectSelectList: FC<ObjectSelectListProps> = (props) => {
   return (
     <SimpleGrid {...group} columns={[1, 2, 3, 4]} spacing={6}>
       {objectTypes.map(({ value, id }) => {
-        const radio = getRadioProps({ value });
+        const radio = getRadioProps({ value: id.toString() });
 
         return (
           <ObjectCardRadio key={id} {...radio}>

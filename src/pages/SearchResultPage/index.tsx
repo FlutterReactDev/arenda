@@ -82,9 +82,6 @@ export const SearchResultPage = () => {
                 {
                   coordinates: [77.1981040743652, 42.658896258910474],
                 },
-                {
-                  coordinates: [77.15253297654283, 42.63014881066871],
-                },
               ]}
             />
           </Box>

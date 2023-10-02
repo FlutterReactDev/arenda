@@ -16,6 +16,7 @@ export const ResultSearch = () => {
       position={"relative"}
       maxWidth={"70%"}
       margin={"0 auto"}
+      tabIndex={2}
     >
       <ResultSearchInput />
       <Divider orientation="vertical" borderColor={"gray.400"} h={"10"} />

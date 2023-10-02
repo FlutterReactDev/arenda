@@ -90,9 +90,6 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
             }}
             in={isOpen}
             offsetY="80px"
-            style={{
-              height: "100%",
-            }}
           >
             <Box
               maxW="full"
