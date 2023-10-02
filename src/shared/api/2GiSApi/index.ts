@@ -1,1 +1,1 @@
-export { base2GISApi } from "./base2GISapi";
+export { base2GISApi } from "./base2GISApi";
