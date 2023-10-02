@@ -3,12 +3,12 @@ import {
   Box,
   Text,
   useDisclosure,
-  ScaleFade,
   Portal,
+  SlideFade,
 } from "@chakra-ui/react";
 import { FC, LegacyRef, RefObject, useState } from "react";
-import { DubleCalendar } from "../Calendar";
-import { CalendarDate, CalendarValues } from "@uselessdev/datepicker";
+
+import { RangeDatepicker } from "@shared/ui/Calendar";
 interface DesktopDatepickerProps {
   containerRef: LegacyRef<HTMLDivElement>;
 }
@@ -17,11 +17,9 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
   containerRef,
 }) => {
   const { isOpen, onClose, onOpen } = useDisclosure();
-  const [dates, setDates] = useState<CalendarValues | CalendarDate>({});
+  const [dates, setDates] = useState<Date[]>([new Date(), new Date()]);
   const [isHidden, setIsHidden] = useState(false);
-  const handleSelectDate = (dates: CalendarValues | CalendarDate) => {
-    setDates(dates);
-  };
+
   return (
     <Box
       onFocus={() => {
@@ -83,30 +81,36 @@ export const DesktopDatepicker: FC<DesktopDatepickerProps> = ({
           zIndex={!isHidden ? "hide" : "popover"}
           w="full"
           tabIndex={2}
+          h={"96"}
         >
-          <ScaleFade
+          <SlideFade
             onAnimationComplete={() => {
               if (!isOpen) {
                 setIsHidden(false);
               }
             }}
-            initialScale={0.9}
             in={isOpen}
+            offsetY="80px"
+            style={{
+              height: "100%",
+            }}
           >
             <Box
               maxW="full"
               w={"full"}
+              h="full"
               background="white"
               border="1px solid"
               borderColor="gray.400"
               rounded={"lg"}
             >
-              <DubleCalendar
-                dates={dates as CalendarValues}
-                handleSelectDate={handleSelectDate}
+              <RangeDatepicker
+                onClose={onClose}
+                selectedDates={dates}
+                onDateChange={setDates}
               />
             </Box>
-          </ScaleFade>
+          </SlideFade>
         </Box>
       </Portal>
     </Box>

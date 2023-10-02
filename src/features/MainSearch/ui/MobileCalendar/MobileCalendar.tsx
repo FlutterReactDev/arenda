@@ -21,7 +21,7 @@ interface MobileCalendar {
 
 const CalendarMobile: FC<MobileCalendar> = (props) => {
   const { dates, handleSelectDate } = props;
-  const MONTHS = 12;
+  const MONTHS = 6;
   return (
     <Calendar
       locale={ru}
