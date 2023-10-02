@@ -1,4 +1,4 @@
-function search(q, text) {
+function search(q: string, text: string) {
   const searchLength = q.length;
   const textLength = text.length;
 
@@ -25,7 +25,13 @@ function search(q, text) {
   return true;
 }
 
-export default function fuzzySearch(options, query) {
+export default function fuzzySearch(
+  options: {
+    label: string;
+    value: string;
+  }[],
+  query: string
+) {
   return !query.length
     ? options
     : options.filter((o) =>
