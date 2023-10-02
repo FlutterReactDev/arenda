@@ -35,6 +35,7 @@ interface OptionalServiceFormProps {
 }
 export const OptionalServiceForm: FC<OptionalServiceFormProps> = (props) => {
   const { onChangeScreen } = props;
+  const { forms } = useAppSelector((state) => state.addOBject);
   const optionalServiceData = useAppSelector(getForm(2, 2));
   const { currency } = useAppSelector(getForm(1, 2)) as InferType<
     typeof priceSchema
@@ -69,6 +70,7 @@ export const OptionalServiceForm: FC<OptionalServiceFormProps> = (props) => {
         step: 2,
       })
     );
+    console.log(forms);
   };
   const onPrev = () => {
     onChangeScreen(1);

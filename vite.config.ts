@@ -9,7 +9,9 @@ export default defineConfig({
     _2GIS_KEY_: JSON.stringify("10153539-2026-4a0c-b7a3-52ddb3fed411"),
     _2GIS_API_URL_: JSON.stringify("https://catalog.api.2gis.com/3.0"),
     _2GIS_VALID_KEY_: JSON.stringify("demo"),
-    _MOCK_API_URL_: JSON.stringify("http://localhost:8000"),
+    _MOCK_API_URL_: JSON.stringify(
+      "https://stellar-tiramisu-eaa42c.netlify.app"
+    ),
   },
   resolve: {
     alias: {
