@@ -1,4 +1,12 @@
 import { baseApi, baseApiWithReAuth } from "@shared/api/rtk";
+import {
+  AdditionalService,
+  FoodType,
+  InternetAccess,
+  Parking,
+  PaymentType,
+  SmokingOnSite,
+} from "../types";
 
 const commonReferencePublicApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
@@ -17,24 +25,39 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/Gender",
       }),
     }),
-    getInternetAccess: build.query({
+    getInternetAccess: build.query<InternetAccess[], unknown>({
       query: () => ({
         url: "/InternetAccess",
       }),
     }),
-    getParking: build.query({
+    getParking: build.query<Parking[], unknown>({
       query: () => ({
         url: "/Parking",
       }),
     }),
-    getPaymentType: build.query({
+    getPaymentType: build.query<PaymentType[], unknown>({
       query: () => ({
         url: "/PaymentType",
       }),
     }),
-    getSmokingOnSite: build.query({
+    getSmokingOnSite: build.query<SmokingOnSite[], unknown>({
       query: () => ({
         url: "/SmokingOnSite",
+      }),
+    }),
+    getFoodType: build.query<FoodType[], unknown>({
+      query: () => ({
+        url: "/FoodType",
+      }),
+    }),
+    getAdditionalService: build.query<AdditionalService[], unknown>({
+      query: () => ({
+        url: "/AdditionalService",
+      }),
+    }),
+    getRoomCategories: build.query({
+      query: () => ({
+        url: "/RoomCategories",
       }),
     }),
   }),
@@ -47,4 +70,7 @@ export const {
   useGetParkingQuery,
   useGetPaymentTypeQuery,
   useGetSmokingOnSiteQuery,
+  useGetAdditionalServiceQuery,
+  useGetFoodTypeQuery,
+  useGetRoomCategoriesQuery,
 } = commonReferencePrivateApi;

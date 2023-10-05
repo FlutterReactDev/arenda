@@ -59,7 +59,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   }, [
     data?.meta.code,
     isSuccess,
-    notFoundData?.result?.items,
+    notFoundData?.result.items,
     notFoundDataIsSuccess,
   ]);
   if (isSuccess) {

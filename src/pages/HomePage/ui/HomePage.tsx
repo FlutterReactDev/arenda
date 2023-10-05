@@ -12,6 +12,7 @@ import {
   LinkOverlay,
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/MainSearch";
+
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
 
@@ -34,9 +35,7 @@ const HomePage = () => {
           Квартиры, отели, гостевые дома — 200 тысяч вариантов для поездок по
           России и зарубежью
         </Text>
-
         <MainSearch />
-
         <Box>
           <Heading color="blackAlpha.900" size="xl" textAlign="center" mt={16}>
             Куда поехать
@@ -685,4 +684,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage
+export default HomePage;

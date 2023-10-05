@@ -20,6 +20,7 @@ import {
   Stack,
   Spinner,
   Button,
+  Skeleton,
 } from "@chakra-ui/react";
 import { ObjectSelectList } from "@entites/Object";
 import { Option, SelectSearch } from "@shared/ui/SelectSearch";
@@ -32,7 +33,7 @@ import {
   useGetCountryQuery,
   useGetRegionQuery,
 } from "@entites/Location";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const AddObjectForm = () => {
   const data = useMemo(
@@ -265,8 +266,6 @@ export const AddObjectForm = () => {
     dispatch(addObjectSliceActions.setCity(option));
   };
 
-  const navigate = useNavigate();
-
   return (
     <Box>
       <Text fontWeight={"medium"} mb={2}>
@@ -359,8 +358,12 @@ export const AddObjectForm = () => {
             </Box>
 
             <Box w="xl" justifyContent={"space-between"}>
-              {regionIsSuccess && !regionIsFetching && (
-                <>
+              {country && (
+                <Skeleton
+                  rounded={"lg"}
+                  isLoaded={regionIsSuccess && !regionIsFetching}
+                  h={regionIsSuccess && !regionIsFetching ? "auto" : "40px"}
+                >
                   <Text mb={2}>Регион</Text>
                   <SelectSearch
                     value={region?.value}
@@ -372,18 +375,18 @@ export const AddObjectForm = () => {
                     placeholder="Выберите регион"
                     icon={CiLocationOn}
                   />
-                </>
-              )}
-
-              {regionIsFetching && (
-                <Center>
-                  <Spinner color="red.600" size={"xl"} />
-                </Center>
+                </Skeleton>
               )}
             </Box>
             <Box w="xl" justifyContent={"space-between"}>
-              {cityIsSuccess && !cityIsFetching && region && (
-                <>
+              {region && (
+                <Skeleton
+                  rounded={"lg"}
+                  isLoaded={cityIsSuccess && !cityIsFetching && !!region}
+                  h={
+                    cityIsSuccess && !cityIsFetching && region ? "auto" : "40px"
+                  }
+                >
                   <Text mb={2}>Город</Text>
                   <SelectSearch
                     value={city?.value}
@@ -395,12 +398,7 @@ export const AddObjectForm = () => {
                     placeholder="Выберите город"
                     icon={ImEarth}
                   />
-                </>
-              )}
-              {cityIsFetching && (
-                <Center>
-                  <Spinner color="red.600" size={"xl"} />
-                </Center>
+                </Skeleton>
               )}
             </Box>
             <Button
@@ -412,7 +410,10 @@ export const AddObjectForm = () => {
                 object == undefined ||
                 region == undefined
               }
-              onClick={() => navigate("/add-object-info")}
+              as={Link}
+              to={
+                object == ObjectValue.ROOM ? "/add-hotel" : "/add-object-info"
+              }
             >
               Далее
             </Button>

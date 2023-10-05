@@ -14,3 +14,7 @@ export interface UserLoginData {
   accessTokenExpireAt: Date;
   refreshToken: RefreshToken;
 }
+
+export interface UserAuthData {
+  userAuthData: UserLoginData | undefined;
+}

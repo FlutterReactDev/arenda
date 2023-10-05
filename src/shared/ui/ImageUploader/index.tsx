@@ -6,7 +6,6 @@ import {
   useDisclosure,
   Center,
   Icon,
-  Stack,
 } from "@chakra-ui/react";
 
 import { UploadImage } from "./ui/UploadImage";
@@ -31,29 +30,22 @@ interface ImageUploaderProps {
 }
 
 export const ImageUploader: FC<ImageUploaderProps> = memo((props) => {
-  const { files: propsFile, onChangeFile, errors } = props;
+  const { files: propsFile, onChangeFile } = props;
   const inputRef = useRef() as MutableRefObject<HTMLInputElement>;
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [files, setFiles] = useState<File[]>(propsFile);
+  const [files, setFiles] = useState<File[]>(propsFile || []);
 
-  const onImageDelete = useCallback((id: number) => {
-    setFiles((prevState) => {
-      return prevState.filter((_, i) => {
+  const onImageDelete = useCallback(
+    (id: number) => {
+      const newFiles = files.filter((_, i) => {
         return i != id;
       });
-    });
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
+      setFiles(newFiles);
 
-    onChangeFile((prevState) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-
-      return prevState.filter((_, i) => {
-        return i != id;
-      });
-    });
-  }, []);
+      onChangeFile(newFiles);
+    },
+    [files, onChangeFile]
+  );
 
   const openFileLoader = useCallback(() => {
     inputRef.current.click();
@@ -130,7 +122,7 @@ export const ImageUploader: FC<ImageUploaderProps> = memo((props) => {
           }}
         >
           <Box position="relative" width="100%">
-            {files.length != 0 && (
+            {files?.length != 0 && (
               <SimpleGrid columns={[1, 2, 3]} spacing={3}>
                 {files &&
                   files.map((file, index) => {
@@ -147,21 +139,18 @@ export const ImageUploader: FC<ImageUploaderProps> = memo((props) => {
                   })}
               </SimpleGrid>
             )}
-            {files.length == 0 && (
+            {files?.length == 0 && (
               <Center w={"full"} h="full">
                 <Icon as={BsFillImageFill} w={40} h={40} color={"red.600"} />
               </Center>
             )}
           </Box>
         </Box>
-        {files.length != 0 && (
+        {files?.length != 0 && (
           <Button colorScheme="red" mt={2} onClick={onOpen}>
             Изменить порядок
           </Button>
         )}
-        <Stack mt={2} spacing={2}>
-          {errors && errors}
-        </Stack>
       </Box>
 
       <Input

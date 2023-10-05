@@ -158,7 +158,7 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
               {
                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                 //@ts-ignore
-                fuzzySearch(options, query).map(({ value, label }) => {
+                fuzzySearch(options, query)?.map(({ value, label }) => {
                   const selected = isSelected(value);
 
                   return (

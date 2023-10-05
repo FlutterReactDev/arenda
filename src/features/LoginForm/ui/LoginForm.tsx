@@ -9,13 +9,14 @@ import {
   FormErrorMessage,
   Stack,
 } from "@chakra-ui/react";
-import { LoginSchema, useLoginMutation } from "@entites/User";
+import { LoginSchema, useLoginMutation, userAction } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PhoneInput } from "@shared/ui/PhoneInput";
 import { useForm, Controller } from "react-hook-form";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import * as Yup from "yup";
 import { useState } from "react";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 const LoginForm = () => {
   const {
     handleSubmit,
@@ -27,9 +28,15 @@ const LoginForm = () => {
   });
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
+  const dispatch = useAppDispatch();
   const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
-    await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") });
+    await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") })
+      .unwrap()
+      .then((data) => {
+        dispatch(userAction.setAuthData(data));
+      });
   };
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={3}>

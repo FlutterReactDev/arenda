@@ -1,3 +1,4 @@
+import { AddHotelPage } from "@pages/AddHotelPage";
 import { AddObjectPage } from "@pages/AddObjectPage";
 import {
   AddObjectStepperPage,
@@ -41,6 +42,7 @@ export const Routing = () => {
           </ProtectAddObjectRoute>
         }
       />
+      <Route path="/add-hotel" element={<AddHotelPage />} />
     </Routes>
   );
 };
