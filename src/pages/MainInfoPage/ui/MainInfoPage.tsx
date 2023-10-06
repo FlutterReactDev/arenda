@@ -7,12 +7,10 @@ import {
   Select,
   Stack,
 } from "@chakra-ui/react";
-import { useGetInternetAccessQuery } from "@entites/CommonReference";
+
 import { FormCard } from "@shared/ui/FormCard";
 
 export const MainInfoPage = () => {
-  const {} = useGetInternetAccessQuery();
-  
   return (
     <Box as="form">
       <Stack>

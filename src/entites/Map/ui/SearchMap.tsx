@@ -1,8 +1,10 @@
-import { Map2GIS } from "@shared/ui/2GIS";
+import { HtmlMarker2GIS, Map2GIS } from "@shared/ui/2GIS";
 
 import { FC, memo } from "react";
-import { ObjectsMapCluster } from "./ObjectsMapCluster";
+
 import { InputHtmlMarker } from "@shared/ui/2GIS/Clusterer2GIS";
+import { ObjectMarker } from "./ObjectMarker";
+import { ObjectsMapCluster } from "./ObjectsMapCluster";
 
 interface SearchMapProps {
   inputHtmlMarkers: InputHtmlMarker[];
@@ -26,7 +28,14 @@ export const SearchMap: FC<SearchMapProps> = memo((props) => {
         console.log(data);
       }}
     >
-      <ObjectsMapCluster inputHtmlMarkers={inputHtmlMarkers} />
+      {/* <ObjectsMapCluster inputHtmlMarkers={inputHtmlMarkers} /> */}
+      {inputHtmlMarkers.map((marker) => {
+        return (
+          <HtmlMarker2GIS coordinates={marker.coordinates}>
+            <ObjectMarker coordinates={marker.coordinates} text={"1000$"} />
+          </HtmlMarker2GIS>
+        );
+      })}
     </Map2GIS>
   );
 });
