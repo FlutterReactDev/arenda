@@ -3,13 +3,23 @@ import { ObjectCard } from "@entites/Object";
 import { useSpring, a } from "@react-spring/web";
 import { clamp } from "@shared/utils/clamp";
 import { useGestureResponder } from "@shared/utils/hooks/useGeasture";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const OPEN_DRAWER = window.innerHeight - 200;
 const HALF_DRAWER = window.innerHeight * 0.5;
 const FULL_DRAWER = window.innerHeight * 0.1;
 export const DraggbleDrawer = () => {
-  console.log(OPEN_DRAWER, HALF_DRAWER, FULL_DRAWER);
+  useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    function preventBehavior(e) {
+      e.preventDefault();
+    }
+
+    document.addEventListener("touchmove", preventBehavior, {
+      passive: false,
+    });
+  }, []);
 
   const [{ y }, setY] = useSpring(() => ({ y: OPEN_DRAWER }));
   const [currentHeight, setCurrentHeight] = useState(OPEN_DRAWER);
