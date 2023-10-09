@@ -47,7 +47,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
         data.result.items[0].point.lat,
       ]);
     }
-  }, [isSuccess, onChange]);
+  }, [isSuccess]);
 
   useEffect(() => {
     if (isSuccess && notFoundDataIsSuccess && data.meta.code == 404) {

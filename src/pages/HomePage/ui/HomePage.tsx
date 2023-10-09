@@ -12,6 +12,7 @@ import {
   LinkOverlay,
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/MainSearch";
+import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
@@ -19,7 +20,7 @@ import { Header } from "@widgets/Header";
 const HomePage = () => {
   return (
     <>
-      <Header />
+      {/* <Header />
 
       <main>
         <Heading color="blackAlpha.900" size="3xl" textAlign="center" mt={32}>
@@ -678,8 +679,11 @@ const HomePage = () => {
           </Container>
         </Box>
         <Box mt={"6"}></Box>
-      </main>
-      <Footer />
+      </main> */}
+      <Box h="100vh" overflow={"hidden"}>
+        <DraggbleDrawer />
+      </Box>
+      {/* <Footer /> */}
     </>
   );
 };

@@ -28,5 +28,5 @@ export const fileSchema = Yup.object({
         return !files.length;
       }
     )
-    .required(),
+    .required("Загрузите минимум 3 разных фотографии вашего объекта"),
 });

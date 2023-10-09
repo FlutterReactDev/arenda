@@ -13,7 +13,8 @@ interface ObjectsMapCluster {
 export const ObjectsMapCluster: FC<ObjectsMapCluster> = memo((props) => {
   const { inputHtmlMarkers } = props;
   const { mapInstance } = useMapContext();
-
+  console.log(mapInstance?.setMaxBounds);
+  
   return (
     <Clusterer2GIS
       clusterStyle={(pointsCount: number, target: ClusterTarget) => {
