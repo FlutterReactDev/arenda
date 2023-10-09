@@ -117,6 +117,8 @@ export function useGestureResponder(
    */
 
   function claimTouch(e: ResponderEvent) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     if (grantedTouch && grantedTouch.onTerminationRequest(e)) {
       grantedTouch.onTerminate(e);
       grantedTouch = null;
@@ -281,9 +283,12 @@ export function useGestureResponder(
    * with mousedown or touchstart.
    * @param e
    */
-
-  function onGrant(e: any) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  function onGrant(e: unknown) {
     if (callbackRefs.current.onGrant) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       callbackRefs.current.onGrant(state.current, e);
     }
   }
@@ -292,8 +297,11 @@ export function useGestureResponder(
    * Update our kinematics for start events
    * @param e
    */
-
-  function updateStartState(e: any) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  function updateStartState(e: unknown) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const { pageX, pageY } = e.touches && e.touches[0] ? e.touches[0] : e;
     const s = state.current;
     state.current = {
@@ -311,7 +319,9 @@ export function useGestureResponder(
    * @param e
    */
 
-  function updateMoveState(e: any) {
+  function updateMoveState(e: unknown) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     const { pageX, pageY } = e.touches && e.touches[0] ? e.touches[0] : e;
     const s = state.current;
     const time = Date.now();
@@ -351,8 +361,10 @@ export function useGestureResponder(
    * @param e
    */
 
-  function onMove(e: any) {
+  function onMove(e: unknown) {
     if (pressed.current && callbackRefs.current.onMove) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
       callbackRefs.current.onMove(state.current, e);
     }
   }

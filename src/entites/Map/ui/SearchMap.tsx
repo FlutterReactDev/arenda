@@ -4,7 +4,7 @@ import { FC, memo } from "react";
 
 import { InputHtmlMarker } from "@shared/ui/2GIS/Clusterer2GIS";
 import { ObjectMarker } from "./ObjectMarker";
-import { ObjectsMapCluster } from "./ObjectsMapCluster";
+// import { ObjectsMapCluster } from "./ObjectsMapCluster";
 
 interface SearchMapProps {
   inputHtmlMarkers: InputHtmlMarker[];
