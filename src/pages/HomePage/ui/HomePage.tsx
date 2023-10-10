@@ -1,8 +1,4 @@
-import {
-
-  Box,
-
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
 // import { MainSearch } from "@features/MainSearch";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 
@@ -672,9 +668,9 @@ const HomePage = () => {
         </Box>
         <Box mt={"6"}></Box>
       </main> */}
-      <Box h="100vh" overflow={"hidden"}>
-        <DraggbleDrawer />
-      </Box>
+
+      <DraggbleDrawer />
+
       {/* <Footer /> */}
     </>
   );

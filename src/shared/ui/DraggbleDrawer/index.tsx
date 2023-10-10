@@ -1,13 +1,18 @@
 import { Box } from "@chakra-ui/react";
 import { ObjectCard } from "@entites/Object";
-import { useSpring, a } from "@react-spring/web";
-import { clamp } from "@shared/utils/clamp";
-import { useGestureResponder } from "@shared/utils/hooks/useGeasture";
-import { useEffect, useState } from "react";
+import { useSpring, a, config } from "@react-spring/web";
 
-const OPEN_DRAWER = window.innerHeight - 200;
-const HALF_DRAWER = window.innerHeight * 0.5;
-const FULL_DRAWER = window.innerHeight * 0.1;
+import { findClosestNumber } from "@shared/utils/findClosestNumber";
+
+import { useDrag } from "@use-gesture/react";
+import { useEffect, useRef } from "react";
+
+const height = window.innerHeight;
+const CLOSE_DRAWER = height - 100;
+const HALF_DRAWER = height * 0.5;
+const FULL_DRAWER = height * 0.05;
+
+const DRAWER_OPEN_STATES = [CLOSE_DRAWER, HALF_DRAWER, FULL_DRAWER];
 export const DraggbleDrawer = () => {
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -20,85 +25,76 @@ export const DraggbleDrawer = () => {
       passive: false,
     });
   }, []);
+  const currentHeight = useRef(CLOSE_DRAWER);
+  const [{ y }, setY] = useSpring(() => ({ y: currentHeight.current }));
 
-  const [{ y }, setY] = useSpring(() => ({ y: OPEN_DRAWER }));
-  const [currentHeight, setCurrentHeight] = useState(OPEN_DRAWER);
-
-  const { bind } = useGestureResponder({
-    onStartShouldSet: () => {
-      return true;
-    },
-    onMove: (state) => {
-      setY({
-        y: currentHeight + state.delta[1],
-        immediate: true,
-      });
-    },
-    onMoveShouldSet: () => {
-      return true;
-    },
-    onRelease: () => {
-      if (y.get() <= HALF_DRAWER && y.get() >= FULL_DRAWER) {
-        setY({
-          y: HALF_DRAWER,
-          immediate: false,
-        });
-        setCurrentHeight(HALF_DRAWER);
+  const bind = useDrag(
+    ({ last, swipe: [swipeY], movement: [, my] }) => {
+      if (swipeY == 1) {
+        const nextDrawerState = DRAWER_OPEN_STATES.findIndex(
+          (state) => state == currentHeight.current
+        );
+        if (DRAWER_OPEN_STATES[nextDrawerState + swipeY] != undefined) {
+          setY({
+            y: DRAWER_OPEN_STATES[nextDrawerState + swipeY],
+            immediate: false,
+            config: config.wobbly,
+          });
+          currentHeight.current = DRAWER_OPEN_STATES[nextDrawerState + swipeY];
+        }
         return;
       }
+      if (last) {
+        const currentValue = findClosestNumber(
+          currentHeight.current + my,
+          DRAWER_OPEN_STATES
+        );
 
-      if (y.get() <= FULL_DRAWER && y.get() < HALF_DRAWER) {
         setY({
-          y: FULL_DRAWER,
+          y: currentValue,
           immediate: false,
+          config: config.wobbly,
         });
-        setCurrentHeight(FULL_DRAWER);
-        return;
+
+        currentHeight.current = currentValue;
+      } else {
+        setY({
+          y: currentHeight.current + my,
+          immediate: true,
+        });
       }
-      setY({
-        y: OPEN_DRAWER,
-        immediate: false,
-      });
-      setCurrentHeight(OPEN_DRAWER);
     },
-  });
+    {
+      bounds: {
+        top: (height - 100) * -1,
+        bottom: 0,
+      },
+      filterTaps: true,
+      rubberband: true,
+    }
+  );
 
   return (
-    <Box w={"full"} h="full">
-      <a.div
-        {...bind}
-        style={{
-          transform: y.to(
-            (y) => `translateY(${clamp(y, 100, window.innerHeight)}px)`
-          ),
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Box bgColor={"gray"} w="full" h={"full"} pt={5}>
-          <Box
-            padding={6}
-            pointerEvents={"none"}
-            {...(FULL_DRAWER == currentHeight && {
-              overflowY: "auto",
-              pointerEvents: "auto",
-            })}
-            w="full"
-            h={"full"}
-            onTouchStart={(e) => e.stopPropagation()}
-            onTouchMove={(e) => e.stopPropagation()}
-            onTouchEnd={(e) => e.stopPropagation()}
-          >
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-          </Box>
-        </Box>
-      </a.div>
-    </Box>
+    <a.div
+      {...bind()}
+      style={{
+        y,
+        width: "100%",
+        height: "100%",
+        position: "fixed",
+
+        touchAction: "none",
+      }}
+    >
+      <Box bgColor={"gray"} w="full" h={"full"} pt={5}>
+        <ObjectCard />
+        <ObjectCard />
+        <ObjectCard />
+        <ObjectCard />
+        <ObjectCard />
+        <ObjectCard />
+        <ObjectCard />
+      </Box>
+    </a.div>
   );
 };
