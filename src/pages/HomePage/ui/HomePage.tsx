@@ -1,4 +1,4 @@
-import { Box } from "@chakra-ui/react";
+// import { Box } from "@chakra-ui/react";
 // import { MainSearch } from "@features/MainSearch";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 
