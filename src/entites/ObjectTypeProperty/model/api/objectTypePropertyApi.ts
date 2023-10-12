@@ -9,7 +9,7 @@ const objectTypePropertyApi = baseApiWithReAuth.injectEndpoints({
     }),
     getById: build.query({
       query: (objectTypeId) => ({
-        url: `/GetById${objectTypeId}`,
+        url: `/GetById/${objectTypeId}`,
       }),
     }),
     createObjectPropertyTypes: build.mutation({

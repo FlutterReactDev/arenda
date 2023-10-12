@@ -11,7 +11,7 @@ import {
   StepTitle,
   Stepper,
 } from "@chakra-ui/react";
-import { FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
+import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
 import { FormNavigation, FormStep } from "..";
 import { useSearchParams } from "react-router-dom";
 import { FormStepperProvider } from "./FormStepperContext";
@@ -42,99 +42,119 @@ export interface FormStepValue {
 export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
   const { forms, onComplete, finalView } = props;
   const [searchParams, setSearchParams] = useSearchParams();
-  const [currentActiveForm, setCurrentActiveForm] = useState<FormStepValue>({
-    step: 0,
-    screen: 0,
-  });
 
   useEffect(() => {
-    searchParams.set("step", `${currentActiveForm.step}`);
-    searchParams.set("screen", `${currentActiveForm.screen}`);
-    setSearchParams(searchParams);
-  }, [
-    currentActiveForm.screen,
-    currentActiveForm.step,
-    searchParams,
-    setSearchParams,
-  ]);
+    console.log(searchParams.get("step"));
+
+    if (searchParams.get("step") == undefined) {
+      searchParams.set("step", "0");
+    }
+
+    if (searchParams.get("screen") == undefined) {
+      searchParams.set("screen", "0");
+    }
+
+    // setSearchParams(searchParams);
+  }, [searchParams, setSearchParams]);
 
   const onNext = () => {
     if (forms) {
-      const step = forms[currentActiveForm.step];
-      const nextScreen =
-        step.stepScreens[currentActiveForm.screen + 1] || undefined;
+      const queryStep = Number(searchParams.get("step"));
+      const queryScreen = Number(searchParams.get("screen"));
+
+      const step = forms[queryStep];
+
+      const nextScreen = step.stepScreens[queryScreen + 1] || undefined;
+
       if (nextScreen != undefined) {
-        setCurrentActiveForm((prevState) => {
-          return { ...prevState, screen: prevState.screen + 1 };
-        });
+        searchParams.set("screen", `${queryScreen + 1}`);
+        setSearchParams(searchParams);
+        // setCurrentActiveForm((prevState) => {
+        //   return { ...prevState, screen: prevState.screen + 1 };
+        // });
+      }
+
+      if (nextScreen == undefined && forms[queryStep + 1] != undefined) {
+        searchParams.set("step", `${Number(searchParams.get("step")) + 1}`);
+        searchParams.set("screen", `0`);
+        setSearchParams(searchParams);
+        // setCurrentActiveForm((prevState) => {
+        //   return { ...prevState, step: prevState.step + 1, screen: 0 };
+        // });
       }
 
       if (
-        nextScreen == undefined &&
-        forms[currentActiveForm.step + 1] != undefined
-      ) {
-        setCurrentActiveForm((prevState) => {
-          return { ...prevState, step: prevState.step + 1, screen: 0 };
-        });
-      }
-
-      if (
-        forms.length - 1 == currentActiveForm.step &&
+        forms.length - 1 == Number(searchParams.get("step")) &&
         forms[forms.length - 1].stepScreens.length - 1 ==
-          currentActiveForm.screen
+          Number(searchParams.get("step"))
       ) {
         onComplete && onComplete();
       }
 
       if (
         finalView &&
-        forms.length - 1 == currentActiveForm.step &&
+        forms.length - 1 == Number(searchParams.get("step")) &&
         forms[forms.length - 1].stepScreens.length - 1 ==
-          currentActiveForm.screen
+          Number(searchParams.get("screen"))
       ) {
-        setCurrentActiveForm({ screen: 0, step: forms.length });
+        searchParams.set("step", `${Number(forms.length)}`);
+        searchParams.set("screen", `0`);
+        setSearchParams(searchParams);
+        // setCurrentActiveForm({ screen: 0, step: forms.length });
       }
     }
   };
 
   const onPrev = () => {
     if (forms) {
-      const step = forms[currentActiveForm.step];
-      const nextScreen = step?.stepScreens[currentActiveForm.screen - 1];
+      const queryStep = Number(searchParams.get("step"));
+      const queryScreen = Number(searchParams.get("screen"));
+      const step = forms[queryStep];
+      const nextScreen = step?.stepScreens[queryScreen - 1];
 
       if (nextScreen != undefined) {
-        setCurrentActiveForm((prevState) => {
-          return { ...prevState, screen: prevState.screen - 1 };
-        });
+        // setCurrentActiveForm((prevState) => {
+        //   return { ...prevState, screen: prevState.screen - 1 };
+        // });
+        searchParams.set("screen", `${Number(searchParams.get("screen")) - 1}`);
+        setSearchParams(searchParams);
       }
 
       if (
         nextScreen == undefined &&
-        forms[currentActiveForm.step - 1] != undefined
+        forms[Number(searchParams.get("step")) - 1] != undefined
       ) {
-        setCurrentActiveForm((prevState) => {
-          return {
-            ...prevState,
-            step: prevState.step - 1,
-            screen: forms[currentActiveForm.step - 1].stepScreens.length - 1,
-          };
-        });
+        searchParams.set(
+          "screen",
+          `${forms[queryStep - 1].stepScreens.length - 1}`
+        );
+        searchParams.set("step", `${queryStep - 1}`);
+        setSearchParams(searchParams);
+
+        // setCurrentActiveForm((prevState) => {
+        //   return {
+        //     ...prevState,
+        //     step: prevState.step - 1,
+        //     screen: forms[currentActiveForm.step - 1].stepScreens.length - 1,
+        //   };
+        // });
       }
     }
   };
 
   return (
-    <Box minH="100vh" pt={4} bgColor={"blackAlpha.100"}>
+    <Box minH="100vh" pt={4} pb={"24"} bgColor={"blackAlpha.100"}>
       <FormStepperProvider
-        screen={currentActiveForm.screen}
-        step={currentActiveForm.step}
+        screen={Number(searchParams.get("screen"))}
+        step={Number(searchParams.get("step"))}
       >
         <Stepper
           margin="0 auto"
           maxW={"5xl"}
+          px={4}
           size="lg"
           colorScheme="red"
-          index={currentActiveForm.step}
+          index={Number(searchParams.get("step"))}
           mb={6}
         >
           {forms?.map((step, index) => (

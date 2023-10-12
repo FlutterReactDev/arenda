@@ -42,7 +42,14 @@ export const Routing = () => {
           </ProtectAddObjectRoute>
         }
       />
-      <Route path="/add-hotel" element={<AddHotelPage />} />
+      <Route
+        path="/add-hotel"
+        element={
+          <ProtectAddObjectRoute>
+            <AddHotelPage />
+          </ProtectAddObjectRoute>
+        }
+      />
     </Routes>
   );
 };

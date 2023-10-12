@@ -32,3 +32,8 @@ export interface RoomCategories {
   value: number;
   name: string;
 }
+
+export interface ReportingDocumentType {
+  value: number;
+  name: string;
+}

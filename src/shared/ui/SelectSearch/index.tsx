@@ -14,7 +14,15 @@ import {
   IconProps,
   ComponentWithAs,
 } from "@chakra-ui/react";
-import { FC, useCallback, useMemo, useState } from "react";
+import {
+  FC,
+  MutableRefObject,
+  memo,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 
 import { ChevronDownIcon, SearchIcon, CheckIcon } from "@chakra-ui/icons";
 import fuzzySearch from "./lib/fuzzySearch";
@@ -36,9 +44,10 @@ export interface ListItemStyleProps {
   defaultStyles: ListItemProps;
   selectedStyles: ListItemProps;
 }
-export const SelectSearch: FC<SelectSearchProps> = (props) => {
+export const SelectSearch: FC<SelectSearchProps> = memo((props) => {
   const { onChange, value, options, placeholder, icon } = props;
   const { onOpen, onClose, isOpen } = useDisclosure();
+  const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
   const [isHidden, setIsHidden] = useState(false);
   const [query, setQuery] = useState("");
   const isSelected = useCallback(
@@ -86,6 +95,11 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
       onFocus={() => {
         onOpen();
         setIsHidden(true);
+        containerRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "nearest",
+          inline: "start",
+        });
       }}
       onBlur={onClose}
       tabIndex={2}
@@ -137,6 +151,7 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
             borderColor="gray.400"
             rounded={"lg"}
             p={2}
+            ref={containerRef}
           >
             <InputGroup>
               <InputLeftElement>
@@ -188,4 +203,4 @@ export const SelectSearch: FC<SelectSearchProps> = (props) => {
       </Box>
     </Box>
   );
-};
+});

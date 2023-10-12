@@ -1,5 +1,7 @@
 // import { Box } from "@chakra-ui/react";
 // import { MainSearch } from "@features/MainSearch";
+import { Box } from "@chakra-ui/react";
+import { SearchMap } from "@entites/Map";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 
 // import { Footer } from "@widgets/Footer";
@@ -668,8 +670,28 @@ const HomePage = () => {
         </Box>
         <Box mt={"6"}></Box>
       </main> */}
-
-      <DraggbleDrawer />
+      <Box h="100vh">
+        <SearchMap
+          inputHtmlMarkers={[
+            {
+              coordinates: [77.1757361557851, 42.64472838750217],
+            },
+            {
+              coordinates: [77.17437800783786, 42.645238409366385],
+            },
+            {
+              coordinates: [77.17292784537554, 42.645017610523716],
+            },
+            {
+              coordinates: [77.15253297654283, 42.63014881066871],
+            },
+            {
+              coordinates: [77.1981040743652, 42.658896258910474],
+            },
+          ]}
+        />
+        <DraggbleDrawer />
+      </Box>
 
       {/* <Footer /> */}
     </>

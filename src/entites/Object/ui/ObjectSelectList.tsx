@@ -1,5 +1,5 @@
 import { SimpleGrid, useRadioGroup, Text } from "@chakra-ui/react";
-import { FC, useCallback } from "react";
+import { FC, memo, useCallback } from "react";
 import { ObjectCardRadio } from "./ObjectCardRadio";
 interface ObjectTypes {
   value: string;
@@ -10,7 +10,7 @@ interface ObjectSelectListProps {
   objectTypes: ObjectTypes[];
   value: number | undefined;
 }
-export const ObjectSelectList: FC<ObjectSelectListProps> = (props) => {
+export const ObjectSelectList: FC<ObjectSelectListProps> = memo((props) => {
   const { objectTypes, onChange, value } = props;
 
   const getDefaultValue = useCallback(() => {
@@ -39,4 +39,4 @@ export const ObjectSelectList: FC<ObjectSelectListProps> = (props) => {
       })}
     </SimpleGrid>
   );
-};
+});

@@ -2,7 +2,7 @@ import {
   Alert,
   AlertIcon,
   Box,
-  Button,
+  Checkbox,
   FormControl,
   FormErrorMessage,
   FormHelperText,
@@ -27,6 +27,7 @@ import {
 import {
   useGetAdditionalServiceQuery,
   useGetFoodTypeQuery,
+  useGetReportingDocumentTypeQuery,
 } from "@entites/CommonReference/model/api/commonReferenceApi";
 import { hotelGeneralInformationSchema } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
 import { FormProps } from "@entites/Object/model/types";
@@ -36,8 +37,9 @@ import { FormCard } from "@shared/ui/FormCard";
 import { generateYearsBetween } from "@shared/utils/generateYearsBetween";
 import { getYear, subYears } from "date-fns";
 import { FC } from "react";
-import { useForm } from "react-hook-form";
-
+import { Controller, useForm } from "react-hook-form";
+import { InferType } from "yup";
+import { getDeclension } from "@shared/utils/getDeclension";
 const HotelGeneralInformationForm: FC<FormProps> = (props) => {
   const { navigation, onNext } = props;
 
@@ -85,24 +87,41 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { register } = useForm({
+  const {
+    data: reportingDocumentTypes,
+    isFetching: reportingDocumentTypesIsLoading,
+    isSuccess: reportingDocumentTypesIsSuccess,
+  } = useGetReportingDocumentTypeQuery("", {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const {
+    register,
+    watch,
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm({
     resolver: yupResolver(hotelGeneralInformationSchema),
   });
 
+  const hasTransfer = watch("anObjectFeeAdditionalServices.hasTransfer");
+  const allInclusive = watch("anObjectMeals.allInclusive");
+  const onSubmit = (data: InferType<typeof hotelGeneralInformationSchema>) => {
+    console.log(data);
+    onNext && onNext();
+  };
   return (
-    <Box
-      as="form"
-      onSubmit={(e) => {
-        e.preventDefault();
-        onNext && onNext();
-      }}
-    >
+    <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
-        <FormCard title="Название мини-отеля">
+        <FormCard title={`Название ${getDeclension("Мини-отель", "р")}`}>
           <FormControl>
             <Input
               {...register("heading")}
-              placeholder="Укажите название мини-отеля"
+              placeholder={`Укажите название ${getDeclension(
+                "мини-отель",
+                "р"
+              )}`}
             />
             <FormHelperText>
               это название будут видеть гости при поиске (если у вас нет
@@ -141,7 +160,9 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
               <Select placeholder="выберите" {...register("internetAccess")}>
                 {internetAccess &&
                   internetAccess.map((option) => (
-                    <option value={option.value}>{option.name}</option>
+                    <option key={option.value} value={option.value}>
+                      {option.name}
+                    </option>
                   ))}
               </Select>
             </Skeleton>
@@ -171,7 +192,7 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
               <FormLabel>Год постройки</FormLabel>
               <Select
                 placeholder="Выберите год постройки"
-                {...register("yearOfConstruction")}
+                {...register("anObjectDetails.yearOfConstruntion")}
               >
                 {generateYearsBetween(getYear(subYears(new Date(), 100)))
                   .reverse()
@@ -187,13 +208,17 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             <HStack>
               <FormControl>
                 <FormLabel>Количество номеров</FormLabel>
-                <Input type="number" {...register("numberOfRooms")} />
+                <Input
+                  type="number"
+                  placeholder="Количество номеров"
+                  {...register("anObjectDetails.numberOfRooms")}
+                />
               </FormControl>
               <FormControl>
                 <FormLabel>Площадь территории</FormLabel>
                 <InputGroup>
                   <Input
-                    {...register("landArea")}
+                    {...register("anObjectDetails.areaOfTheLand")}
                     type="number"
                     placeholder="Площадь"
                   />
@@ -208,7 +233,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             <HStack>
               <FormControl>
                 <FormLabel>заезд после</FormLabel>
-                <Select {...register("checkIn")}>
+                <Select
+                  {...register("anObjectDetails.checkInAfter")}
+                  defaultValue={"14:00"}
+                >
                   <option value="00:00">00:00</option>
                   <option value="01:00">01:00</option>
                   <option value="02:00">02:00</option>
@@ -237,7 +265,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
               </FormControl>
               <FormControl>
                 <FormLabel>отъезд до</FormLabel>
-                <Select {...register("checkOut")}>
+                <Select
+                  {...register("anObjectDetails.checkOutAfter")}
+                  defaultValue={"12:00"}
+                >
                   <option value="00:00">00:00</option>
                   <option value="01:00">01:00</option>
                   <option value="02:00">02:00</option>
@@ -272,7 +303,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                 height="35px"
                 isLoaded={!smokingOnSiteIsLoading && smokingOnSiteIsSuccess}
               >
-                <Select placeholder="выберите" {...register("smokingOnSite")}>
+                <Select
+                  placeholder="выберите"
+                  {...register("anObjectDetails.smokingOnSite")}
+                >
                   {smokingOnSite &&
                     smokingOnSite.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -289,7 +323,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                 height="35px"
                 isLoaded={!paymentTypeIsLoading && paymentTypeIsSuccess}
               >
-                <Select placeholder="выберите" {...register("paymentType")}>
+                <Select
+                  placeholder="выберите"
+                  {...register("anObjectDetails.paymentType")}
+                >
                   {paymentType &&
                     paymentType.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -301,7 +338,472 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             </FormControl>
           </Stack>
         </FormCard>
-        <FormCard title="Удобства и услуги"></FormCard>
+        <FormCard title="Удобства и услуги">
+          <HStack flexWrap={"wrap"} mt={4}>
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.restaurant"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    ресторан
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.barCounter"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    барная стойка
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.sauna"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    сауна
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.garden"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    сад
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.spaCenter"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    спа-центр
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.tennisCourt"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    теннисный корт
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.aquapark"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    аквапарк
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.indoorPool"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    крытый бассейн
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.privateBeach"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    собственный пляж
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.elevator"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    лифт
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.childrenSwimmingPool"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    детский бассейн
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.roomDelivery"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    доставка в номер
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.twentyFourhourFrontDesk"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    круглосуточная стойка регистрации
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.gym"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    фитнес-зал
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.terrace"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    терраса
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.footballField"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    футбольное поле
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.golf"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    гольф
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.openPool"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    открытый бассейн
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.jacuzzi"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    джакузи
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.playground"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    игровая площадка
+                  </Checkbox>
+                );
+              }}
+            />
+            <Controller
+              control={control}
+              name="anObjectAdditionalComforts.ramp"
+              render={({
+                field: { name, onBlur, onChange, ref, value, disabled },
+              }) => {
+                return (
+                  <Checkbox
+                    onChange={onChange}
+                    isChecked={!!value}
+                    name={name}
+                    onBlur={onBlur}
+                    ref={ref}
+                    disabled={disabled}
+                    colorScheme="red"
+                    minW="49%"
+                  >
+                    пандус
+                  </Checkbox>
+                );
+              }}
+            />
+          </HStack>
+        </FormCard>
         <FormCard title="Питание">
           <Text color={"gray.600"} fontSize={"sm"}>
             Информация о питании появится во всех категориях номеров
@@ -310,57 +812,73 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             <FormControl>
               <HStack justifyContent={"space-between"}>
                 <FormLabel>всё включено</FormLabel>
-                <Switch />
+                <Switch
+                  {...register("anObjectMeals.allInclusive")}
+                  colorScheme="red"
+                />
               </HStack>
             </FormControl>
-            <FormControl>
-              <FormLabel>завтрак</FormLabel>
-              <Skeleton
-                height="35px"
-                isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
-              >
-                <Select placeholder="выберите" {...register("parking")}>
-                  {foodType &&
-                    foodType.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.name}
-                      </option>
-                    ))}
-                </Select>
-              </Skeleton>
-            </FormControl>
-            <FormControl>
-              <FormLabel>обед</FormLabel>
-              <Skeleton
-                height="35px"
-                isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
-              >
-                <Select placeholder="выберите" {...register("parking")}>
-                  {foodType &&
-                    foodType.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.name}
-                      </option>
-                    ))}
-                </Select>
-              </Skeleton>
-            </FormControl>
-            <FormControl>
-              <FormLabel>ужин</FormLabel>
-              <Skeleton
-                height="35px"
-                isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
-              >
-                <Select placeholder="выберите" {...register("parking")}>
-                  {foodType &&
-                    foodType.map((option) => (
-                      <option key={option.value} value={option.value}>
-                        {option.name}
-                      </option>
-                    ))}
-                </Select>
-              </Skeleton>
-            </FormControl>
+            {allInclusive && (
+              <>
+                <FormControl>
+                  <FormLabel>завтрак</FormLabel>
+                  <Skeleton
+                    height="35px"
+                    isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
+                  >
+                    <Select
+                      placeholder="выберите"
+                      {...register("anObjectMeals.breakfast")}
+                    >
+                      {foodType &&
+                        foodType.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.name}
+                          </option>
+                        ))}
+                    </Select>
+                  </Skeleton>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>обед</FormLabel>
+                  <Skeleton
+                    height="35px"
+                    isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
+                  >
+                    <Select
+                      placeholder="выберите"
+                      {...register("anObjectMeals.lunch")}
+                    >
+                      {foodType &&
+                        foodType.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.name}
+                          </option>
+                        ))}
+                    </Select>
+                  </Skeleton>
+                </FormControl>
+                <FormControl>
+                  <FormLabel>ужин</FormLabel>
+                  <Skeleton
+                    height="35px"
+                    isLoaded={!foodTypeIsLoading && foodTypeIsSuccess}
+                  >
+                    <Select
+                      placeholder="выберите"
+                      {...register("anObjectMeals.dinner")}
+                    >
+                      {foodType &&
+                        foodType.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.name}
+                          </option>
+                        ))}
+                    </Select>
+                  </Skeleton>
+                </FormControl>
+              </>
+            )}
           </Stack>
         </FormCard>
         <FormCard title="Плата за дополнительные услуги">
@@ -384,7 +902,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   !additionalServiceIsLoading && additionalServiceIsSuccess
                 }
               >
-                <Select placeholder="выберите" {...register("parking")}>
+                <Select
+                  placeholder="выберите"
+                  {...register("anObjectFeeAdditionalServices.cleaning")}
+                >
                   {additionalService &&
                     additionalService.map((option) => (
                       <option key={option.value} value={option.value}>
@@ -403,9 +924,36 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   !additionalServiceIsLoading && additionalServiceIsSuccess
                 }
               >
-                <Select placeholder="выберите" {...register("parking")}>
+                <Select
+                  placeholder="выберите"
+                  {...register("anObjectFeeAdditionalServices.bedLinen")}
+                >
                   {additionalService &&
                     additionalService.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.name}
+                      </option>
+                    ))}
+                </Select>
+              </Skeleton>
+            </FormControl>
+            <FormControl>
+              <FormLabel>Отчётные документы</FormLabel>
+              <Skeleton
+                height="35px"
+                isLoaded={
+                  !reportingDocumentTypesIsLoading &&
+                  reportingDocumentTypesIsSuccess
+                }
+              >
+                <Select
+                  placeholder="выберите"
+                  {...register(
+                    "anObjectFeeAdditionalServices.reportingDocuments"
+                  )}
+                >
+                  {reportingDocumentTypes &&
+                    reportingDocumentTypes.map((option) => (
                       <option key={option.value} value={option.value}>
                         {option.name}
                       </option>
@@ -427,18 +975,40 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             <FormControl>
               <HStack justifyContent={"space-between"}>
                 <FormLabel>Предоставляется трансфер</FormLabel>
-                <Switch colorScheme="red" />
+                <Switch
+                  {...register("anObjectFeeAdditionalServices.hasTransfer")}
+                  colorScheme="red"
+                />
               </HStack>
             </FormControl>
-
-            <FormControl>
-              <Textarea placeholder="Опишите условия предоставления трансфера" />
-              <FormErrorMessage></FormErrorMessage>
-            </FormControl>
+            {hasTransfer && (
+              <FormControl
+                isInvalid={
+                  !!errors?.anObjectFeeAdditionalServices?.transferDescription
+                    ?.message
+                }
+              >
+                <Textarea
+                  {...register(
+                    "anObjectFeeAdditionalServices.transferDescription"
+                  )}
+                  placeholder="Опишите условия предоставления трансфера"
+                />
+                <FormErrorMessage>
+                  {
+                    errors?.anObjectFeeAdditionalServices?.transferDescription
+                      ?.message
+                  }
+                </FormErrorMessage>
+              </FormControl>
+            )}
           </Stack>
         </FormCard>
-        <FormCard title="Подробное">
-          <Textarea placeholder="Здесь можно рассказать об объекте подробнее (кроме той информации, которую вы указали выше)" />
+        <FormCard title="Подробное описание">
+          <Textarea
+            {...register("anObjectFeeAdditionalServices.detailComment")}
+            placeholder="Здесь можно рассказать об объекте подробнее (кроме той информации, которую вы указали выше)"
+          />
         </FormCard>
         <FormCard title="Ваш объект на других ресурсах">
           <Text color={"gray.600"} fontSize={"sm"}>
@@ -448,11 +1018,10 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
           <Textarea
             placeholder="укажите ссылки на ваш объект размещения, каждую на новой строке"
             mt={2}
+            {...register(
+              "anObjectFeeAdditionalServices.objectInAnotherResources"
+            )}
           />
-
-          <Button colorScheme="red" variant={"link"}>
-            + добавить описание
-          </Button>
         </FormCard>
         {navigation}
       </FormContainer>

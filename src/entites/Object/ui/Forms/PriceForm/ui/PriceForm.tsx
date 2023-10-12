@@ -137,7 +137,7 @@ const PriceForm: FC<FormProps> = (props) => {
               </FormHelperText>
             </FormControl>
 
-            <HStack alignItems={"flex-start"}>
+            <HStack alignItems={"flex-start"} flexWrap={["wrap", "nowrap"]}>
               <FormControl isInvalid={!!errors.pricePerDay?.message}>
                 <FormLabel>Цена за сутки</FormLabel>
                 <InputGroup>

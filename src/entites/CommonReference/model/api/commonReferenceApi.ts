@@ -5,6 +5,7 @@ import {
   InternetAccess,
   Parking,
   PaymentType,
+  ReportingDocumentType,
   SmokingOnSite,
 } from "../types";
 
@@ -60,6 +61,11 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/RoomCategories",
       }),
     }),
+    getReportingDocumentType: build.query<ReportingDocumentType[], unknown>({
+      query: () => ({
+        url: "/ReportingDocumentType",
+      }),
+    }),
   }),
 });
 
@@ -73,4 +79,5 @@ export const {
   useGetAdditionalServiceQuery,
   useGetFoodTypeQuery,
   useGetRoomCategoriesQuery,
+  useGetReportingDocumentTypeQuery,
 } = commonReferencePrivateApi;

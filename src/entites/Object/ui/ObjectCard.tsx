@@ -10,11 +10,11 @@ import {
   HStack,
   Tag,
 } from "@chakra-ui/react";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, memo } from "react";
 
 import { FaHeart } from "react-icons/fa";
 const Slider = lazy(() => import("./ObjectSlider"));
-export const ObjectCard = () => {
+export const ObjectCard = memo(() => {
   const IMAGE =
     "https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80";
 
@@ -44,7 +44,6 @@ export const ObjectCard = () => {
         maxW={"360px"}
         w={"full"}
         bg={useColorModeValue("white", "gray.800")}
-        boxShadow={"2xl"}
         rounded={"lg"}
         pos={"relative"}
         zIndex={1}
@@ -89,7 +88,7 @@ export const ObjectCard = () => {
               filter: "blur(20px)",
             },
           }}
-          w={'96%'}
+          w={"96%"}
           margin={"0 auto"}
         >
           <Suspense
@@ -150,4 +149,4 @@ export const ObjectCard = () => {
       </Box>
     </Center>
   );
-};
+});

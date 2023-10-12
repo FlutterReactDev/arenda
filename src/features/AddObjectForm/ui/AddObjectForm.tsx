@@ -20,6 +20,7 @@ import {
   Stack,
   Spinner,
   Button,
+  SimpleGrid,
   Skeleton,
 } from "@chakra-ui/react";
 import { ObjectSelectList } from "@entites/Object";
@@ -34,6 +35,8 @@ import {
   useGetRegionQuery,
 } from "@entites/Location";
 import { Link } from "react-router-dom";
+
+// import { useGetByIdQuery } from "@entites/ObjectTypeProperty";
 
 export const AddObjectForm = () => {
   const data = useMemo(
@@ -220,7 +223,17 @@ export const AddObjectForm = () => {
   const { city, objectType, country, object, region } = useAppSelector(
     (state) => state.addObjectForm
   );
+  //ObjectsType requests
 
+  // const {
+  //   data: objectPropertyType,
+  //   isFetching: objectPropertyTypeIsLoading,
+  //   isSuccess: objectPropertyTypeIsSuccess,
+  // } = useGetByIdQuery(object, {
+  //   refetchOnMountOrArgChange: true,
+  // });
+
+  //Location reguests
   const {
     data: countryData,
     isLoading: countryLoading,
@@ -266,6 +279,13 @@ export const AddObjectForm = () => {
     dispatch(addObjectSliceActions.setCity(option));
   };
 
+  const isOneFieldIsEmpty =
+    city == undefined ||
+    objectType == undefined ||
+    country == undefined ||
+    object == undefined ||
+    region == undefined;
+
   return (
     <Box>
       <Text fontWeight={"medium"} mb={2}>
@@ -280,36 +300,38 @@ export const AddObjectForm = () => {
         index={object}
       >
         <TabList gap={6}>
-          {data.map((object) => {
-            return (
-              <Box key={object.id} w="25%" h={"full"}>
-                <Tab
-                  border={"1px solid"}
-                  borderColor={"transparent"}
-                  borderRadius={"lg"}
-                  bg={"white"}
-                  _selected={{
-                    borderColor: "red.600",
-                  }}
-                  w={"full"}
-                  h={"20"}
-                  key={object.id}
-                  boxShadow={"lg"}
-                >
-                  <HStack justifyContent={"center"} alignItems={"center"}>
-                    <Icon as={object.icon} fontSize={"4xl"} />
-                    <Box textAlign={"left"}>
-                      <Text fontSize={"16px"}>{object.name}</Text>
-                      <Text fontSize={"14px"}>{object.subtitle}</Text>
-                    </Box>
-                  </HStack>
-                </Tab>
-                <Text color={"gray.600"} mt={2} fontSize={"12px"}>
-                  {object.description}
-                </Text>
-              </Box>
-            );
-          })}
+          <SimpleGrid columns={[1, 2, 2, 4]} spacing={6}>
+            {data.map((object) => {
+              return (
+                <Box key={object.id} h={"full"}>
+                  <Tab
+                    border={"1px solid"}
+                    borderColor={"transparent"}
+                    borderRadius={"lg"}
+                    bg={"white"}
+                    _selected={{
+                      borderColor: "red.600",
+                    }}
+                    w={"full"}
+                    h={"20"}
+                    key={object.id}
+                    boxShadow={"lg"}
+                  >
+                    <HStack justifyContent={"center"} alignItems={"center"}>
+                      <Icon as={object.icon} fontSize={"4xl"} />
+                      <Box textAlign={"left"}>
+                        <Text fontSize={"16px"}>{object.name}</Text>
+                        <Text fontSize={"14px"}>{object.subtitle}</Text>
+                      </Box>
+                    </HStack>
+                  </Tab>
+                  <Text color={"gray.600"} mt={2} fontSize={"12px"}>
+                    {object.description}
+                  </Text>
+                </Box>
+              );
+            })}
+          </SimpleGrid>
         </TabList>
         <Text mt={2} fontWeight={"medium"}>
           Выберите заголовок объявления:
@@ -332,9 +354,9 @@ export const AddObjectForm = () => {
       </Tabs>
       <Box>
         <Text fontWeight={"medium"}>Укажите место:</Text>
-        <Center mt={4}>
-          <Stack spacing={4} alignItems={"center"}>
-            <Box w="xl" justifyContent={"space-between"}>
+        <Center w={"full"} mt={4}>
+          <Stack w={"full"} spacing={4} alignItems={"center"}>
+            <Box w="full" maxW="xl" justifyContent={"space-between"}>
               {countryIsSuccess && (
                 <>
                   <Text mb={2}>Страна</Text>
@@ -357,7 +379,7 @@ export const AddObjectForm = () => {
               )}
             </Box>
 
-            <Box w="xl" justifyContent={"space-between"}>
+            <Box w="full" maxW="xl" justifyContent={"space-between"}>
               {country && (
                 <Skeleton
                   rounded={"lg"}
@@ -378,7 +400,7 @@ export const AddObjectForm = () => {
                 </Skeleton>
               )}
             </Box>
-            <Box w="xl" justifyContent={"space-between"}>
+            <Box w="full" maxW="xl" justifyContent={"space-between"}>
               {region && (
                 <Skeleton
                   rounded={"lg"}
@@ -401,22 +423,44 @@ export const AddObjectForm = () => {
                 </Skeleton>
               )}
             </Box>
-            <Button
-              colorScheme="red"
-              isDisabled={
-                city == undefined ||
-                objectType == undefined ||
-                country == undefined ||
-                object == undefined ||
-                region == undefined
-              }
-              as={Link}
-              to={
-                object == ObjectValue.ROOM ? "/add-hotel" : "/add-object-info"
-              }
-            >
-              Далее
-            </Button>
+            {isOneFieldIsEmpty && (
+              <Button
+                colorScheme="red"
+                isDisabled={
+                  city == undefined ||
+                  objectType == undefined ||
+                  country == undefined ||
+                  object == undefined ||
+                  region == undefined
+                }
+              >
+                Далее
+              </Button>
+            )}
+            {city != undefined &&
+              objectType != undefined &&
+              country != undefined &&
+              object != undefined &&
+              region != undefined && (
+                <Button
+                  colorScheme="red"
+                  isDisabled={
+                    city == undefined ||
+                    objectType == undefined ||
+                    country == undefined ||
+                    object == undefined ||
+                    region == undefined
+                  }
+                  as={Link}
+                  to={
+                    object == ObjectValue.ROOM
+                      ? "/add-hotel"
+                      : "/add-object-info"
+                  }
+                >
+                  Далее
+                </Button>
+              )}
           </Stack>
         </Center>
       </Box>
