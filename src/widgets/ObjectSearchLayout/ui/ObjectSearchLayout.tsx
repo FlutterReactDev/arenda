@@ -56,6 +56,8 @@ import { FreeMode } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import { Header } from "@widgets/Header";
+import { Footer } from "@widgets/Footer";
 
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
@@ -74,6 +76,7 @@ export const ObjectSearchLayout = () => {
   return (
     <>
       <Show breakpoint="(min-width: 900px)">
+        <Header />
         <Grid
           templateAreas={{
             "2xl": `"header header header"
@@ -634,6 +637,7 @@ export const ObjectSearchLayout = () => {
             </Box>
           </GridItem>
         </Grid>
+
         <Show below="2xl">
           <Drawer
             isOpen={desktopFilterIsOpen}
@@ -1087,9 +1091,11 @@ export const ObjectSearchLayout = () => {
             </DrawerContent>
           </Drawer>
         </Show>
+        <Footer />
       </Show>
       <Show breakpoint="(max-width: 900px)">
-        <Box h="100dvh">
+        <Header />
+        <Box h="calc(100dvh - 48px)">
           <SearchMap
             inputHtmlMarkers={[
               {
@@ -1183,14 +1189,20 @@ export const ObjectSearchLayout = () => {
             onTouchMove={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
             bgColor={"none"}
+            h={"100dvh"}
           >
             <DrawerCloseButton />
             <DrawerHeader p={2}>
-              <Button size={"sm"} colorScheme="red" rounded={"full"} variant={"outline"}>
+              <Button
+                size={"sm"}
+                colorScheme="red"
+                rounded={"full"}
+                variant={"outline"}
+              >
                 Сбросить все фильтры
               </Button>
             </DrawerHeader>
-            <DrawerBody p={0} bgColor={"white"}>
+            <DrawerBody h={"100dvh"} p={0} bgColor={"white"}>
               <Stack>
                 <FormCard title="Выбирайте лучшее">
                   <HStack
