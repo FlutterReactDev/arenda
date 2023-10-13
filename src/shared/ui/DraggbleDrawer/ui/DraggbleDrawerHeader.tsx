@@ -1,18 +1,13 @@
-import { HamburgerIcon, SearchIcon } from "@chakra-ui/icons";
+
 import {
   Box,
   BoxProps,
-  Button,
-  FormControl,
   HStack,
-  Input,
-  InputGroup,
-  InputLeftElement,
   Stack,
 } from "@chakra-ui/react";
 
 import { useDrag } from "@use-gesture/react";
-import { FC } from "react";
+import { FC, PropsWithChildren } from "react";
 import { CLOSE_DRAWER, DRAWER_OPEN_STATES, FULL_DRAWER } from "..";
 import { SpringRef, SpringValue, config } from "@react-spring/web";
 import { findClosestNumber } from "@shared/utils/findClosestNumber";
@@ -32,12 +27,15 @@ const Puller = () => {
     <Box as="span" w="12" h={"2"} bgColor={"gray.400"} rounded={"full"}></Box>
   );
 };
-export const DraggbleDrawerHeader: FC<DraggbleDrawerHeader> = ({
+export const DraggbleDrawerHeader: FC<
+  PropsWithChildren<DraggbleDrawerHeader>
+> = ({
   currentHeight,
   setDirection,
   setY,
   setCurrentHeight,
   y,
+  children,
   ...props
 }) => {
   const bind = useDrag(
@@ -124,7 +122,7 @@ export const DraggbleDrawerHeader: FC<DraggbleDrawerHeader> = ({
       zIndex={"popover"}
       top={0}
       w="full"
-      h={"95px"}
+      h={"100px"}
       px={4}
       {...bind()}
       display={"flex"}
@@ -133,27 +131,7 @@ export const DraggbleDrawerHeader: FC<DraggbleDrawerHeader> = ({
     >
       <Stack w={"full"} spacing={4} alignItems={"center"}>
         <Puller />
-        <HStack w={"full"}>
-          <FormControl w={"full"}>
-            <InputGroup w={"full"}>
-              <InputLeftElement>
-                <SearchIcon />
-              </InputLeftElement>
-              <Input
-                _focus={{
-                  bgColor: "white",
-                }}
-                bgColor={"white"}
-                variant="filled"
-                placeholder="Поиск"
-              />
-            </InputGroup>
-          </FormControl>
-
-          <Button bgColor={"white"}>
-            <HamburgerIcon />
-          </Button>
-        </HStack>
+        <HStack w={"full"}>{children}</HStack>
       </Stack>
     </Box>
   );

@@ -23,15 +23,21 @@ const ObjectSlider: FC<ObjectSliderProps> = (props) => {
       }}
       modules={[EffectCards, Pagination]}
       className="mySwiper"
+      style={{
+        width: "100%",
+        height: "100%",
+      }}
     >
       {images.map((image) => {
         return (
           <SwiperSlide
             style={{
               borderRadius: "15px",
+              width: "100%",
+              height: "100%",
             }}
           >
-            <Image src={image.src} />
+            <Image h="full" w="full" objectFit={"cover"} src={image.src} />
           </SwiperSlide>
         );
       })}

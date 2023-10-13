@@ -1,5 +1,6 @@
 export { ObjectSelectList } from "./ui/ObjectSelectList";
 export { ObjectCard } from "./ui/ObjectCard";
+export { SimpleObjectCard } from "./ui/SimpleObjectCard";
 export { AddressForm } from "./ui/Forms/AddressForm";
 export { BookingSettingForm } from "./ui/Forms/BookingSettingForm";
 export { CalendarInfoForm } from "./ui/Forms/CalendarInfoForm";

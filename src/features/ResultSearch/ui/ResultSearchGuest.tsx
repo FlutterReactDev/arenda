@@ -30,7 +30,7 @@ export const ResultSearchGuest = memo(() => {
       tabIndex={3}
     >
       <Box
-        p={"2"}
+        p={"1"}
         pl="4"
         h={"full"}
         rounded={"full"}

@@ -80,7 +80,7 @@ export const ResultSearchDatepicker: FC<DesktopDatepickerProps> = memo(
             left={"50%"}
             transform={"translate(-50%,100%)"}
             zIndex={!isHidden ? "hide" : "popover"}
-            w="80%"
+            w={{ base: "full", "2xl": "80%" }}
             tabIndex={2}
             display={!isHidden ? "none" : "block"}
           >

@@ -1,16 +1,35 @@
 import { Stack, Text, Box } from "@chakra-ui/react";
-import { FC, PropsWithChildren } from "react";
+import { FC, PropsWithChildren, ReactNode } from "react";
 
 interface FormCardProps {
-  title?: string;
+  title?: ReactNode;
   w?: "full";
+  disableBg?: boolean;
+  disableShadow?: boolean;
 }
 
 export const FormCard: FC<PropsWithChildren<FormCardProps>> = (props) => {
-  const { title, children, w } = props;
+  const {
+    title,
+    children,
+    w,
+    disableBg = false,
+    disableShadow = false,
+  } = props;
   return (
     <Stack
-      bgColor="white"
+      {...(!disableBg && {
+        bgColor: "white",
+      })}
+      {...(disableBg && {
+        bgColor: "none",
+      })}
+      {...(!disableShadow && {
+        boxShadow: "lg",
+      })}
+      {...(disableShadow && {
+        boxShadow: "none",
+      })}
       p="4"
       boxShadow="lg"
       borderRadius="xl"

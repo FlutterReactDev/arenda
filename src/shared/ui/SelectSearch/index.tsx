@@ -98,7 +98,7 @@ export const SelectSearch: FC<SelectSearchProps> = memo((props) => {
         containerRef.current.scrollIntoView({
           behavior: "smooth",
           block: "nearest",
-          inline: "start",
+          inline: "nearest",
         });
       }}
       onBlur={onClose}
@@ -116,6 +116,7 @@ export const SelectSearch: FC<SelectSearchProps> = memo((props) => {
           placeholder={placeholder}
           value={getValue(value)}
           readOnly
+          userSelect={"none"}
         />
         <InputRightElement>
           <ChevronDownIcon />

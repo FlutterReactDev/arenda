@@ -1,5 +1,5 @@
 import { Portal, Stack } from "@chakra-ui/react";
-import { ObjectCard } from "@entites/Object";
+
 import { useSpring, a, config } from "@react-spring/web";
 
 import { findClosestNumber } from "@shared/utils/findClosestNumber";
@@ -12,6 +12,9 @@ import {
   useEffect,
   useRef,
   useState,
+  ReactNode,
+  PropsWithChildren,
+  FC,
 } from "react";
 import { DraggbleDrawerHeader } from "./ui/DraggbleDrawerHeader";
 
@@ -19,9 +22,14 @@ export const height = window.innerHeight;
 export const CLOSE_DRAWER = height - 90;
 export const HALF_DRAWER = height * 0.5;
 export const FULL_DRAWER = height * 0.05;
-
+export interface DraggbleDrawerProps {
+  header: ReactNode;
+}
 export const DRAWER_OPEN_STATES = [CLOSE_DRAWER, HALF_DRAWER, FULL_DRAWER];
-export const DraggbleDrawer = () => {
+export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
+  props
+) => {
+  const { header, children } = props;
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -121,6 +129,7 @@ export const DraggbleDrawer = () => {
     {
       filterTaps: true,
       rubberband: true,
+      axis: "y",
     }
   );
 
@@ -130,21 +139,29 @@ export const DraggbleDrawer = () => {
         style={{
           y,
           width: "100%",
-          height: height - height * 0.05,
+          height: `calc(100dvh - ${height * 0.05}px)`,
           position: "fixed",
           overflow: "hidden",
           top: 0,
           zIndex: "100",
         }}
       >
-        <Stack spacing={2} bgColor={"gray.100"} w="full" h={"full"} roundedTop={"2xl"}>
+        <Stack
+          spacing={2}
+          bgColor={"gray.100"}
+          w="full"
+          h={"full"}
+          roundedTop={"2xl"}
+        >
           <DraggbleDrawerHeader
             currentHeight={currentHeight}
             setCurrentHeight={setCurrentHeight}
             setDirection={setDirection}
             setY={setY}
             y={y}
-          />
+          >
+            {header}
+          </DraggbleDrawerHeader>
 
           <Stack
             {...bind()}
@@ -152,7 +169,7 @@ export const DraggbleDrawer = () => {
             w="full"
             h={"full"}
             spacing={6}
-            p={4}
+            px={4}
             overflowX={"hidden"}
             overflowY="hidden"
             scrollBehavior={"smooth"}
@@ -203,24 +220,12 @@ export const DraggbleDrawer = () => {
                 if (direction == 1 && isScrollOnTop) {
                   return;
                 }
+
                 e.stopPropagation();
               }
             }}
           >
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
-            <ObjectCard />
+            {children}
           </Stack>
         </Stack>
       </a.div>

@@ -16,7 +16,7 @@ export const ResultSearchDatepickerInput: FC<ResultSearchDatepickerInputProps> =
     };
     return (
       <Box
-        p={"2"}
+        p={"1"}
         pl={"6"}
         w={"100%"}
         h={"full"}

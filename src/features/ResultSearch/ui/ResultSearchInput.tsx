@@ -74,8 +74,8 @@ export const ResultSearchInput = () => {
           in={isOpen}
         >
           <Box
-            maxW="full"
-            w={"full"}
+            maxW={{ base: "96", "2xl": "full" }}
+            w={{ base: "96", "2xl": "full" }}
             p={"2"}
             background="white"
             border="1px solid"
