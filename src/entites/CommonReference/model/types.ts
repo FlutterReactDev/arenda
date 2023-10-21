@@ -37,3 +37,7 @@ export interface ReportingDocumentType {
   value: number;
   name: string;
 }
+export interface ObjectStarRating {
+  value: number;
+  name: string;
+}

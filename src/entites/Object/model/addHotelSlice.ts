@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { AddHotel } from "./types";
+
 const initialState = {
   addressData: {},
   selectLocationMap: {},
@@ -18,6 +19,9 @@ const addHotelSlice = createSlice({
     },
     setFile(state, action) {
       state.imageFiles = action.payload;
+    },
+    setHotelGeneralInformation(state, action) {
+      state.hotelGeneralInformation = action.payload;
     },
   },
 });

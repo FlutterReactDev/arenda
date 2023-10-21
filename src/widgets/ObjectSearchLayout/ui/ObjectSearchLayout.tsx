@@ -36,18 +36,18 @@ import {
 
 import { SearchMap } from "@entites/Map";
 
-import { ResultSearch } from "@features/ResultSearch";
 import { HiLightningBolt } from "react-icons/hi";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaUsers } from "react-icons/fa";
 import { VscSettings } from "react-icons/vsc";
+import { MdBookmarkBorder } from "react-icons/md";
 import { FormCard } from "@shared/ui/FormCard";
 import {
-  HamburgerIcon,
+  CalendarIcon,
   QuestionOutlineIcon,
   SearchIcon,
 } from "@chakra-ui/icons";
 import { CheckboxList } from "@shared/ui/CheckboxList";
-import { useState } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -58,10 +58,28 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import { Header } from "@widgets/Header";
 import { Footer } from "@widgets/Footer";
-
+import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
+import { GuestsModal } from "@entites/Object/ui/GuestsModal";
+import {
+  ResultSearch,
+  searchObjectAction,
+  useSearchObjectData,
+} from "@features/SearchObjects";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { getWordByNum } from "@shared/utils/getWordByNum";
+import { BiCollapse, BiExpand } from "react-icons/bi";
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
+
+  const {
+    isOpen: mapIsOpen,
+    onToggle: mapOnToggle,
+    onOpen: mapOnOpen,
+  } = useDisclosure();
+  const dispatch = useAppDispatch();
   const {
     isOpen: desktopFilterIsOpen,
     onOpen: desktopFilterOnOpen,
@@ -72,16 +90,55 @@ export const ObjectSearchLayout = () => {
     onOpen: mobileFilterOnOpen,
     onClose: mobileFilterOnClose,
   } = useDisclosure();
+
+  const {
+    isOpen: datepickerIsOpen,
+    onOpen: datepickerOnOpen,
+    onClose: datepickerOnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: guestsIsOpen,
+    onClose: guestsOnClose,
+    onOpen: guestsOnOpen,
+  } = useDisclosure();
+
   const [isLessThan630] = useMediaQuery("(max-width: 630px)");
+
+  const { guests, dates } = useSearchObjectData();
+  const [calendarDates, setCalendarDates] = useState<Date[]>([
+    dates?.checkIn,
+    dates?.checkOut,
+  ]);
+
+  const handleSelectDate = useCallback((dates: Date[]) => {
+    setCalendarDates(dates);
+  }, []);
+
+  useEffect(() => {
+    if (calendarDates.length == 2) {
+      dispatch(
+        searchObjectAction.setDates({
+          checkIn: calendarDates[0],
+          checkOut: calendarDates[1],
+        })
+      );
+    }
+  }, [calendarDates, dispatch]);
+
   return (
     <>
-      <Show breakpoint="(min-width: 900px)">
+      <Show breakpoint="(min-width: 901px)">
         <Header />
         <Grid
           templateAreas={{
-            "2xl": `"header header header"
-          "filter main map"
-            `,
+            "2xl": !mapIsOpen
+              ? ` "header header header"
+                    "filter main map"
+            `
+              : `"header header header"
+            ". main map"
+              `,
             xl: `"header header header"
             ". main map"
               `,
@@ -91,7 +148,9 @@ export const ObjectSearchLayout = () => {
           }}
           gridTemplateRows={"90px 1fr"}
           gridTemplateColumns={{
-            "2xl": " 300px minmax(750px,1fr) 1fr",
+            "2xl": !mapIsOpen
+              ? "300px minmax(750px,1fr) 1fr"
+              : "0px minmax(750px,750px) 1fr",
             xl: "0px minmax(750px,1fr) 1fr",
             lg: "0px 350px 1fr",
             base: "0px 350px 1fr",
@@ -130,527 +189,31 @@ export const ObjectSearchLayout = () => {
               </Show>
 
               <ResultSearch
-                maxW={{ base: "4xl", xl: "4xl", "2xl": "7xl" }}
+                maxW={{ base: "5xl", xl: "5xl", "2xl": "7xl" }}
                 w={"full"}
               />
             </HStack>
           </GridItem>
-          <Hide below="2xl">
-            <GridItem
-              position={"sticky"}
-              top={"28"}
-              h={"calc(100vh - 160px)"}
-              area={"filter"}
-              overflow={"hidden"}
-            >
-              <Stack
-                spacing={4}
-                w="full"
-                h="full"
-                overflowY={"auto"}
-                position={"relative"}
+          {!mapIsOpen && (
+            <Hide below="2xl">
+              <GridItem
+                position={"sticky"}
+                top={"28"}
+                h={"calc(100vh - 160px)"}
+                area={"filter"}
+                overflow={"hidden"}
+                rounded={"lg"}
               >
-                <FormCard title="Выбирайте лучшее">
-                  <HStack
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    mt={2}
-                  >
-                    <HStack>
-                      <Icon as={HiLightningBolt} color={"red.500"} />
-                      <Text
-                        color={"gray.500"}
-                        fontSize={"sm"}
-                        fontWeight={"medium"}
-                      >
-                        Быстрое бронирование
-                      </Text>
-                    </HStack>
-                    <Switch colorScheme="red" />
-                  </HStack>
-                  <HStack
-                    justifyContent={"space-between"}
-                    alignItems={"center"}
-                    mt={2}
-                  >
-                    <HStack>
-                      <Icon as={FaHeart} color={"red.500"} />
-                      <Text
-                        color={"gray.500"}
-                        fontSize={"sm"}
-                        fontWeight={"medium"}
-                      >
-                        Избранное
-                      </Text>
-                    </HStack>
-                    <Switch colorScheme="red" />
-                  </HStack>
-                </FormCard>
-                <FormCard title="Варианты размещения">
-                  <Stack>
-                    <Checkbox colorScheme="red">Квартиры, апартаменты</Checkbox>
-                    <Checkbox colorScheme="red">Дома, коттеджи</Checkbox>
-                    <Checkbox colorScheme="red">Комнаты</Checkbox>
-                    <Checkbox colorScheme="red">Отели, гостиницы</Checkbox>
-                    <Checkbox colorScheme="red">Апарт-отели</Checkbox>
-                    <Checkbox colorScheme="red">Мини-гостиницы</Checkbox>
-                    <Checkbox colorScheme="red">Гостевые дома</Checkbox>
-                    <Checkbox colorScheme="red">
-                      Глэмпинги, базы отдыха
-                    </Checkbox>
-                    <Checkbox colorScheme="red">Хостелы</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard title="Отдельные спальни">
-                  <Select>
-                    <option>любое</option>
-                    <option value="is_studio">студия</option>
-                    <option value="1">не менее 1</option>
-                    <option value="2">не менее 2</option>
-                    <option value="3">не менее 3</option>
-                    <option value="4">4 и более</option>
-                  </Select>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text>Спальные места</Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Вы можете выбрать раздельные или двуспальные места, а также отметить оба этих типа"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <FormControl>
-                      <Stack>
-                        <FormHelperText>Кровати/диваны</FormHelperText>
-                        <Select>
-                          <option>любое количество</option>
-                          <option value="2">2 и более</option>
-                          <option value="3">3 и более</option>
-                          <option value="4">4 и более</option>
-                          <option value="5">5 и более</option>
-                        </Select>
-                      </Stack>
-                    </FormControl>
-                    <FormControl>
-                      <Stack>
-                        <FormHelperText>Двуспальные</FormHelperText>
-                        <Select>
-                          <option>любое количество</option>
-                          <option value="2">2 и более</option>
-                          <option value="3">3 и более</option>
-                        </Select>
-                      </Stack>
-                    </FormControl>
-                  </Stack>
-                </FormCard>
-                <FormCard title="Площадь">
-                  <HStack>
-                    <InputGroup>
-                      <Input placeholder="от" type="number" />
-                      <InputRightElement>
-                        м<sup>2</sup>
-                      </InputRightElement>
-                    </InputGroup>
-                    <Box>-</Box>
-                    <InputGroup>
-                      <Input placeholder="до" type="number" />
-                      <InputRightElement>
-                        м<sup>2</sup>
-                      </InputRightElement>
-                    </InputGroup>
-                  </HStack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text>Правила размещения </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="В большинстве объектов запрещены вечеринки, животные и курение"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <HStack justifyContent={"space-between"}>
-                      <Text
-                        color={"gray.500"}
-                        fontSize={"sm"}
-                        fontWeight={"medium"}
-                      >
-                        Курение разрешено
-                      </Text>
-
-                      <Switch colorScheme="red" />
-                    </HStack>
-                    <HStack justifyContent={"space-between"}>
-                      <Text
-                        color={"gray.500"}
-                        fontSize={"sm"}
-                        fontWeight={"medium"}
-                      >
-                        Вечеринки разрешены
-                      </Text>
-
-                      <Switch colorScheme="red" />
-                    </HStack>
-                  </Stack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text>Без депозита </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Хозяин жилья не берёт залог при заселении"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <HStack justifyContent={"space-between"}>
-                      <Text
-                        color={"gray.500"}
-                        fontSize={"sm"}
-                        fontWeight={"medium"}
-                      >
-                        Депозит не требуется
-                      </Text>
-
-                      <Switch colorScheme="red" />
-                    </HStack>
-                  </Stack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text> В помещении </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Непосредственно в квартире, доме или номере"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
-                    <Checkbox colorScheme="red">кондиционер</Checkbox>
-                    <Checkbox colorScheme="red">кухня</Checkbox>
-                    <Checkbox colorScheme="red">кухня</Checkbox>
-                    <Checkbox colorScheme="red">холодильник</Checkbox>
-                    <Checkbox colorScheme="red">балкон / лоджия</Checkbox>
-                    <Checkbox colorScheme="red">детская кроватка</Checkbox>
-                    <Checkbox colorScheme="red">стиральная машина</Checkbox>
-                    <Checkbox colorScheme="red">телевизор</Checkbox>
-                    <Checkbox colorScheme="red">электрочайник</Checkbox>
-                    <Checkbox colorScheme="red">
-                      посуда и принадлежности
-                    </Checkbox>
-                    <Checkbox colorScheme="red">микроволновка</Checkbox>
-                    <Checkbox colorScheme="red">полотенца</Checkbox>
-                    <Checkbox colorScheme="red">
-                      утюг с гладильной доской
-                    </Checkbox>
-                    <Checkbox colorScheme="red">фен</Checkbox>
-                    <Checkbox colorScheme="red">джакузи</Checkbox>
-                    <Checkbox colorScheme="red">сауна / баня</Checkbox>
-                    <Checkbox colorScheme="red">Посудомоечная машина</Checkbox>
-                    <Checkbox colorScheme="red">мультиварка</Checkbox>
-                    <Checkbox colorScheme="red">терраса</Checkbox>
-                    <Checkbox colorScheme="red">водонагреватель</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text> На территории </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Во дворе дома или на территории гостиницы"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <Checkbox colorScheme="red">Парковка</Checkbox>
-                    <Checkbox colorScheme="red">Беседка</Checkbox>
-                    <Checkbox colorScheme="red">Мангал</Checkbox>
-                    <Checkbox colorScheme="red">Бассейн</Checkbox>
-                    <Checkbox colorScheme="red">Детская площадка</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard title="Этаж">
-                  <HStack>
-                    <Input type="number" placeholder="с" />
-                    <Box>-</Box>
-                    <Input type="number" placeholder="по" />
-                  </HStack>
-                  <Box mt={4}>
-                    <CheckboxList
-                      value={floor}
-                      onChange={setFloor}
-                      checkboxes={[
-                        {
-                          value: "lastFloor",
-                          label: "Последний",
-                        },
-                        {
-                          value: "notFirstFloor",
-                          label: "Не первый",
-                        },
-                        {
-                          value: "notLastFloor",
-                          label: "Не последний",
-                        },
-                        {
-                          value: "notGroundFloor",
-                          label: "Не цоколь",
-                        },
-                      ]}
-                    />
-                  </Box>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text> Вид из окна </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Укажите, что вы хотите видеть из окна во время проживания"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <CheckboxList
-                    value={windowView}
-                    onChange={setWindowView}
-                    checkboxes={[
-                      {
-                        label: "На море",
-                        value: "sea",
-                      },
-                      {
-                        label: "На горы",
-                        value: "mountains",
-                      },
-                      {
-                        label: "На город",
-                        value: "city",
-                      },
-                      {
-                        label: "На реку/озеро",
-                        value: "river/lake",
-                      },
-                    ]}
-                  />
-                </FormCard>
-                <FormCard title="Санузел">
-                  <Stack>
-                    <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
-                    <Checkbox colorScheme="red">Свой туалет</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text>Питание</Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Входит в стоимость проживания или оплачивается отдельно"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <Checkbox colorScheme="red">Завтрак</Checkbox>
-                    <Checkbox colorScheme="red">Обед</Checkbox>
-                    <Checkbox colorScheme="red">Ужин</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard
-                  title={
-                    <>
-                      <HStack>
-                        <Text>Количество звёзд отеля </Text>
-
-                        <Tooltip
-                          hasArrow
-                          label="Звёздность отелей подтверждена официальными сертификатами"
-                          placement="top"
-                        >
-                          <QuestionOutlineIcon />
-                        </Tooltip>
-                      </HStack>
-                    </>
-                  }
-                >
-                  <Stack>
-                    <Checkbox colorScheme="red">5 звёзд</Checkbox>
-                    <Checkbox colorScheme="red">4 звёзд</Checkbox>
-                    <Checkbox colorScheme="red">3 звёзд</Checkbox>
-                    <Checkbox colorScheme="red">2 звёзд</Checkbox>
-                    <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard title="Доступность">
-                  <Stack>
-                    <Checkbox colorScheme="red">Лифт</Checkbox>
-                    <Checkbox colorScheme="red">Доступ для инвалидов</Checkbox>
-                  </Stack>
-                </FormCard>
-                <FormCard title="Дополнительно">
-                  <Stack>
-                    <Checkbox colorScheme="red">быстро отвечают</Checkbox>
-                    <Checkbox colorScheme="red">Суперхозяева</Checkbox>
-                    <Checkbox colorScheme="red">Трансфер</Checkbox>
-                    <Checkbox colorScheme="red">С хорошими отзывами</Checkbox>
-                    <Checkbox colorScheme="red">Ранний заезд разрешён</Checkbox>
-                    <Checkbox colorScheme="red">
-                      Поздний отъезд разрешён
-                    </Checkbox>
-                    <Checkbox colorScheme="red">
-                      Бесконтактное заселение
-                    </Checkbox>
-                    <Checkbox colorScheme="red">отчётные документы</Checkbox>
-                    <Checkbox colorScheme="red">без посредников</Checkbox>
-                    <Checkbox colorScheme="red">
-                      Жильё для самоизоляции
-                    </Checkbox>
-                  </Stack>
-                </FormCard>
-                <Center
+                <Stack
+                  spacing={4}
+                  w="full"
+                  h="full"
+                  overflowY={"auto"}
+                  position={"relative"}
                   bgColor={"white"}
-                  py={4}
-                  w={"full"}
-                  position={"sticky"}
-                  bottom={0}
-                  zIndex={1}
-                  borderTop={"1px solid"}
-                  borderColor={"gray.300"}
+                  rounded={"lg"}
                 >
-                  <Button colorScheme="red" variant={"outline"}>
-                    Сбросить все фильтры
-                  </Button>
-                </Center>
-              </Stack>
-            </GridItem>
-          </Hide>
-
-          <GridItem area={"main"}>
-            <VStack spacing={5}>
-              <Hide below="xl">
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-              </Hide>
-
-              <Show below="xl">
-                <SimpleGrid columns={[1]} spacing={5}>
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                </SimpleGrid>
-              </Show>
-            </VStack>
-          </GridItem>
-          <GridItem
-            position={"sticky"}
-            overflow={"hidden"}
-            top={24}
-            area={"map"}
-            h={"100vh"}
-          >
-            <Box w="full" h="full">
-              <SearchMap
-                inputHtmlMarkers={[
-                  {
-                    coordinates: [77.1757361557851, 42.64472838750217],
-                  },
-                  {
-                    coordinates: [77.17437800783786, 42.645238409366385],
-                  },
-                  {
-                    coordinates: [77.17292784537554, 42.645017610523716],
-                  },
-                  {
-                    coordinates: [77.15253297654283, 42.63014881066871],
-                  },
-                  {
-                    coordinates: [77.1981040743652, 42.658896258910474],
-                  },
-                ]}
-              />
-            </Box>
-          </GridItem>
-        </Grid>
-
-        <Show below="2xl">
-          <Drawer
-            isOpen={desktopFilterIsOpen}
-            placement="left"
-            onClose={desktopFilterOnClose}
-          >
-            <DrawerOverlay />
-            <DrawerContent bgColor={"none"}>
-              <DrawerCloseButton />
-
-              <DrawerBody p={0} bgColor={"white"}>
-                <Stack>
-                  <FormCard title="Выбирайте лучшее">
+                  <FormCard disableBg disableShadow title="Выбирайте лучшее">
                     <HStack
                       justifyContent={"space-between"}
                       alignItems={"center"}
@@ -686,7 +249,7 @@ export const ObjectSearchLayout = () => {
                       <Switch colorScheme="red" />
                     </HStack>
                   </FormCard>
-                  <FormCard title="Варианты размещения">
+                  <FormCard disableBg disableShadow title="Варианты размещения">
                     <Stack>
                       <Checkbox colorScheme="red">
                         Квартиры, апартаменты
@@ -703,7 +266,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Хостелы</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Отдельные спальни">
+                  <FormCard disableBg disableShadow title="Отдельные спальни">
                     <Select>
                       <option>любое</option>
                       <option value="is_studio">студия</option>
@@ -729,6 +292,8 @@ export const ObjectSearchLayout = () => {
                         </HStack>
                       </>
                     }
+                    disableBg
+                    disableShadow
                   >
                     <Stack>
                       <FormControl>
@@ -755,7 +320,7 @@ export const ObjectSearchLayout = () => {
                       </FormControl>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Площадь">
+                  <FormCard disableBg disableShadow title="Площадь">
                     <HStack>
                       <InputGroup>
                         <Input placeholder="от" type="number" />
@@ -773,6 +338,8 @@ export const ObjectSearchLayout = () => {
                     </HStack>
                   </FormCard>
                   <FormCard
+                    disableBg
+                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -815,6 +382,8 @@ export const ObjectSearchLayout = () => {
                     </Stack>
                   </FormCard>
                   <FormCard
+                    disableBg
+                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -861,6 +430,8 @@ export const ObjectSearchLayout = () => {
                         </HStack>
                       </>
                     }
+                    disableBg
+                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
@@ -908,6 +479,8 @@ export const ObjectSearchLayout = () => {
                         </HStack>
                       </>
                     }
+                    disableBg
+                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Парковка</Checkbox>
@@ -917,7 +490,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Детская площадка</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Этаж">
+                  <FormCard title="Этаж" disableBg disableShadow>
                     <HStack>
                       <Input type="number" placeholder="с" />
                       <Box>-</Box>
@@ -949,6 +522,8 @@ export const ObjectSearchLayout = () => {
                     </Box>
                   </FormCard>
                   <FormCard
+                    disableBg
+                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -988,7 +563,7 @@ export const ObjectSearchLayout = () => {
                       ]}
                     />
                   </FormCard>
-                  <FormCard title="Санузел">
+                  <FormCard title="Санузел" disableBg disableShadow>
                     <Stack>
                       <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
                       <Checkbox colorScheme="red">Свой туалет</Checkbox>
@@ -1010,6 +585,8 @@ export const ObjectSearchLayout = () => {
                         </HStack>
                       </>
                     }
+                    disableBg
+                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Завтрак</Checkbox>
@@ -1018,6 +595,8 @@ export const ObjectSearchLayout = () => {
                     </Stack>
                   </FormCard>
                   <FormCard
+                    disableBg
+                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -1042,7 +621,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Доступность">
+                  <FormCard title="Доступность" disableBg disableShadow>
                     <Stack>
                       <Checkbox colorScheme="red">Лифт</Checkbox>
                       <Checkbox colorScheme="red">
@@ -1050,7 +629,560 @@ export const ObjectSearchLayout = () => {
                       </Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Дополнительно">
+                  <FormCard title="Дополнительно" disableBg disableShadow>
+                    <Stack>
+                      <Checkbox colorScheme="red">быстро отвечают</Checkbox>
+                      <Checkbox colorScheme="red">Суперхозяева</Checkbox>
+                      <Checkbox colorScheme="red">Трансфер</Checkbox>
+                      <Checkbox colorScheme="red">С хорошими отзывами</Checkbox>
+                      <Checkbox colorScheme="red">
+                        Ранний заезд разрешён
+                      </Checkbox>
+                      <Checkbox colorScheme="red">
+                        Поздний отъезд разрешён
+                      </Checkbox>
+                      <Checkbox colorScheme="red">
+                        Бесконтактное заселение
+                      </Checkbox>
+                      <Checkbox colorScheme="red">отчётные документы</Checkbox>
+                      <Checkbox colorScheme="red">без посредников</Checkbox>
+                      <Checkbox colorScheme="red">
+                        Жильё для самоизоляции
+                      </Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <Center
+                    bgColor={"white"}
+                    py={4}
+                    w={"full"}
+                    position={"sticky"}
+                    bottom={0}
+                    zIndex={1}
+                    borderTop={"1px solid"}
+                    borderColor={"gray.300"}
+                  >
+                    <Button colorScheme="red" variant={"outline"}>
+                      Сбросить все фильтры
+                    </Button>
+                  </Center>
+                </Stack>
+              </GridItem>
+            </Hide>
+          )}
+
+          <GridItem area={"main"}>
+            <VStack spacing={5}>
+              <Hide below="xl">
+                <ObjectCard />
+                <ObjectCard />
+                <ObjectCard />
+                <ObjectCard />
+                <ObjectCard />
+                <ObjectCard />
+              </Hide>
+
+              <Show below="xl">
+                <SimpleGrid columns={[1]} spacing={5}>
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                  <SimpleObjectCard />
+                </SimpleGrid>
+              </Show>
+            </VStack>
+          </GridItem>
+          <GridItem
+            position={"sticky"}
+            overflow={"hidden"}
+            top={24}
+            area={"map"}
+            h={"100vh"}
+          >
+            <Box w="full" h="full" position={"relative"}>
+              <IconButton
+                position={"absolute"}
+                top={2}
+                left={2}
+                zIndex={"popover"}
+                rounded={"full"}
+                colorScheme="red"
+                aria-label="asdas"
+                size={"lg"}
+                onClick={mapOnToggle}
+                icon={
+                  <>
+                    {!mapIsOpen && <Icon as={BiExpand} h={6} w={6} />}
+                    {mapIsOpen && <Icon as={BiCollapse} h={6} w={6} />}
+                  </>
+                }
+              />
+
+              <SearchMap
+                onMove={mapOnOpen}
+                inputHtmlMarkers={[
+                  {
+                    coordinates: [77.1757361557851, 42.64472838750217],
+                  },
+                  {
+                    coordinates: [77.17437800783786, 42.645238409366385],
+                  },
+                  {
+                    coordinates: [77.17292784537554, 42.645017610523716],
+                  },
+                  {
+                    coordinates: [77.15253297654283, 42.63014881066871],
+                  },
+                  {
+                    coordinates: [77.1981040743652, 42.658896258910474],
+                  },
+                ]}
+              />
+            </Box>
+          </GridItem>
+        </Grid>
+
+        <Show below="2xl">
+          <Drawer
+            isOpen={desktopFilterIsOpen}
+            placement="left"
+            onClose={desktopFilterOnClose}
+          >
+            <DrawerOverlay />
+            <DrawerContent bgColor={"none"}>
+              <DrawerCloseButton />
+              <DrawerHeader p={2}>Фильтры</DrawerHeader>
+
+              <DrawerBody p={0} bgColor={"white"}>
+                <Stack
+                  spacing={4}
+                  w="full"
+                  h="full"
+                  overflowY={"auto"}
+                  position={"relative"}
+                  bgColor={"white"}
+                  rounded={"lg"}
+                >
+                  <FormCard disableBg disableShadow title="Выбирайте лучшее">
+                    <HStack
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                      mt={2}
+                    >
+                      <HStack>
+                        <Icon as={HiLightningBolt} color={"red.500"} />
+                        <Text
+                          color={"gray.500"}
+                          fontSize={"sm"}
+                          fontWeight={"medium"}
+                        >
+                          Быстрое бронирование
+                        </Text>
+                      </HStack>
+                      <Switch colorScheme="red" />
+                    </HStack>
+                    <HStack
+                      justifyContent={"space-between"}
+                      alignItems={"center"}
+                      mt={2}
+                    >
+                      <HStack>
+                        <Icon as={FaHeart} color={"red.500"} />
+                        <Text
+                          color={"gray.500"}
+                          fontSize={"sm"}
+                          fontWeight={"medium"}
+                        >
+                          Избранное
+                        </Text>
+                      </HStack>
+                      <Switch colorScheme="red" />
+                    </HStack>
+                  </FormCard>
+                  <FormCard disableBg disableShadow title="Варианты размещения">
+                    <Stack>
+                      <Checkbox colorScheme="red">
+                        Квартиры, апартаменты
+                      </Checkbox>
+                      <Checkbox colorScheme="red">Дома, коттеджи</Checkbox>
+                      <Checkbox colorScheme="red">Комнаты</Checkbox>
+                      <Checkbox colorScheme="red">Отели, гостиницы</Checkbox>
+                      <Checkbox colorScheme="red">Апарт-отели</Checkbox>
+                      <Checkbox colorScheme="red">Мини-гостиницы</Checkbox>
+                      <Checkbox colorScheme="red">Гостевые дома</Checkbox>
+                      <Checkbox colorScheme="red">
+                        Глэмпинги, базы отдыха
+                      </Checkbox>
+                      <Checkbox colorScheme="red">Хостелы</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard disableBg disableShadow title="Отдельные спальни">
+                    <Select>
+                      <option>любое</option>
+                      <option value="is_studio">студия</option>
+                      <option value="1">не менее 1</option>
+                      <option value="2">не менее 2</option>
+                      <option value="3">не менее 3</option>
+                      <option value="4">4 и более</option>
+                    </Select>
+                  </FormCard>
+                  <FormCard
+                    title={
+                      <>
+                        <HStack>
+                          <Text>Спальные места</Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Вы можете выбрать раздельные или двуспальные места, а также отметить оба этих типа"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                    disableBg
+                    disableShadow
+                  >
+                    <Stack>
+                      <FormControl>
+                        <Stack>
+                          <FormHelperText>Кровати/диваны</FormHelperText>
+                          <Select>
+                            <option>любое количество</option>
+                            <option value="2">2 и более</option>
+                            <option value="3">3 и более</option>
+                            <option value="4">4 и более</option>
+                            <option value="5">5 и более</option>
+                          </Select>
+                        </Stack>
+                      </FormControl>
+                      <FormControl>
+                        <Stack>
+                          <FormHelperText>Двуспальные</FormHelperText>
+                          <Select>
+                            <option>любое количество</option>
+                            <option value="2">2 и более</option>
+                            <option value="3">3 и более</option>
+                          </Select>
+                        </Stack>
+                      </FormControl>
+                    </Stack>
+                  </FormCard>
+                  <FormCard disableBg disableShadow title="Площадь">
+                    <HStack>
+                      <InputGroup>
+                        <Input placeholder="от" type="number" />
+                        <InputRightElement>
+                          м<sup>2</sup>
+                        </InputRightElement>
+                      </InputGroup>
+                      <Box>-</Box>
+                      <InputGroup>
+                        <Input placeholder="до" type="number" />
+                        <InputRightElement>
+                          м<sup>2</sup>
+                        </InputRightElement>
+                      </InputGroup>
+                    </HStack>
+                  </FormCard>
+                  <FormCard
+                    disableBg
+                    disableShadow
+                    title={
+                      <>
+                        <HStack>
+                          <Text>Правила размещения </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="В большинстве объектов запрещены вечеринки, животные и курение"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                  >
+                    <Stack>
+                      <HStack justifyContent={"space-between"}>
+                        <Text
+                          color={"gray.500"}
+                          fontSize={"sm"}
+                          fontWeight={"medium"}
+                        >
+                          Курение разрешено
+                        </Text>
+
+                        <Switch colorScheme="red" />
+                      </HStack>
+                      <HStack justifyContent={"space-between"}>
+                        <Text
+                          color={"gray.500"}
+                          fontSize={"sm"}
+                          fontWeight={"medium"}
+                        >
+                          Вечеринки разрешены
+                        </Text>
+
+                        <Switch colorScheme="red" />
+                      </HStack>
+                    </Stack>
+                  </FormCard>
+                  <FormCard
+                    disableBg
+                    disableShadow
+                    title={
+                      <>
+                        <HStack>
+                          <Text>Без депозита </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Хозяин жилья не берёт залог при заселении"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                  >
+                    <Stack>
+                      <HStack justifyContent={"space-between"}>
+                        <Text
+                          color={"gray.500"}
+                          fontSize={"sm"}
+                          fontWeight={"medium"}
+                        >
+                          Депозит не требуется
+                        </Text>
+
+                        <Switch colorScheme="red" />
+                      </HStack>
+                    </Stack>
+                  </FormCard>
+                  <FormCard
+                    title={
+                      <>
+                        <HStack>
+                          <Text> В помещении </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Непосредственно в квартире, доме или номере"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                    disableBg
+                    disableShadow
+                  >
+                    <Stack>
+                      <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
+                      <Checkbox colorScheme="red">кондиционер</Checkbox>
+                      <Checkbox colorScheme="red">кухня</Checkbox>
+                      <Checkbox colorScheme="red">кухня</Checkbox>
+                      <Checkbox colorScheme="red">холодильник</Checkbox>
+                      <Checkbox colorScheme="red">балкон / лоджия</Checkbox>
+                      <Checkbox colorScheme="red">детская кроватка</Checkbox>
+                      <Checkbox colorScheme="red">стиральная машина</Checkbox>
+                      <Checkbox colorScheme="red">телевизор</Checkbox>
+                      <Checkbox colorScheme="red">электрочайник</Checkbox>
+                      <Checkbox colorScheme="red">
+                        посуда и принадлежности
+                      </Checkbox>
+                      <Checkbox colorScheme="red">микроволновка</Checkbox>
+                      <Checkbox colorScheme="red">полотенца</Checkbox>
+                      <Checkbox colorScheme="red">
+                        утюг с гладильной доской
+                      </Checkbox>
+                      <Checkbox colorScheme="red">фен</Checkbox>
+                      <Checkbox colorScheme="red">джакузи</Checkbox>
+                      <Checkbox colorScheme="red">сауна / баня</Checkbox>
+                      <Checkbox colorScheme="red">
+                        Посудомоечная машина
+                      </Checkbox>
+                      <Checkbox colorScheme="red">мультиварка</Checkbox>
+                      <Checkbox colorScheme="red">терраса</Checkbox>
+                      <Checkbox colorScheme="red">водонагреватель</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard
+                    title={
+                      <>
+                        <HStack>
+                          <Text> На территории </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Во дворе дома или на территории гостиницы"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                    disableBg
+                    disableShadow
+                  >
+                    <Stack>
+                      <Checkbox colorScheme="red">Парковка</Checkbox>
+                      <Checkbox colorScheme="red">Беседка</Checkbox>
+                      <Checkbox colorScheme="red">Мангал</Checkbox>
+                      <Checkbox colorScheme="red">Бассейн</Checkbox>
+                      <Checkbox colorScheme="red">Детская площадка</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard title="Этаж" disableBg disableShadow>
+                    <HStack>
+                      <Input type="number" placeholder="с" />
+                      <Box>-</Box>
+                      <Input type="number" placeholder="по" />
+                    </HStack>
+                    <Box mt={4}>
+                      <CheckboxList
+                        value={floor}
+                        onChange={setFloor}
+                        checkboxes={[
+                          {
+                            value: "lastFloor",
+                            label: "Последний",
+                          },
+                          {
+                            value: "notFirstFloor",
+                            label: "Не первый",
+                          },
+                          {
+                            value: "notLastFloor",
+                            label: "Не последний",
+                          },
+                          {
+                            value: "notGroundFloor",
+                            label: "Не цоколь",
+                          },
+                        ]}
+                      />
+                    </Box>
+                  </FormCard>
+                  <FormCard
+                    disableBg
+                    disableShadow
+                    title={
+                      <>
+                        <HStack>
+                          <Text> Вид из окна </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Укажите, что вы хотите видеть из окна во время проживания"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                  >
+                    <CheckboxList
+                      value={windowView}
+                      onChange={setWindowView}
+                      checkboxes={[
+                        {
+                          label: "На море",
+                          value: "sea",
+                        },
+                        {
+                          label: "На горы",
+                          value: "mountains",
+                        },
+                        {
+                          label: "На город",
+                          value: "city",
+                        },
+                        {
+                          label: "На реку/озеро",
+                          value: "river/lake",
+                        },
+                      ]}
+                    />
+                  </FormCard>
+                  <FormCard title="Санузел" disableBg disableShadow>
+                    <Stack>
+                      <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
+                      <Checkbox colorScheme="red">Свой туалет</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard
+                    title={
+                      <>
+                        <HStack>
+                          <Text>Питание</Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Входит в стоимость проживания или оплачивается отдельно"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                    disableBg
+                    disableShadow
+                  >
+                    <Stack>
+                      <Checkbox colorScheme="red">Завтрак</Checkbox>
+                      <Checkbox colorScheme="red">Обед</Checkbox>
+                      <Checkbox colorScheme="red">Ужин</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard
+                    disableBg
+                    disableShadow
+                    title={
+                      <>
+                        <HStack>
+                          <Text>Количество звёзд отеля </Text>
+
+                          <Tooltip
+                            hasArrow
+                            label="Звёздность отелей подтверждена официальными сертификатами"
+                            placement="top"
+                          >
+                            <QuestionOutlineIcon />
+                          </Tooltip>
+                        </HStack>
+                      </>
+                    }
+                  >
+                    <Stack>
+                      <Checkbox colorScheme="red">5 звёзд</Checkbox>
+                      <Checkbox colorScheme="red">4 звёзд</Checkbox>
+                      <Checkbox colorScheme="red">3 звёзд</Checkbox>
+                      <Checkbox colorScheme="red">2 звёзд</Checkbox>
+                      <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard title="Доступность" disableBg disableShadow>
+                    <Stack>
+                      <Checkbox colorScheme="red">Лифт</Checkbox>
+                      <Checkbox colorScheme="red">
+                        Доступ для инвалидов
+                      </Checkbox>
+                    </Stack>
+                  </FormCard>
+                  <FormCard title="Дополнительно" disableBg disableShadow>
                     <Stack>
                       <Checkbox colorScheme="red">быстро отвечают</Checkbox>
                       <Checkbox colorScheme="red">Суперхозяева</Checkbox>
@@ -1118,45 +1250,97 @@ export const ObjectSearchLayout = () => {
           <DraggbleDrawer
             header={
               <>
-                <FormControl w={"full"}>
-                  <InputGroup w={"full"}>
-                    <InputLeftElement>
-                      <SearchIcon />
-                    </InputLeftElement>
-                    <Input
-                      _focus={{
-                        bgColor: "white",
+                <HStack w={"full"}>
+                  <FormControl w={"full"}>
+                    <InputGroup w={"full"}>
+                      <InputLeftElement>
+                        <SearchIcon />
+                      </InputLeftElement>
+                      <Input
+                        _focus={{
+                          bgColor: "white",
+                        }}
+                        bgColor={"white"}
+                        variant="filled"
+                        placeholder="Поиск"
+                        _hover={{
+                          bgColor: "white",
+                        }}
+                      />
+                    </InputGroup>
+                  </FormControl>
+                  <Button bgColor={"white"} onClick={mobileFilterOnOpen}>
+                    <Icon as={VscSettings} />
+                  </Button>
+                </HStack>
+
+                <Box w={"full"} mt={3}>
+                  <Swiper
+                    slidesPerView={"auto"}
+                    spaceBetween={10}
+                    freeMode={true}
+                    modules={[FreeMode]}
+                  >
+                    <SwiperSlide
+                      style={{
+                        width: "40px",
                       }}
-                      bgColor={"white"}
-                      variant="filled"
-                      placeholder="Поиск"
-                    />
-                  </InputGroup>
-                </FormControl>
-                <Button bgColor={"white"} onClick={mobileFilterOnOpen}>
-                  <HamburgerIcon />
-                </Button>
+                    >
+                      <IconButton
+                        aria-label="favorite button"
+                        colorScheme="red"
+                        size={"md"}
+                      >
+                        <Icon as={MdBookmarkBorder} fontSize={"lg"} />
+                      </IconButton>
+                    </SwiperSlide>
+                    <SwiperSlide
+                      style={{
+                        maxWidth: "240px",
+                      }}
+                    >
+                      <Button
+                        w="full"
+                        size={"md"}
+                        colorScheme="red"
+                        rounded={"full"}
+                        leftIcon={<CalendarIcon />}
+                        onClick={datepickerOnOpen}
+                      >
+                        {dates?.checkIn
+                          ? format(dates.checkIn, "dd MMMM", { locale: ru })
+                          : "Заезд"}{" "}
+                        -{" "}
+                        {dates?.checkOut
+                          ? format(dates.checkOut, "dd MMMM", { locale: ru })
+                          : "Отъезд"}
+                      </Button>
+                    </SwiperSlide>
+                    <SwiperSlide
+                      style={{
+                        width: "auto",
+                      }}
+                    >
+                      <Button
+                        w="150px"
+                        size={"md"}
+                        colorScheme="blackAlpha"
+                        rounded={"full"}
+                        leftIcon={<Icon as={FaUsers} fontSize={"lg"} />}
+                        onClick={guestsOnOpen}
+                      >
+                        {guests.adultsCount + guests.childrenAges.length}{" "}
+                        {getWordByNum(
+                          guests.adultsCount + guests.childrenAges.length,
+                          ["Гость", "Гостя", "Гостей"]
+                        )}
+                      </Button>
+                    </SwiperSlide>
+                  </Swiper>
+                </Box>
               </>
             }
           >
-            <Box>
-              <Swiper
-                slidesPerView={3.5}
-                spaceBetween={30}
-                freeMode={true}
-                modules={[FreeMode]}
-              >
-                <SwiperSlide>Slide 1</SwiperSlide>
-                <SwiperSlide>Slide 2</SwiperSlide>
-                <SwiperSlide>Slide 3</SwiperSlide>
-                <SwiperSlide>Slide 4</SwiperSlide>
-                <SwiperSlide>Slide 5</SwiperSlide>
-                <SwiperSlide>Slide 6</SwiperSlide>
-                <SwiperSlide>Slide 7</SwiperSlide>
-                <SwiperSlide>Slide 8</SwiperSlide>
-                <SwiperSlide>Slide 9</SwiperSlide>
-              </Swiper>
-            </Box>
             <SimpleGrid
               columns={{
                 ...(isLessThan630
@@ -1166,6 +1350,7 @@ export const ObjectSearchLayout = () => {
                   : { base: 1, sm: 2 }),
               }}
               spacing={5}
+              pt={5}
             >
               <SimpleObjectCard />
               <SimpleObjectCard />
@@ -1203,8 +1388,16 @@ export const ObjectSearchLayout = () => {
               </Button>
             </DrawerHeader>
             <DrawerBody h={"100dvh"} p={0} bgColor={"white"}>
-              <Stack>
-                <FormCard title="Выбирайте лучшее">
+              <Stack
+                spacing={4}
+                w="full"
+                h="full"
+                overflowY={"auto"}
+                position={"relative"}
+                bgColor={"white"}
+                rounded={"lg"}
+              >
+                <FormCard disableBg disableShadow title="Выбирайте лучшее">
                   <HStack
                     justifyContent={"space-between"}
                     alignItems={"center"}
@@ -1240,7 +1433,7 @@ export const ObjectSearchLayout = () => {
                     <Switch colorScheme="red" />
                   </HStack>
                 </FormCard>
-                <FormCard title="Варианты размещения">
+                <FormCard disableBg disableShadow title="Варианты размещения">
                   <Stack>
                     <Checkbox colorScheme="red">Квартиры, апартаменты</Checkbox>
                     <Checkbox colorScheme="red">Дома, коттеджи</Checkbox>
@@ -1255,7 +1448,7 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">Хостелы</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Отдельные спальни">
+                <FormCard disableBg disableShadow title="Отдельные спальни">
                   <Select>
                     <option>любое</option>
                     <option value="is_studio">студия</option>
@@ -1281,6 +1474,8 @@ export const ObjectSearchLayout = () => {
                       </HStack>
                     </>
                   }
+                  disableBg
+                  disableShadow
                 >
                   <Stack>
                     <FormControl>
@@ -1307,7 +1502,7 @@ export const ObjectSearchLayout = () => {
                     </FormControl>
                   </Stack>
                 </FormCard>
-                <FormCard title="Площадь">
+                <FormCard disableBg disableShadow title="Площадь">
                   <HStack>
                     <InputGroup>
                       <Input placeholder="от" type="number" />
@@ -1325,6 +1520,8 @@ export const ObjectSearchLayout = () => {
                   </HStack>
                 </FormCard>
                 <FormCard
+                  disableBg
+                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1367,6 +1564,8 @@ export const ObjectSearchLayout = () => {
                   </Stack>
                 </FormCard>
                 <FormCard
+                  disableBg
+                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1413,6 +1612,8 @@ export const ObjectSearchLayout = () => {
                       </HStack>
                     </>
                   }
+                  disableBg
+                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
@@ -1458,6 +1659,8 @@ export const ObjectSearchLayout = () => {
                       </HStack>
                     </>
                   }
+                  disableBg
+                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Парковка</Checkbox>
@@ -1467,7 +1670,7 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">Детская площадка</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Этаж">
+                <FormCard title="Этаж" disableBg disableShadow>
                   <HStack>
                     <Input type="number" placeholder="с" />
                     <Box>-</Box>
@@ -1499,6 +1702,8 @@ export const ObjectSearchLayout = () => {
                   </Box>
                 </FormCard>
                 <FormCard
+                  disableBg
+                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1538,7 +1743,7 @@ export const ObjectSearchLayout = () => {
                     ]}
                   />
                 </FormCard>
-                <FormCard title="Санузел">
+                <FormCard title="Санузел" disableBg disableShadow>
                   <Stack>
                     <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
                     <Checkbox colorScheme="red">Свой туалет</Checkbox>
@@ -1560,6 +1765,8 @@ export const ObjectSearchLayout = () => {
                       </HStack>
                     </>
                   }
+                  disableBg
+                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Завтрак</Checkbox>
@@ -1568,6 +1775,8 @@ export const ObjectSearchLayout = () => {
                   </Stack>
                 </FormCard>
                 <FormCard
+                  disableBg
+                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1592,13 +1801,13 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Доступность">
+                <FormCard title="Доступность" disableBg disableShadow>
                   <Stack>
                     <Checkbox colorScheme="red">Лифт</Checkbox>
                     <Checkbox colorScheme="red">Доступ для инвалидов</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Дополнительно">
+                <FormCard title="Дополнительно" disableBg disableShadow>
                   <Stack>
                     <Checkbox colorScheme="red">быстро отвечают</Checkbox>
                     <Checkbox colorScheme="red">Суперхозяева</Checkbox>
@@ -1618,10 +1827,38 @@ export const ObjectSearchLayout = () => {
                     </Checkbox>
                   </Stack>
                 </FormCard>
+                <Center
+                  bgColor={"white"}
+                  py={4}
+                  w={"full"}
+                  position={"sticky"}
+                  bottom={0}
+                  zIndex={1}
+                  borderTop={"1px solid"}
+                  borderColor={"gray.300"}
+                >
+                  <Button colorScheme="red" variant={"outline"}>
+                    Сбросить все фильтры
+                  </Button>
+                </Center>
               </Stack>
             </DrawerBody>
           </DrawerContent>
         </Drawer>
+        <GuestsModal
+          onGuestsChange={(value) => {
+            dispatch(searchObjectAction.setGuestData(value));
+          }}
+          value={guests}
+          isOpen={guestsIsOpen}
+          onClose={guestsOnClose}
+        />
+        <MobileCalendarDrawer
+          isOpen={datepickerIsOpen}
+          onClose={datepickerOnClose}
+          dates={calendarDates}
+          handleSelectDate={handleSelectDate}
+        />
       </Show>
     </>
   );

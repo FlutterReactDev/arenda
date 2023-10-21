@@ -9,22 +9,23 @@ import { Box, Center, Spinner } from "@chakra-ui/react";
 import { SelectMapFitBounds } from "./SelectMapFitBounds";
 
 import { SelectMapToolbar } from "./SelectMapToolbar";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { RegionCenter } from "./RegionCenter";
 
 interface SelectMapProps {
   onChange: (value: number[]) => void;
   value: number[];
-  address: string;
+  city?: string;
+  country?: string;
+  region?: string;
+  streetName: string;
+  house: string;
 }
 export const SelectMap: FC<SelectMapProps> = (props) => {
-  const { onChange, value, address } = props;
-  const { country, region, city } = useAppSelector(
-    (state) => state.addObjectForm
-  );
+  const { onChange, value, house, streetName, city, country, region } = props;
+
   const [clearMarker, setClearMarker] = useState(value ? true : false);
   const { data, isFetching, isSuccess } = useGetCoordinateByAddressQuery(
-    address,
+    `${country} ${region}, ${city}, ${streetName} ${house}`,
     {
       refetchOnMountOrArgChange: true,
     }
@@ -33,12 +34,9 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   const [center, setCenter] = useState<number[]>();
 
   const { data: notFoundData, isSuccess: notFoundDataIsSuccess } =
-    useGetRegionByAddressQuery(
-      `${country?.label}, ${region?.label}, ${city?.label}`,
-      {
-        refetchOnMountOrArgChange: true,
-      }
-    );
+    useGetRegionByAddressQuery(`${country}, ${region}, ${city}`, {
+      refetchOnMountOrArgChange: true,
+    });
 
   useEffect(() => {
     if (isSuccess && data.result && data.result.items.length == 1) {
@@ -59,7 +57,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   }, [
     data?.meta.code,
     isSuccess,
-    notFoundData?.result.items,
+    notFoundData?.result?.items,
     notFoundDataIsSuccess,
   ]);
   if (isSuccess) {

@@ -1,8 +1,9 @@
 import { baseApiWithReAuth } from "@shared/api/rtk";
+import { ObjectType } from "../types";
 
 const objectTypeApi = baseApiWithReAuth.injectEndpoints({
   endpoints: (build) => ({
-    getAllObjectTypes: build.query({
+    getAllObjectTypes: build.query<ObjectType[], unknown>({
       query: () => ({
         url: "/AllObjectTypes",
       }),

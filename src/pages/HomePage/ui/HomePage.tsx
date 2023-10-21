@@ -11,14 +11,14 @@ import {
   Image,
   SimpleGrid,
 } from "@chakra-ui/react";
-import { MainSearch } from "@features/MainSearch";
+import { MainSearch } from "@features/SearchObjects";
 
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
 
 const HomePage = () => {
   return (
-    <>
+    <Box bgColor={"blackAlpha.50"}>
       <Header />
 
       <main>
@@ -681,7 +681,7 @@ const HomePage = () => {
       </main>
 
       <Footer />
-    </>
+    </Box>
   );
 };
 

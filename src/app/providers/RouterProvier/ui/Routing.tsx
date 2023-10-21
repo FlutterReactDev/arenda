@@ -5,6 +5,7 @@ import {
   ProtectAddObjectRoute,
 } from "@pages/AddObjectStepperPage";
 import { HomePage } from "@pages/HomePage";
+import { ObjectDetailPage } from "@pages/ObjectDetailPage";
 
 import { SearchResultPage } from "@pages/SearchResultPage";
 import { TestPage } from "@pages/TestPage";
@@ -42,14 +43,8 @@ export const Routing = () => {
           </ProtectAddObjectRoute>
         }
       />
-      <Route
-        path="/add-hotel"
-        element={
-          <ProtectAddObjectRoute>
-            <AddHotelPage />
-          </ProtectAddObjectRoute>
-        }
-      />
+      <Route path="/add-hotel" element={<AddHotelPage />} />
+      <Route path="/object-detail" element={<ObjectDetailPage />} />
     </Routes>
   );
 };

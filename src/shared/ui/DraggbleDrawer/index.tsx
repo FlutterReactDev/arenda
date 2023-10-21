@@ -152,6 +152,9 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
           w="full"
           h={"full"}
           roundedTop={"2xl"}
+          style={{
+            touchAction: "auto",
+          }}
         >
           <DraggbleDrawerHeader
             currentHeight={currentHeight}
@@ -170,8 +173,6 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
             h={"full"}
             spacing={6}
             px={4}
-            overflowX={"hidden"}
-            overflowY="hidden"
             scrollBehavior={"smooth"}
             {...(DRAWER_OPEN_STATES[DRAWER_OPEN_STATES.length - 1] ==
               currentHeight && {

@@ -7,5 +7,7 @@ export {
   useGetSmokingOnSiteQuery,
   useGetAdditionalServiceQuery,
   useGetFoodTypeQuery,
-  useGetRoomCategoriesQuery
+  useGetRoomCategoriesQuery,
+  useGetObjectStarRatingQuery,
+  useGetReportingDocumentTypeQuery,
 } from "./model/api/commonReferenceApi.ts";

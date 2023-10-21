@@ -1,15 +1,18 @@
-import { addHotelReducer, addObjectStepReducer } from "@entites/Object";
-import { userReducer } from "@entites/User";
-import { addObjectSliceReducer } from "@features/AddObjectForm";
 import { configureStore } from "@reduxjs/toolkit";
 import { base2GISApi } from "@shared/api/2GiSApi";
-import { baseApi, baseApiWithReAuth } from "@shared/api/rtk";
+import { baseApiWithReAuth, baseApi } from "@shared/api/rtk";
+import { addHotelReducer, addObjectStepReducer } from "@entites/Object";
 
+import { addObjectSliceReducer } from "@features/SelectLocationForm";
+
+import { userReducer } from "@entites/User";
+import { searchObjectReducer } from "@features/SearchObjects";
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     [baseApiWithReAuth.reducerPath]: baseApiWithReAuth.reducer,
     [base2GISApi.reducerPath]: base2GISApi.reducer,
+    searchObject: searchObjectReducer,
     addObjectForm: addObjectSliceReducer,
     addObjectStep: addObjectStepReducer,
     addHotel: addHotelReducer,
@@ -18,8 +21,8 @@ export const store = configureStore({
 
   middleware(getDefaultMiddleware) {
     return getDefaultMiddleware().concat([
-      baseApi.middleware,
       baseApiWithReAuth.middleware,
+      baseApi.middleware,
       base2GISApi.middleware,
     ]);
   },

@@ -3,6 +3,7 @@ import {
   AdditionalService,
   FoodType,
   InternetAccess,
+  ObjectStarRating,
   Parking,
   PaymentType,
   ReportingDocumentType,
@@ -66,6 +67,11 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/ReportingDocumentType",
       }),
     }),
+    getObjectStarRating: build.query<ObjectStarRating[], unknown>({
+      query: () => ({
+        url: "/ObjectStarRating",
+      }),
+    }),
   }),
 });
 
@@ -80,4 +86,5 @@ export const {
   useGetFoodTypeQuery,
   useGetRoomCategoriesQuery,
   useGetReportingDocumentTypeQuery,
+  useGetObjectStarRatingQuery,
 } = commonReferencePrivateApi;

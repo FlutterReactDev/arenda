@@ -48,15 +48,9 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
     changeState &&
       changeState({
         coordinates: stateValue?.coordinates as number[],
-        addressName: data?.result?.items[0].full_name,
+        fullAddress: data?.result?.items[0].full_name,
       });
-    // dispatch(
-    //   addObjectStepActions.setForm({
-    //     screen: 1,
-    //     step: 0,
-    //     data: {},
-    //   })
-    // );
+
     onNext && onNext();
   };
 
@@ -69,15 +63,6 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
         //@ts-ignore
         coordinates: undefined,
       });
-    // dispatch(
-    // //   addObjectStepActions.setForm({
-    // //     screen: 1,
-    // //     step: 0,
-    // //     data: {
-
-    // //     },
-    // //   })
-    // );
   };
 
   return (
@@ -91,23 +76,18 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
 
           <Box h={"350px"} mt={5}>
             <SelectMap
-              address={`${country} ${region}, ${city}, ${streetName}, ${house}`}
+              country={country}
+              city={city}
+              region={region}
+              streetName={streetName}
+              house={house}
               value={stateValue?.coordinates as number[]}
               onChange={(coordinates: number[]) => {
                 changeState &&
                   changeState({
                     coordinates,
-                    addressName: data?.result?.items[0].full_name,
+                    fullAddress: data?.result?.items[0].full_name,
                   });
-                // dispatch(
-                //   addObjectStepActions.setForm({
-                //     screen: 1,
-                //     step: 0,
-                //     data: {
-                //
-                //     },
-                //   })
-                // );
               }}
             />
           </Box>

@@ -9,7 +9,7 @@ import {
   FormErrorMessage,
   Stack,
 } from "@chakra-ui/react";
-import { LoginSchema, useLoginMutation, userAction } from "@entites/User";
+import { LoginSchema, userAction } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PhoneInput } from "@shared/ui/PhoneInput";
 import { useForm, Controller } from "react-hook-form";
@@ -17,6 +17,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import * as Yup from "yup";
 import { useState } from "react";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { useLoginMutation } from "@entites/User/model/api/userApi";
 const LoginForm = () => {
   const {
     handleSubmit,

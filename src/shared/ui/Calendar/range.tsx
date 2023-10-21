@@ -153,8 +153,6 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         onDateChange((selectedDates: Date[]) => {
-          console.log(selectedDates);
-
           const newDates = [...selectedDates];
           if (selectedDates.length) {
             if (selectedDates.length === 1) {
@@ -190,7 +188,7 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           monthsToDisplay,
           date: new Date(),
           minDate: subDays(new Date(), 1),
-          maxDate:addYears(new Date(),1),
+          maxDate: addYears(new Date(), 1),
           firstDayOfWeek: 0,
         }}
         configs={DefaultConfigs}

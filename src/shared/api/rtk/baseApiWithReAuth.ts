@@ -6,3 +6,5 @@ export const baseApiWithReAuth = createApi({
   reducerPath: "baseApiWithReAuth",
   endpoints: () => ({}),
 });
+
+export const red = "сука";

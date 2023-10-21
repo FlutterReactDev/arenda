@@ -12,3 +12,6 @@ export const getLocationMap = (state: RootState) =>
   state.addHotel.selectLocationMap;
 
 export const getImageFiles = (state: RootState) => state.addHotel.imageFiles;
+
+export const getHotelGeneralInformation = (state: RootState) =>
+  state.addHotel.hotelGeneralInformation;

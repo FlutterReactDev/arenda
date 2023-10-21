@@ -1,5 +1,6 @@
 import { Box, Container, Heading, Text } from "@chakra-ui/react";
-import { AddObjectForm } from "@features/AddObjectForm";
+import { SelectLocationForm } from "@features/SelectLocationForm";
+
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
 
@@ -17,7 +18,7 @@ const AddObjectPage = () => {
             бронирования
           </Text>
           <Box mt={4}>
-            <AddObjectForm />
+            <SelectLocationForm />
           </Box>
         </Container>
       </Box>

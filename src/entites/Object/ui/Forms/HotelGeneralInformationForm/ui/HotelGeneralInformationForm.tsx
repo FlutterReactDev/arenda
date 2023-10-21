@@ -23,12 +23,11 @@ import {
   useGetParkingQuery,
   useGetPaymentTypeQuery,
   useGetSmokingOnSiteQuery,
-} from "@entites/CommonReference";
-import {
   useGetAdditionalServiceQuery,
   useGetFoodTypeQuery,
   useGetReportingDocumentTypeQuery,
-} from "@entites/CommonReference/model/api/commonReferenceApi";
+} from "@entites/CommonReference";
+
 import { hotelGeneralInformationSchema } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
 import { FormProps } from "@entites/Object/model/types";
 import { FormContainer } from "@entites/Object/ui/FormContainer";
@@ -40,8 +39,15 @@ import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InferType } from "yup";
 import { getDeclension } from "@shared/utils/getDeclension";
-const HotelGeneralInformationForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
+interface HotelGeneralInformationFormProps {
+  stateValue?: InferType<typeof hotelGeneralInformationSchema>;
+  changeState?: (data: InferType<typeof hotelGeneralInformationSchema>) => void;
+  objectTypeName: string;
+}
+const HotelGeneralInformationForm: FC<
+  FormProps & HotelGeneralInformationFormProps
+> = (props) => {
+  const { navigation, onNext, changeState, stateValue, objectTypeName } = props;
 
   const {
     data: parking,
@@ -103,26 +109,28 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
     formState: { errors },
   } = useForm({
     resolver: yupResolver(hotelGeneralInformationSchema),
+    defaultValues: stateValue,
   });
 
   const hasTransfer = watch("anObjectFeeAdditionalServices.hasTransfer");
   const allInclusive = watch("anObjectMeals.allInclusive");
   const onSubmit = (data: InferType<typeof hotelGeneralInformationSchema>) => {
-    console.log(data);
+    changeState && changeState(data);
     onNext && onNext();
   };
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
-        <FormCard title={`Название ${getDeclension("Мини-отель", "р")}`}>
-          <FormControl>
+        <FormCard title={`Название ${getDeclension(objectTypeName, "р")}`}>
+          <FormControl isInvalid={!!errors.name?.message}>
             <Input
-              {...register("heading")}
+              {...register("name")}
               placeholder={`Укажите название ${getDeclension(
-                "мини-отель",
+                objectTypeName,
                 "р"
               )}`}
             />
+            <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
             <FormHelperText>
               это название будут видеть гости при поиске (если у вас нет
               названия, можете указать название улицы, номер дома)
@@ -130,14 +138,14 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
           </FormControl>
         </FormCard>
         <FormCard title="Категория">
-          <FormControl>
+          <FormControl isInvalid={!!errors.rating?.message}>
             <FormHelperText>
               Укажите количество звёзд, присвоенных вашему объекту по Системе
               классификации гостиниц и иных средств размещения. звёздность
             </FormHelperText>
 
             <FormLabel mt={2}>Звёздность</FormLabel>
-            <Select {...register("category")} placeholder="Выберите">
+            <Select {...register("rating")} placeholder="Выберите">
               <option value="0">0</option>
               <option value="1">1</option>
               <option value="2">2</option>
@@ -145,10 +153,11 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
               <option value="4">4</option>
               <option value="5">5</option>
             </Select>
+            <FormErrorMessage>{errors.rating?.message}</FormErrorMessage>
           </FormControl>
         </FormCard>
         <FormCard title="Интернет">
-          <FormControl>
+          <FormControl isInvalid={!!errors.internetAccess?.message}>
             <FormHelperText>
               Услуга, на которую чаще всего обращают внимание гости при поиске
               жилья
@@ -166,10 +175,13 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   ))}
               </Select>
             </Skeleton>
+            <FormErrorMessage>
+              {errors.internetAccess?.message}
+            </FormErrorMessage>
           </FormControl>
         </FormCard>
         <FormCard title="Парковка">
-          <FormControl>
+          <FormControl isInvalid={!!errors.parking?.message}>
             <FormLabel>парковка для гостей</FormLabel>
             <Skeleton
               height="35px"
@@ -184,11 +196,14 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   ))}
               </Select>
             </Skeleton>
+            <FormErrorMessage>{errors.parking?.message}</FormErrorMessage>
           </FormControl>
         </FormCard>
         <FormCard title="Сведения">
           <Stack spacing={3}>
-            <FormControl>
+            <FormControl
+              isInvalid={!!errors.anObjectDetails?.yearOfConstruntion?.message}
+            >
               <FormLabel>Год постройки</FormLabel>
               <Select
                 placeholder="Выберите год постройки"
@@ -204,17 +219,27 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     );
                   })}
               </Select>
+              <FormErrorMessage>
+                {errors.anObjectDetails?.yearOfConstruntion?.message}
+              </FormErrorMessage>
             </FormControl>
-            <HStack>
-              <FormControl>
+            <HStack alignItems={'flex-start'}>
+              <FormControl
+                isInvalid={!!errors.anObjectDetails?.numberOfRooms?.message}
+              >
                 <FormLabel>Количество номеров</FormLabel>
                 <Input
                   type="number"
                   placeholder="Количество номеров"
                   {...register("anObjectDetails.numberOfRooms")}
                 />
+                <FormErrorMessage>
+                  {errors.anObjectDetails?.numberOfRooms?.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl
+                isInvalid={!!errors.anObjectDetails?.areaOfTheLand?.message}
+              >
                 <FormLabel>Площадь территории</FormLabel>
                 <InputGroup>
                   <Input
@@ -228,10 +253,15 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     </Text>
                   </InputRightElement>
                 </InputGroup>
+                <FormErrorMessage>
+                  {errors.anObjectDetails?.areaOfTheLand?.message}
+                </FormErrorMessage>
               </FormControl>
             </HStack>
             <HStack>
-              <FormControl>
+              <FormControl
+                isInvalid={!!errors.anObjectDetails?.checkInAfter?.message}
+              >
                 <FormLabel>заезд после</FormLabel>
                 <Select
                   {...register("anObjectDetails.checkInAfter")}
@@ -262,8 +292,13 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   <option value="22:00">22:00</option>
                   <option value="23:00">23:00</option>
                 </Select>
+                <FormErrorMessage>
+                  {errors.anObjectDetails?.checkInAfter?.message}
+                </FormErrorMessage>
               </FormControl>
-              <FormControl>
+              <FormControl
+                isInvalid={!!errors.anObjectDetails?.checkOutAfter?.message}
+              >
                 <FormLabel>отъезд до</FormLabel>
                 <Select
                   {...register("anObjectDetails.checkOutAfter")}
@@ -294,9 +329,14 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                   <option value="22:00">22:00</option>
                   <option value="23:00">23:00</option>
                 </Select>
+                <FormErrorMessage>
+                  {errors.anObjectDetails?.checkOutAfter?.message}
+                </FormErrorMessage>
               </FormControl>
             </HStack>
-            <FormControl>
+            <FormControl
+              isInvalid={!!errors.anObjectDetails?.smokingOnSite?.message}
+            >
               <FormLabel>Курение на территории</FormLabel>
 
               <Skeleton
@@ -315,8 +355,13 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     ))}
                 </Select>
               </Skeleton>
+              <FormErrorMessage>
+                {errors.anObjectDetails?.smokingOnSite?.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl
+              isInvalid={!!errors.anObjectDetails?.paymentType?.message}
+            >
               <FormLabel>Принимаемая оплата</FormLabel>
 
               <Skeleton
@@ -335,6 +380,9 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     ))}
                 </Select>
               </Skeleton>
+              <FormErrorMessage>
+                {errors.anObjectDetails?.paymentType?.message}
+              </FormErrorMessage>
             </FormControl>
           </Stack>
         </FormCard>
@@ -818,9 +866,11 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                 />
               </HStack>
             </FormControl>
-            {allInclusive && (
+            {!allInclusive && (
               <>
-                <FormControl>
+                <FormControl
+                  isInvalid={!!errors.anObjectMeals?.breakfast?.message}
+                >
                   <FormLabel>завтрак</FormLabel>
                   <Skeleton
                     height="35px"
@@ -838,8 +888,11 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                         ))}
                     </Select>
                   </Skeleton>
+                  <FormErrorMessage>
+                    {errors.anObjectMeals?.breakfast?.message}
+                  </FormErrorMessage>
                 </FormControl>
-                <FormControl>
+                <FormControl isInvalid={!!errors.anObjectMeals?.lunch?.message}>
                   <FormLabel>обед</FormLabel>
                   <Skeleton
                     height="35px"
@@ -857,8 +910,13 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                         ))}
                     </Select>
                   </Skeleton>
+                  <FormErrorMessage>
+                    {errors.anObjectMeals?.lunch?.message}
+                  </FormErrorMessage>
                 </FormControl>
-                <FormControl>
+                <FormControl
+                  isInvalid={!!errors.anObjectMeals?.dinner?.message}
+                >
                   <FormLabel>ужин</FormLabel>
                   <Skeleton
                     height="35px"
@@ -876,6 +934,9 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                         ))}
                     </Select>
                   </Skeleton>
+                  <FormErrorMessage>
+                    {errors.anObjectMeals?.dinner?.message}
+                  </FormErrorMessage>
                 </FormControl>
               </>
             )}
@@ -894,7 +955,11 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
           </Alert>
 
           <Stack spacing={3} mt={2}>
-            <FormControl>
+            <FormControl
+              isInvalid={
+                !!errors.anObjectFeeAdditionalServices?.cleaning?.message
+              }
+            >
               <FormLabel>Уборка</FormLabel>
               <Skeleton
                 height="35px"
@@ -914,9 +979,16 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     ))}
                 </Select>
               </Skeleton>
+              <FormErrorMessage>
+                {errors.anObjectFeeAdditionalServices?.cleaning?.message}
+              </FormErrorMessage>
             </FormControl>
 
-            <FormControl>
+            <FormControl
+              isInvalid={
+                !!errors.anObjectFeeAdditionalServices?.bedLinen?.message
+              }
+            >
               <FormLabel>Постельное бельё</FormLabel>
               <Skeleton
                 height="35px"
@@ -936,8 +1008,16 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     ))}
                 </Select>
               </Skeleton>
+              <FormErrorMessage>
+                {errors.anObjectFeeAdditionalServices?.bedLinen?.message}
+              </FormErrorMessage>
             </FormControl>
-            <FormControl>
+            <FormControl
+              isInvalid={
+                !!errors.anObjectFeeAdditionalServices?.reportingDocuments
+                  ?.message
+              }
+            >
               <FormLabel>Отчётные документы</FormLabel>
               <Skeleton
                 height="35px"
@@ -960,6 +1040,12 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
                     ))}
                 </Select>
               </Skeleton>
+              <FormErrorMessage>
+                {
+                  errors.anObjectFeeAdditionalServices?.reportingDocuments
+                    ?.message
+                }
+              </FormErrorMessage>
             </FormControl>
           </Stack>
         </FormCard>
@@ -984,19 +1070,19 @@ const HotelGeneralInformationForm: FC<FormProps> = (props) => {
             {hasTransfer && (
               <FormControl
                 isInvalid={
-                  !!errors?.anObjectFeeAdditionalServices?.transferDescription
+                  !!errors?.anObjectFeeAdditionalServices?.transferDetails
                     ?.message
                 }
               >
                 <Textarea
                   {...register(
-                    "anObjectFeeAdditionalServices.transferDescription"
+                    "anObjectFeeAdditionalServices.transferDetails"
                   )}
                   placeholder="Опишите условия предоставления трансфера"
                 />
                 <FormErrorMessage>
                   {
-                    errors?.anObjectFeeAdditionalServices?.transferDescription
+                    errors?.anObjectFeeAdditionalServices?.transferDetails
                       ?.message
                   }
                 </FormErrorMessage>

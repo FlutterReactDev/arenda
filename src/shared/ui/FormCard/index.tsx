@@ -27,11 +27,7 @@ export const FormCard: FC<PropsWithChildren<FormCardProps>> = (props) => {
       {...(!disableShadow && {
         boxShadow: "lg",
       })}
-      {...(disableShadow && {
-        boxShadow: "none",
-      })}
       p="4"
-      boxShadow="lg"
       borderRadius="xl"
       {...(w == "full" && {
         w: "full",

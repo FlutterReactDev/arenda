@@ -8,10 +8,11 @@ import { ObjectMarker } from "./ObjectMarker";
 
 interface SearchMapProps {
   inputHtmlMarkers: InputHtmlMarker[];
+  onMove?: () => void;
 }
 
 export const SearchMap: FC<SearchMapProps> = memo((props) => {
-  const { inputHtmlMarkers } = props;
+  const { inputHtmlMarkers, onMove } = props;
 
   return (
     <Map2GIS
@@ -19,13 +20,12 @@ export const SearchMap: FC<SearchMapProps> = memo((props) => {
         center: [77.17531854453188, 42.6445241832498],
         zoom: 15,
         key: _2GIS_KEY_,
-        keepCenterWhileUserZoomRotate: true,
-        scaleControl: true,
 
+        scaleControl: true,
         minZoom: 5,
       }}
-      onMouseover={(data) => {
-        console.log(data);
+      onMousedown={() => {
+        onMove && onMove();
       }}
     >
       {/* <ObjectsMapCluster inputHtmlMarkers={inputHtmlMarkers} /> */}

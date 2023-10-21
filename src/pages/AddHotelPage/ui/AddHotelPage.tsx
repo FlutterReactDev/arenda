@@ -8,26 +8,49 @@ import {
   AddressForm,
   ImageUploadForm,
 } from "@entites/Object";
-import { getImageFiles } from "@entites/Object/model/selectors";
+
+import {
+  getHotelGeneralInformation,
+  getImageFiles,
+} from "@entites/Object/model/selectors";
+import { useSelectLocationData } from "@features/SelectLocationForm";
 
 import { FormStepper } from "@shared/ui/FormSteppter";
 import { PageLoader } from "@shared/ui/PageLoader";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { Header } from "@widgets/Header";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 export const AddHotelPage = () => {
+  const { city, country, region, objectTypeProperty } = useSelectLocationData();
+  useEffect(() => {}, []);
   const onComlete = () => {};
   const dispatch = useAppDispatch();
 
-  const { city, country, region } = useAppSelector(
-    (state) => state.addObjectForm
-  );
   const addressData = useAppSelector(getAddressData);
   const selectLocationData = useAppSelector(getLocationMap);
-
   const imageFiles = useAppSelector(getImageFiles);
+  const hotelGeneralInformation = useAppSelector(getHotelGeneralInformation);
+
+  // const [createObject, { isLoading }] = useCreateObjectMutation();
+
+  // const onSaveHotel = async (
+  //   data: InferType<typeof hotelGeneralInformationSchema>
+  // ) => {
+  //   await createObject({
+  //     anObjectTypeId: objectType,
+  //     anObjectPropertyTypeId: objectTypeProperty.id,
+  //     fullAddress: selectLocationData.fullAddress,
+  //     latitude: selectLocationData.coordinates[1],
+  //     longitude: selectLocationData.coordinates[0],
+  //     city: city.name,
+  //     country: country.name,
+  //     region: region.name,
+  //     building: "string",
+  //     ...data,
+  //   });
+  // };
   return (
     <Box>
       <Header />
@@ -58,11 +81,11 @@ export const AddHotelPage = () => {
                   return (
                     <Suspense fallback={<PageLoader />}>
                       <SelectLocationMapForm
-                        city={city?.label}
+                        city={city.name}
                         house={addressData.house}
                         streetName={addressData.streetName}
-                        country={country?.label}
-                        region={region?.label}
+                        country={country.name}
+                        region={region.name}
                         stateValue={selectLocationData}
                         changeState={(data) => {
                           dispatch(addHotelActions.setLocationMap(data));
@@ -75,10 +98,20 @@ export const AddHotelPage = () => {
               },
               {
                 id: "HotelGeneralInformationForm",
+
                 render(props) {
                   return (
                     <Suspense fallback={<PageLoader />}>
-                      <HotelGeneralInformationForm {...props} />
+                      <HotelGeneralInformationForm
+                        {...props}
+                        stateValue={hotelGeneralInformation}
+                        changeState={(data) => {
+                          dispatch(
+                            addHotelActions.setHotelGeneralInformation(data)
+                          );
+                        }}
+                        objectTypeName={objectTypeProperty.name}
+                      />
                     </Suspense>
                   );
                 },

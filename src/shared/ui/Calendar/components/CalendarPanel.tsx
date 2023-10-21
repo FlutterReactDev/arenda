@@ -47,8 +47,8 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
   }) => {
     const renderProps = useDayzed(dayzedHookProps);
     const { calendars, getBackProps, getForwardProps } = renderProps;
-    const [isLessThan880] = useMediaQuery("(max-width: 880px)");
-    const [isLarger880] = useMediaQuery("(min-width: 880px)");
+    const [isLessThan880] = useMediaQuery("(max-width: 900px)");
+    const [isLarger880] = useMediaQuery("(min-width: 900px)");
     const { onDateSelected } = dayzedHookProps;
 
     const weekdayNames = useMemo(() => {

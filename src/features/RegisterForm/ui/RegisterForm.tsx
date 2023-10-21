@@ -10,12 +10,8 @@ import {
 } from "@chakra-ui/react";
 
 import { AddPhoneForm, PhonesList } from "@entites/Phone";
-import {
-  Gender,
-  PhoneSchema,
-  RegisterSchema,
-  useRegisterMutation,
-} from "@entites/User";
+import { Gender, PhoneSchema, RegisterSchema } from "@entites/User";
+import { useRegisterMutation } from "@entites/User/model/api/userApi";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm, useFieldArray } from "react-hook-form";

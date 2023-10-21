@@ -28,6 +28,7 @@ export interface FormStepperProps {
     stepScreens: {
       id: number | string;
       render?: (props: FormStepRenderProps) => ReactNode;
+      onComplete?: () => void;
     }[];
   }[];
   onComplete?: () => void;
@@ -44,8 +45,6 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   useEffect(() => {
-    console.log(searchParams.get("step"));
-
     if (searchParams.get("step") == undefined) {
       searchParams.set("step", "0");
     }
@@ -61,26 +60,25 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
     if (forms) {
       const queryStep = Number(searchParams.get("step"));
       const queryScreen = Number(searchParams.get("screen"));
+      console.log(queryStep, queryScreen);
 
+      if (forms[queryStep]?.stepScreens[queryScreen]?.onComplete) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        //@ts-ignore
+        forms[queryStep]?.stepScreens[queryScreen]?.onComplete();
+      }
       const step = forms[queryStep];
-
       const nextScreen = step.stepScreens[queryScreen + 1] || undefined;
 
       if (nextScreen != undefined) {
         searchParams.set("screen", `${queryScreen + 1}`);
         setSearchParams(searchParams);
-        // setCurrentActiveForm((prevState) => {
-        //   return { ...prevState, screen: prevState.screen + 1 };
-        // });
       }
 
       if (nextScreen == undefined && forms[queryStep + 1] != undefined) {
         searchParams.set("step", `${Number(searchParams.get("step")) + 1}`);
         searchParams.set("screen", `0`);
         setSearchParams(searchParams);
-        // setCurrentActiveForm((prevState) => {
-        //   return { ...prevState, step: prevState.step + 1, screen: 0 };
-        // });
       }
 
       if (
@@ -100,7 +98,6 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
         searchParams.set("step", `${Number(forms.length)}`);
         searchParams.set("screen", `0`);
         setSearchParams(searchParams);
-        // setCurrentActiveForm({ screen: 0, step: forms.length });
       }
     }
   };
@@ -113,9 +110,6 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
       const nextScreen = step?.stepScreens[queryScreen - 1];
 
       if (nextScreen != undefined) {
-        // setCurrentActiveForm((prevState) => {
-        //   return { ...prevState, screen: prevState.screen - 1 };
-        // });
         searchParams.set("screen", `${Number(searchParams.get("screen")) - 1}`);
         setSearchParams(searchParams);
       }
@@ -130,14 +124,6 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
         );
         searchParams.set("step", `${queryStep - 1}`);
         setSearchParams(searchParams);
-
-        // setCurrentActiveForm((prevState) => {
-        //   return {
-        //     ...prevState,
-        //     step: prevState.step - 1,
-        //     screen: forms[currentActiveForm.step - 1].stepScreens.length - 1,
-        //   };
-        // });
       }
     }
   };

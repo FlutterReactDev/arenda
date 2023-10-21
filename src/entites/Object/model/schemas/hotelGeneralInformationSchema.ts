@@ -1,45 +1,45 @@
 import * as Yup from "yup";
 export const hotelGeneralInformationSchema = Yup.object({
-  heading: Yup.string().required(),
-  category: Yup.string(),
-  internetAccess: Yup.string().required(),
-  parking: Yup.string().required(),
+  name: Yup.string().required("Поле обязательно для заполнения"),
+  rating: Yup.string(),
+  internetAccess: Yup.string().required("Выберите один из предложенных вариантов"),
+  parking: Yup.string().required("Выберите один из предложенных вариантов"),
   anObjectDetails: Yup.object({
-    yearOfConstruntion: Yup.string(),
-    numberOfRooms: Yup.string().required(),
-    areaOfTheLand: Yup.string().required(),
-    checkInAfter: Yup.string().required(),
-    checkOutAfter: Yup.string().required(),
-    smokingOnSite: Yup.string().required(),
-    paymentType: Yup.string().required(),
+    yearOfConstruntion: Yup.string().required("Выберите один из предложенных вариантов"),
+    numberOfRooms: Yup.string().required("Поле обязательно для заполнения"),
+    areaOfTheLand: Yup.string().required("Поле обязательно для заполнения"),
+    checkInAfter: Yup.string().required("Выберите один из предложенных вариантов"),
+    checkOutAfter: Yup.string().required("Выберите один из предложенных вариантов"),
+    smokingOnSite: Yup.string().required("Выберите один из предложенных вариантов"),
+    paymentType: Yup.string().required("Выберите один из предложенных вариантов"),
   }).required(),
   anObjectMeals: Yup.object({
     allInclusive: Yup.boolean(),
     breakfast: Yup.string().when("allInclusive", (allInclusive, schema) => {
-      if (allInclusive[0]) {
-        return schema.required();
+      if (!allInclusive[0]) {
+        return schema.required("Выберите один из предложенных вариантов");
       }
       return schema;
     }),
     lunch: Yup.string().when("allInclusive", (allInclusive, schema) => {
-      if (allInclusive[0]) {
-        return schema.required();
+      if (!allInclusive[0]) {
+        return schema.required("Выберите один из предложенных вариантов");
       }
       return schema;
     }),
     dinner: Yup.string().when("allInclusive", (allInclusive, schema) => {
-      if (allInclusive[0]) {
-        return schema.required();
+      if (!allInclusive[0]) {
+        return schema.required("Выберите один из предложенных вариантов");
       }
       return schema;
     }),
   }).required(),
   anObjectFeeAdditionalServices: Yup.object({
-    cleaning: Yup.string(),
-    bedLinen: Yup.string(),
-    reportingDocuments: Yup.string(),
+    cleaning: Yup.string().required("Выберите один из предложенных вариантов"),
+    bedLinen: Yup.string().required("Выберите один из предложенных вариантов"),
+    reportingDocuments: Yup.string().required("Выберите один из предложенных вариантов"),
     hasTransfer: Yup.boolean(),
-    transferDescription: Yup.string().when(
+    transferDetails: Yup.string().when(
       "hasTransfer",
       (transfer, schema) => {
         if (transfer[0]) {
