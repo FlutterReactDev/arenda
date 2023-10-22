@@ -36,7 +36,7 @@ interface DesktopGuestsProps {
 export const DesktopGuests = forwardRef<
   MutableRefObject<HTMLDivElement>,
   DesktopGuestsProps
->((props, ref) => {
+>((_, ref) => {
   const ageOptions = useMemo(
     () => [
       {

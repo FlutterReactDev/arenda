@@ -84,9 +84,9 @@ export const AddObjectStepForm = () => {
                           })
                         );
                       }}
-                      city={city?.label}
-                      country={country?.label}
-                      region={region?.label}
+                      city={city?.name}
+                      country={country?.name}
+                      region={region?.name}
                       house={addressData.house}
                       streetName={addressData.streetName}
                       {...props}

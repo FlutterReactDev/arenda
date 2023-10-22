@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { Swiper, SwiperSlide, SwiperProps } from "swiper/react";
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/navigation";
 import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Box, Image } from "@chakra-ui/react";
-
+import { Swiper as SwiperType } from "swiper/types";
 const ObjectDetailSlider = () => {
-  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperProps>();
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType>();
 
   return (
     <Box maxW={"full"} w={"full"}>
@@ -22,7 +22,6 @@ const ObjectDetailSlider = () => {
         style={{
           borderRadius: "20px",
         }}
-        onSlideChange={(slide) => {}}
       >
         <SwiperSlide
           style={{
