@@ -13,6 +13,7 @@ import {
 import { Suspense, lazy, memo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
+import { Link } from "react-router-dom";
 
 export const SimpleObjectCard = memo(() => {
   const Slider = lazy(() => import("./SimpleObjectSlider"));
@@ -46,6 +47,12 @@ export const SimpleObjectCard = memo(() => {
       bg={"white"}
       rounded={"lg"}
       pos={"relative"}
+      as={Link}
+      to={"/object-detail"}
+      transition={"0.3s all"}
+      _hover={{
+        boxShadow: "xl",
+      }}
     >
       <HStack
         position={"absolute"}

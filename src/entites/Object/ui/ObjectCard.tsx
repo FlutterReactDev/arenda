@@ -24,6 +24,7 @@ import { Suspense, lazy, memo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
 import { BiSolidLike } from "react-icons/bi";
+import { Link } from "react-router-dom";
 const Slider = lazy(() => import("./ObjectSlider"));
 export const ObjectCard = memo(() => {
   const IMAGE =
@@ -59,6 +60,12 @@ export const ObjectCard = memo(() => {
       gridTemplateRows={"180px"}
       gridTemplateColumns={"260px 1fr 2.5px 199px"}
       gap={2}
+      as={Link}
+      to={"/object-detail"}
+      transition={"0.3s all"}
+      _hover={{
+        boxShadow: "xl",
+      }}
     >
       <HStack
         position={"absolute"}

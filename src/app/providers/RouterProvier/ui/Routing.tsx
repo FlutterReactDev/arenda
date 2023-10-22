@@ -4,6 +4,7 @@ import {
   AddObjectStepperPage,
   ProtectAddObjectRoute,
 } from "@pages/AddObjectStepperPage";
+import { CalendarPage } from "@pages/CalendarPage";
 import { HomePage } from "@pages/HomePage";
 import { ObjectDetailPage } from "@pages/ObjectDetailPage";
 
@@ -45,6 +46,7 @@ export const Routing = () => {
       />
       <Route path="/add-hotel" element={<AddHotelPage />} />
       <Route path="/object-detail" element={<ObjectDetailPage />} />
+      <Route path="/calendar" element={<CalendarPage />} />
     </Routes>
   );
 };

@@ -7,6 +7,7 @@ import { addObjectSliceReducer } from "@features/SelectLocationForm";
 
 import { userReducer } from "@entites/User";
 import { searchObjectReducer } from "@features/SearchObjects";
+import { calendarReducer } from "@features/Calendar";
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
@@ -16,11 +17,14 @@ export const store = configureStore({
     addObjectForm: addObjectSliceReducer,
     addObjectStep: addObjectStepReducer,
     addHotel: addHotelReducer,
+    calendar: calendarReducer,
     user: userReducer,
   },
 
   middleware(getDefaultMiddleware) {
-    return getDefaultMiddleware().concat([
+    return getDefaultMiddleware({
+      serializableCheck: false,
+    }).concat([
       baseApiWithReAuth.middleware,
       baseApi.middleware,
       base2GISApi.middleware,

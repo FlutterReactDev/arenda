@@ -2,47 +2,21 @@
   "country": [
     {
       "id": 1,
-      "label": "Кыргызстан"
-    },
-    {
-      "id": 2,
-      "label": "Апекстан"
+      "name": "Кыргызстан",
+      "viewpoint1": {
+        "lng": 13321312,
+        "lat": 12312321
+      },
+      "viewpoint2": {
+        "lng": 13321312,
+        "lat": 12312321
+      }
     }
   ],
   "regions": [
     {
-      "id": 1,
-      "label": "Таласская область",
-      "countryId": 2
-    },
-    {
-      "id": 2,
-      "label": "Бишкек",
-      "countryId": 1
-    },
-    {
       "id": 3,
       "label": "Иссык-Кульский район",
-      "countryId": 1
-    },
-    {
-      "id": 4,
-      "label": "Чуйская область",
-      "countryId": 1
-    },
-    {
-      "id": 5,
-      "label": "Нарынская область",
-      "countryId": 1
-    },
-    {
-      "id": 6,
-      "label": "Ошская область",
-      "countryId": 1
-    },
-    {
-      "id": 7,
-      "label": "Баткенская область",
       "countryId": 1
     }
   ],
@@ -56,18 +30,6 @@
       "id": 2,
       "label": "Бостери",
       "regionId": 3
-    },
-    {
-      "id": 3,
-      "label": "Сон-Коль",
-      "regionId": 5
-    },
-    {
-      "id": 4,
-      "label": "Кант",
-      "regionId": 2
     }
-  ],
-
-  "objectTypes": [{}]
+  ]
 }

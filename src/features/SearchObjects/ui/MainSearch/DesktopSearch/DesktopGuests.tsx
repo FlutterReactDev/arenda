@@ -304,7 +304,7 @@ export const DesktopGuests = forwardRef<
                   </HStack>
                 </HStack>
                 <Divider mt={4} mb={4} />
-                <Stack mt={2} overflowY={"auto"} maxH="30dvh">
+                <Stack mt={2} overflowY={"auto"} maxH="40dvh">
                   {fields.map((item, index) => {
                     return (
                       <Controller

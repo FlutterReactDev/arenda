@@ -50,7 +50,7 @@ export const ResultSearchDatepickerInput: FC<ResultSearchDatepickerInputProps> =
           }}
         >
           {date
-            ? format(date, "d MMMM, EEE", {
+            ? format(date, "d MMM EEE", {
                 locale: ru,
               })
             : "Когда"}
