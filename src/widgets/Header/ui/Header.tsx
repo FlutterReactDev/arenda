@@ -4,7 +4,6 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Button,
   PopoverBody,
   PopoverFooter,
   Text,
@@ -19,12 +18,15 @@ import {
   Spinner,
   Icon,
   ModalFooter,
+  Button,
+  HStack,
 } from "@chakra-ui/react";
 import { Suspense, useState } from "react";
 import { ModalType } from "../model/types/HeaderTypes";
 import { LoginForm } from "@features/LoginForm";
 import { BiUserCircle } from "react-icons/bi";
 import { RegisterForm } from "@features/RegisterForm";
+import { Link } from "react-router-dom";
 export const Header = () => {
   const { isOpen, onClose, onOpen } = useDisclosure();
   const [modalType, setModalType] = useState<ModalType>(ModalType.LOGIN);
@@ -40,7 +42,7 @@ export const Header = () => {
     <Box bgColor="blackAlpha.900" h={"12"} px={2}>
       <Flex h="full" justifyContent={"space-between"} alignContent={"center"}>
         <Box>Logo</Box>
-        <Flex alignItems={"center"} h="full">
+        <HStack spacing={4} alignItems={"center"} h="full">
           <Popover trigger="hover" openDelay={0}>
             <PopoverTrigger>
               <Button
@@ -64,7 +66,10 @@ export const Header = () => {
               </PopoverFooter>
             </PopoverContent>
           </Popover>
-        </Flex>
+          <Button colorScheme="red" as={Link} to="/search-result">
+            Поиск
+          </Button>
+        </HStack>
       </Flex>
 
       <Modal isOpen={isOpen} onClose={onClose} size={["full", "xl", "2xl"]}>
