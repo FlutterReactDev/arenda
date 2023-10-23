@@ -14,19 +14,55 @@ import {
   Spinner,
 } from "@chakra-ui/react";
 
-import { FC, Suspense } from "react";
+import {
+  LegacyRef,
+  MutableRefObject,
+  Suspense,
+  forwardRef,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { MobileCalendar } from "../MobileCalendar";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 interface MobileSearchDatePickerProps {
-  dates: Date[];
-  handleSelectDate: (date: Date[]) => void;
+  onChange: (value: { checkIn: Date; checkOut: Date }) => void;
+  value: {
+    checkIn: Date;
+    checkOut: Date;
+  };
+  hasError: boolean;
 }
 
-export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
-  props
-) => {
-  const { onClose, onOpen, isOpen } = useDisclosure();
-  const { dates, handleSelectDate } = props;
+export const MobileSearchDatePicker = forwardRef<
+  MutableRefObject<HTMLDivElement>,
+  MobileSearchDatePickerProps
+>((props, ref) => {
+  const { onChange, value, hasError } = props;
+  const { onClose, onOpen, isOpen } = useDisclosure({
+    defaultIsOpen: hasError,
+  });
 
+  const [calendarDates, setCalendarDates] = useState<Date[]>([
+    value?.checkIn,
+    value?.checkOut,
+  ]);
+
+  const handleSelectDate = useCallback((dates: Date[]) => {
+    setCalendarDates(dates);
+  }, []);
+  useEffect(() => {
+    onChange({
+      checkIn: calendarDates[0],
+      checkOut: calendarDates[1],
+    });
+  }, [calendarDates, onChange]);
+  useEffect(() => {
+    if (hasError) {
+      onOpen();
+    }
+  }, [hasError, onOpen]);
   return (
     <>
       <Box w={"full"}>
@@ -37,6 +73,12 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
             px={"4"}
             w={"full"}
             onClick={onOpen}
+            onFocus={() => {
+              if (!isOpen) {
+                onOpen();
+              }
+            }}
+            ref={ref as LegacyRef<HTMLDivElement>}
             border={"1px solid"}
             borderColor={"gray.200"}
             display={"flex"}
@@ -52,8 +94,12 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
             >
               Заезд
             </Text>
-            <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
-              Когда
+            <Text fontWeight="medium" fontSize="16px">
+              {value?.checkIn
+                ? format(value.checkIn, "d LLL EEE", {
+                    locale: ru,
+                  })
+                : "Когда"}
             </Text>
           </Box>
           <Box
@@ -77,8 +123,13 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
             >
               Заезд
             </Text>
-            <Text fontWeight="medium" fontSize="14px" lineHeight="20px">
-              Когда
+
+            <Text fontWeight="medium" fontSize="16px">
+              {value?.checkOut
+                ? format(value.checkOut, "d LLL EEE", {
+                    locale: ru,
+                  })
+                : "Когда"}
             </Text>
           </Box>
         </HStack>
@@ -106,7 +157,7 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
               }
             >
               <MobileCalendar
-                dates={dates}
+                dates={calendarDates}
                 handleSelectDate={handleSelectDate}
               />
             </Suspense>
@@ -115,4 +166,4 @@ export const MobileSearchDatePicker: FC<MobileSearchDatePickerProps> = (
       </Drawer>
     </>
   );
-};
+});
