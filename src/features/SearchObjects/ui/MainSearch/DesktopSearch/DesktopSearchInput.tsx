@@ -17,13 +17,14 @@ import { LegacyRef, MutableRefObject, forwardRef, useState } from "react";
 interface DesktopSearchInputProps {
   value: string;
   onChange: (value: string) => void;
+  trigger: () => void;
 }
 
 export const DesktopSearchInput = forwardRef<
   MutableRefObject<HTMLDivElement>,
   DesktopSearchInputProps
 >((props, ref) => {
-  const { onChange, value } = props;
+  const { onChange, value, trigger } = props;
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [isHidden, setIsHidden] = useState(false);
   return (
@@ -105,9 +106,15 @@ export const DesktopSearchInput = forwardRef<
           >
             <Text>Популярные направления </Text>
             <List color="blackAlpha.800" fontSize="xs" spacing={3} mt={2}>
-              <Flex alignItems="center">
+              <Flex
+                alignItems="center"
+                onClick={() => {
+                  onChange("Кыргызстан, Ыссык-кол, Бостери");
+                  trigger();
+                }}
+              >
                 <ListIcon as={SearchIcon} color="blackAlpha.800" />
-                <Link>Санкт-Петербург, Санкт-Петербург и область, Россия</Link>
+                <Link>Кыргызстан, Ыссык-кол, Бостери</Link>
               </Flex>
             </List>
           </Box>

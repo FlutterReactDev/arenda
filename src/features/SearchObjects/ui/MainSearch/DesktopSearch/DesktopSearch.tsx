@@ -58,6 +58,7 @@ export const DesktopSearch = () => {
       scrollRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   };
+
   return (
     <Box>
       <FormProvider {...methods}>
@@ -92,6 +93,10 @@ export const DesktopSearch = () => {
                     onChange={onChange}
                     value={value}
                     ref={ref}
+                    trigger={() => {
+                      methods.trigger("dates");
+                      methods.setFocus("dates");
+                    }}
                   />
                 );
               }}
