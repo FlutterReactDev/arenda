@@ -50,7 +50,15 @@ export const ResultSearch: FC<ResultSearch> = (props) => {
           name="term"
           render={({ field: { onChange, value, ref } }) => {
             return (
-              <ResultSearchInput onChange={onChange} value={value} ref={ref} />
+              <ResultSearchInput
+                trigger={() => {
+                  methods.trigger("dates");
+                  methods.setFocus("dates");
+                }}
+                onChange={onChange}
+                value={value}
+                ref={ref}
+              />
             );
           }}
         />
