@@ -106,7 +106,7 @@ export const SimpleObjectCard = memo(() => {
             </sup>
           </Box>
           <Box as="span" color={"gray.500"}>
-            Апарт-отель {`"`}Заебись отель{`"`}
+            Апарт-отель {`"`}Хороший отель{`"`}
           </Box>
         </Box>
         <Heading size={"sm"} fontWeight={"medium"}>
