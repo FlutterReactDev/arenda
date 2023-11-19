@@ -24,11 +24,12 @@ export const CalendarDetailAvailability: FC<CalendarDetailAvailability> = memo(
       objectId,
     } = props;
     const [isLessThan968] = useMediaQuery("(max-width: 968px)");
-    const cell = !isLessThan968 ? 97 : 6;
+    const cell = !isLessThan968 ? 97 : 68;
 
     const topValue = `calc((${cell}px * ${top}) + 30px + ${cell / 2 - 10}px )`;
     const wValue = `calc(${cell}px * ${width})`;
     const leftValue = `calc(${cell}px * ${left})`;
+
     return (
       <EventPopover id={id} objectId={objectId}>
         <HStack
