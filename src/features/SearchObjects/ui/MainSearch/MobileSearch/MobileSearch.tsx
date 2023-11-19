@@ -35,8 +35,6 @@ export const MobileSearch = () => {
 
   useEffect(() => {
     if (Object.keys(methods.formState.errors).length != 0) {
-      console.log(Object.keys(methods.formState.errors));
-
       setHasError(Object.keys(methods.formState.errors)[0]);
     }
   }, [methods.formState.errors]);

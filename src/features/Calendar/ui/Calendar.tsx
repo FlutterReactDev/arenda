@@ -1,150 +1,237 @@
-import { CalendarIcon, SearchIcon } from "@chakra-ui/icons";
+import {
+  CalendarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+} from "@chakra-ui/icons";
 import {
   Box,
+  Button,
+  Flex,
   Grid,
   GridItem,
-  Stack,
-  Select,
-  Button,
-  InputGroup,
-  Input,
-  InputLeftElement,
   HStack,
-  Switch,
+  Hide,
+  IconButton,
+  Select,
+  Stack,
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { calendarActions } from "..";
 
-import { Day } from "./Day";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { getColumnDays } from "../model/selectors";
-import { MouseEventHandler, useRef } from "react";
+import { memo, useCallback, useEffect, useRef, useState } from "react";
+import {
+  getColumnDays,
+  getCommonSettings,
+  getCurrentObjects,
+} from "../model/selectors";
+import { Day } from "./Day";
 
-export const Calendar = () => {
+import { useDrag } from "@use-gesture/react";
+
+import { ActionTop } from "./ActionTop";
+import { CalendarNavigationBtns } from "./CalendarNavigationBtns";
+import { CalendarScroller } from "./CalendarScroller";
+import { ModalDeleteAvailibility } from "./ModalDeleteAvailibility";
+import { ObjectItem } from "./ObjectItem";
+import { ObjectPagination } from "./ObjectsPagination";
+import { SearchObject } from "./SearchObject";
+import { Sidebar } from "./Sidebar";
+import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
+
+export const Calendar = memo(() => {
   const dispatch = useAppDispatch();
+
+  const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const days = useAppSelector(getColumnDays);
-
+  const objects = useAppSelector(getCurrentObjects);
+  const [rangeObjectId, setRangeObjectId] = useState<null | number>(null);
   const touchX = useRef(0);
-  const clientX = useRef(0);
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  function onTouchStart(event) {
-    touchX.current = event.changedTouches[0].clientX;
-  }
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  function onTouchMove(event) {
-    const diffX = event.changedTouches[0].clientX - touchX.current;
-    if (Math.abs(diffX) > 70) {
-      touchX.current = event.changedTouches[0].clientX;
-      if (diffX < 0) {
+  const { currentWidth, sidebarWidth } = useAppSelector(getCommonSettings);
+
+  const onResize = () => {
+    dispatch(calendarActions.initWidthWindow());
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", onResize);
+
+    dispatch(calendarActions.initWidthWindow());
+
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, []);
+
+  const bind = useDrag(
+    ({ offset: [ox], first }) => {
+      if (first) {
+        touchX.current = ox;
+      }
+      const diffX = ox - touchX.current;
+
+      if (Math.abs(diffX) >= currentWidth) {
+        touchX.current = ox;
+        if (diffX < 0) {
+          dispatch(calendarActions.increaseDay());
+        } else {
+          dispatch(calendarActions.decreaseDay());
+        }
+      }
+    },
+    {
+      axis: "x",
+    }
+  );
+
+  const onScroll = useCallback(
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    (event) => {
+      if (event.deltaY > 1) {
         dispatch(calendarActions.increaseDay());
       } else {
-        dispatch(calendarActions.decrease());
+        dispatch(calendarActions.decreaseDay());
       }
-    }
-  }
-  function onMouseStart(event: MouseEvent) {
-    clientX.current = event.clientX;
-  }
+    },
+    [dispatch]
+  );
 
-  function onMouseMove(event: MouseEvent) {
-    if (!clientX.current) return;
+  const onPrev = () => {
+    dispatch(calendarActions.decreaseStep());
+  };
+  const onNext = () => {
+    dispatch(calendarActions.increaseStep());
+  };
 
-    const diffX = event.clientX - clientX.current;
-    const Dev = diffX / 70;
-    const isChange =
-      (Dev < 0 && Math.floor(-Dev) !== 0) || (Dev > 0 && Math.ceil(Dev));
-    if (isChange) {
-      if (Dev < 0) {
-        dispatch(calendarActions.increaseDay());
-      } else {
-        dispatch(calendarActions.decrease());
-      }
-      clientX.current += Math.sign(diffX) * 70;
-    }
-  }
-
-  function onMouseEnd() {
-    clientX.current = 0;
-  }
+  const onRangeObjectId = useCallback((id: number) => {
+    setRangeObjectId(id);
+  }, []);
 
   return (
     <Box bgColor={"blackAlpha.50"}>
-      <Box h="144px">
+      <Box>
         <Grid
-          gridTemplateColumns={"280px 1fr"}
-          gridTemplateRows={"64px 80px"}
-          gridTemplateAreas={`"filter actionsTop"
-              "filter actionsBottom"`}
+          gridTemplateColumns={isLessThan968 ? "1fr" : "270px 1fr"}
+          gridTemplateRows={isLessThan968 ? "auto auto" : "124px 80px"}
+          gridTemplateAreas={
+            isLessThan968
+              ? ` "filter filter"
+              "actionsTop actionsTop"
+              "actionsBottom actionsBottom"
+              `
+              : `
+              "filter actionsTop"
+              " filter actionsBottom"`
+          }
         >
           <GridItem area={"filter"}>
-            <Stack>
-              <Select>
+            <Stack alignItems={"center"} h="full" spacing={3}>
+              <Select bgColor={"white"}>
                 <option>Дом, коттедж</option>
               </Select>
-              <Button leftIcon={<CalendarIcon />}>
-                Найти свободные на даты
-              </Button>
-              <InputGroup>
-                <Input placeholder="Адресс объекта" />
-                <InputLeftElement>
-                  <SearchIcon />
-                </InputLeftElement>
-              </InputGroup>
+              <Hide breakpoint="(max-width: 968px)">
+                <Button leftIcon={<CalendarIcon />}>
+                  Найти свободные на даты
+                </Button>
+                <SearchObject />
+              </Hide>
+              <Box>
+                <Hide breakpoint="(max-width: 968px)">
+                  <CalendarNavigationBtns />
+                </Hide>
+              </Box>
             </Stack>
           </GridItem>
 
-          <GridItem area={"actionsTop"}>
-            <Grid gridTemplateColumns={"1fr 160px"}>
-              <GridItem>
-                <HStack>
-                  <Button></Button>
-                  <Button></Button>
-                  <Button></Button>
-                </HStack>
-              </GridItem>
-              <GridItem>
-                <Switch>Режим Цен</Switch>
-              </GridItem>
-            </Grid>
-          </GridItem>
+          <ActionTop />
 
-          <GridItem area={"actionsBottom"}>
-            <HStack
-              cursor={"ew-resize"}
-              border={"1px solid"}
-              borderColor={"#d8d8d8"}
-              overflow={"hidden"}
-              alignItems={"center"}
-              spacing={0}
-              h="full"
-              userSelect={"none"}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onMouseDown={
-                onMouseStart as unknown as MouseEventHandler<HTMLDivElement>
+          <GridItem area={"actionsBottom"} overflow={"hidden"} w="full">
+            <Grid
+              gridTemplateColumns={
+                isLessThan968 ? `${sidebarWidth}px 1fr` : "1fr"
               }
-              onMouseMove={
-                onMouseMove as unknown as MouseEventHandler<HTMLDivElement>
-              }
-              onMouseUp={onMouseEnd}
+              alignItems={"flex-end"}
             >
-              {days.map((day) => {
-                return (
-                  <Day
-                    isMonth={day.isMonth}
-                    date={day.date}
-                    key={day.date.getDate()}
-                  />
-                );
-              })}
-            </HStack>
+              {isLessThan968 && (
+                <Flex alignItems={"center"} justifyContent={"center"} pb={1}>
+                  <SmallGoToDateBtn />
+                </Flex>
+              )}
+
+              <HStack
+                cursor={"ew-resize"}
+                borderBottom={"1px solid"}
+                borderColor={"#d8d8d8"}
+                overflow={"hidden"}
+                spacing={0}
+                h="full"
+                userSelect={"none"}
+                pos={"relative"}
+                {...bind()}
+                onWheel={onScroll}
+                style={{
+                  touchAction: "none",
+                }}
+              >
+                {!isLessThan968 && (
+                  <IconButton
+                    aria-label="left arrow"
+                    onClick={onPrev}
+                    isRound
+                    bgColor={"white"}
+                    mt={4}
+                    position={"absolute"}
+                    left={"15px"}
+                    top={"15px"}
+                    fontSize={"xl"}
+                  >
+                    <ChevronLeftIcon />
+                  </IconButton>
+                )}
+
+                {days.map((day, index) => {
+                  return <Day key={index} {...day} />;
+                })}
+
+                {!isLessThan968 && (
+                  <IconButton
+                    aria-label="right arrow"
+                    onClick={onNext}
+                    isRound
+                    bgColor={"white"}
+                    mt={4}
+                    right={"15px"}
+                    top={"15px"}
+                    position={"absolute"}
+                    fontSize={"xl"}
+                  >
+                    <ChevronRightIcon />
+                  </IconButton>
+                )}
+              </HStack>
+            </Grid>
           </GridItem>
         </Grid>
       </Box>
-      <Box h="calc(100dvh - 144px)"></Box>
+      <Box h="calc(100dvh - 204px - 48px)" position={"relative"}>
+        {objects.map((object) => {
+          return (
+            <ObjectItem
+              setRangeObjectId={onRangeObjectId}
+              rangeObjectId={rangeObjectId}
+              {...object}
+              key={object.id}
+            />
+          );
+        })}
+        <CalendarScroller />
+        <ObjectPagination />
+      </Box>
+      <ModalDeleteAvailibility />
+      <Sidebar />
     </Box>
   );
-};
+});

@@ -4,10 +4,14 @@ export const CommentOwner = () => {
   return (
     <Stack alignItems={"flex-start"} position={"relative"}>
       <HStack>
-        <Avatar src="https://bit.ly/broken-link" />
+        <Avatar size={["sm", "md"]} src="https://bit.ly/broken-link" />
         <HStack spacing={1}>
-          <Text fontWeight={"medium"}>Jane Doe,</Text>
-          <Text color={"gray.500"}>хозяин жилья</Text>
+          <Text fontSize={["small", "sm", "md"]} fontWeight={"medium"}>
+            Jane Doe,
+          </Text>
+          <Text fontSize={["small", "sm", "md"]} color={"gray.500"}>
+            хозяин жилья
+          </Text>
         </HStack>
       </HStack>
       <Text>Круто </Text>

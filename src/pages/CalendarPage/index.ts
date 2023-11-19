@@ -1,1 +1,1 @@
-export { CalendarPage } from "./ui/CalendarPage";
+export { CalendarPageChunk as CalendarPage } from "./ui/CalendarPageChunk";

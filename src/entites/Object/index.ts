@@ -28,3 +28,4 @@ export { guestsSchema } from "./model/schemas/guestsSchema";
 export type { GuestsType } from "./model/schemas/guestsSchema";
 export type { ObjectType } from "./model/types";
 export { useCreateObjectMutation } from "./model/api/objectApi";
+export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";

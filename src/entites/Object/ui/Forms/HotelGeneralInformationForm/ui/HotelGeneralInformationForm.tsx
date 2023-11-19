@@ -26,10 +26,11 @@ import {
   useGetAdditionalServiceQuery,
   useGetFoodTypeQuery,
   useGetReportingDocumentTypeQuery,
+  useGetObjectStarRatingQuery,
 } from "@entites/CommonReference";
 
 import { hotelGeneralInformationSchema } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
-import { FormProps } from "@entites/Object/model/types";
+import { AdditionalServices, FormProps } from "@entites/Object/model/types";
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormCard } from "@shared/ui/FormCard";
@@ -39,6 +40,8 @@ import { FC } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { InferType } from "yup";
 import { getDeclension } from "@shared/utils/getDeclension";
+import { getCurrencySymbol } from "@shared/utils/getCurrencySymbol";
+
 interface HotelGeneralInformationFormProps {
   stateValue?: InferType<typeof hotelGeneralInformationSchema>;
   changeState?: (data: InferType<typeof hotelGeneralInformationSchema>) => void;
@@ -102,6 +105,14 @@ const HotelGeneralInformationForm: FC<
   });
 
   const {
+    data: objectStarRating,
+    isFetching: objectStarRatingIsLoading,
+    isSuccess: objectStarRatingIsSuccess,
+  } = useGetObjectStarRatingQuery("", {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const {
     register,
     watch,
     handleSubmit,
@@ -112,9 +123,15 @@ const HotelGeneralInformationForm: FC<
     defaultValues: stateValue,
   });
 
+  console.log(errors);
+
   const hasTransfer = watch("anObjectFeeAdditionalServices.hasTransfer");
   const allInclusive = watch("anObjectMeals.allInclusive");
+  const cleaning = watch("anObjectFeeAdditionalServices.cleaning");
+  const bedLinen = watch("anObjectFeeAdditionalServices.bedLinen");
   const onSubmit = (data: InferType<typeof hotelGeneralInformationSchema>) => {
+    console.log(data);
+
     changeState && changeState(data);
     onNext && onNext();
   };
@@ -145,14 +162,19 @@ const HotelGeneralInformationForm: FC<
             </FormHelperText>
 
             <FormLabel mt={2}>Звёздность</FormLabel>
-            <Select {...register("rating")} placeholder="Выберите">
-              <option value="0">0</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-              <option value="4">4</option>
-              <option value="5">5</option>
-            </Select>
+            <Skeleton
+              isLoaded={!objectStarRatingIsLoading && objectStarRatingIsSuccess}
+            >
+              <Select {...register("rating")} placeholder="Выберите">
+                {objectStarRating &&
+                  objectStarRating.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.name}
+                    </option>
+                  ))}
+              </Select>
+            </Skeleton>
+
             <FormErrorMessage>{errors.rating?.message}</FormErrorMessage>
           </FormControl>
         </FormCard>
@@ -223,7 +245,7 @@ const HotelGeneralInformationForm: FC<
                 {errors.anObjectDetails?.yearOfConstruntion?.message}
               </FormErrorMessage>
             </FormControl>
-            <HStack alignItems={'flex-start'}>
+            <HStack alignItems={"flex-start"}>
               <FormControl
                 isInvalid={!!errors.anObjectDetails?.numberOfRooms?.message}
               >
@@ -979,6 +1001,29 @@ const HotelGeneralInformationForm: FC<
                     ))}
                 </Select>
               </Skeleton>
+              {cleaning == AdditionalServices.PAID && (
+                <FormControl
+                  isInvalid={
+                    !!errors.anObjectFeeAdditionalServices?.cleaningSum?.message
+                  }
+                  mt={2}
+                >
+                  <FormLabel>сколько стоит уборка</FormLabel>
+                  <InputGroup>
+                    <Input
+                      {...register("anObjectFeeAdditionalServices.cleaningSum")}
+                      placeholder="сколько стоит уборка"
+                      type="number"
+                    />
+                    <InputRightElement>
+                      {getCurrencySymbol("ru-RU", "KGS")}
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.anObjectFeeAdditionalServices?.cleaningSum?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
               <FormErrorMessage>
                 {errors.anObjectFeeAdditionalServices?.cleaning?.message}
               </FormErrorMessage>
@@ -1008,6 +1053,29 @@ const HotelGeneralInformationForm: FC<
                     ))}
                 </Select>
               </Skeleton>
+              {bedLinen == AdditionalServices.PAID && (
+                <FormControl
+                  isInvalid={
+                    !!errors.anObjectFeeAdditionalServices?.bedLinenSum?.message
+                  }
+                  mt={2}
+                >
+                  <FormLabel>стоимость комплекта белья</FormLabel>
+                  <InputGroup>
+                    <Input
+                      {...register("anObjectFeeAdditionalServices.bedLinenSum")}
+                      placeholder="стоимость комплекта белья"
+                      type="number"
+                    />
+                    <InputRightElement>
+                      {getCurrencySymbol("ru-RU", "KGS")}
+                    </InputRightElement>
+                  </InputGroup>
+                  <FormErrorMessage>
+                    {errors.anObjectFeeAdditionalServices?.bedLinenSum?.message}
+                  </FormErrorMessage>
+                </FormControl>
+              )}
               <FormErrorMessage>
                 {errors.anObjectFeeAdditionalServices?.bedLinen?.message}
               </FormErrorMessage>
@@ -1075,9 +1143,7 @@ const HotelGeneralInformationForm: FC<
                 }
               >
                 <Textarea
-                  {...register(
-                    "anObjectFeeAdditionalServices.transferDetails"
-                  )}
+                  {...register("anObjectFeeAdditionalServices.transferDetails")}
                   placeholder="Опишите условия предоставления трансфера"
                 />
                 <FormErrorMessage>

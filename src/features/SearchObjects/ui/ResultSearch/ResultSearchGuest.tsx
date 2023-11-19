@@ -210,7 +210,6 @@ export const ResultSearchGuest = memo(
             lg: "300px",
             base: "260px",
           }}
-          overflowY={"auto"}
         >
           <SlideFade
             onAnimationComplete={() => {
@@ -325,7 +324,7 @@ export const ResultSearchGuest = memo(
                     </HStack>
                   </HStack>
                   <Divider mt={4} mb={4} />
-                  <Stack mt={2} overflowY={"auto"} maxH="50dvh">
+                  <Stack mt={2} maxH="50dvh">
                     {fields.map((item, index) => {
                       return (
                         <Controller

@@ -21,6 +21,16 @@ interface SelectLocationMapFormProps {
   region?: string;
   streetName: string;
   house: string;
+  viewpoint1: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+  viewpoint2: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
 }
 const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
   props
@@ -35,7 +45,10 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
     house,
     region,
     streetName,
+    viewpoint1,
+    viewpoint2,
   } = props;
+  console.log(viewpoint1, viewpoint2);
 
   const { data, isFetching, isSuccess } = useGetObjectByCoordinatesQuery(
     stateValue?.coordinates as number[],
@@ -89,6 +102,8 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
                     fullAddress: data?.result?.items[0].full_name,
                   });
               }}
+              viewpoint1={viewpoint1}
+              viewpoint2={viewpoint2}
             />
           </Box>
         </FormCard>

@@ -1,4 +1,4 @@
-function search(q: string, text: string) {
+export function search(q: string, text: string) {
   const searchLength = q.length;
   const textLength = text.length;
 

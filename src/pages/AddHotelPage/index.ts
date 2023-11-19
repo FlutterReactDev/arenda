@@ -1,1 +1,1 @@
-export { AddHotelPage } from "./ui/AddHotelPage";
+export { AddHotelPageChunk as AddHotelPage } from "./ui/AddHotelPage.chunk";

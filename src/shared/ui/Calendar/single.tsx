@@ -19,7 +19,7 @@ interface SingleDatepickerProps {
   selected: Date;
 }
 
-const DefaultConfigs: CalendarConfigs = {
+export const DefaultConfigs: CalendarConfigs = {
   dateFormat: "MM/dd/yyyy",
   monthNames: Month_Names_Full,
   dayNames: Weekday_Names_Short,

@@ -1,52 +1,63 @@
-import { AddHotelPage } from "@pages/AddHotelPage";
-import { AddObjectPage } from "@pages/AddObjectPage";
-import {
-  AddObjectStepperPage,
-  ProtectAddObjectRoute,
-} from "@pages/AddObjectStepperPage";
-import { CalendarPage } from "@pages/CalendarPage";
-import { HomePage } from "@pages/HomePage";
-import { ObjectDetailPage } from "@pages/ObjectDetailPage";
-
-import { SearchResultPage } from "@pages/SearchResultPage";
-import { TestPage } from "@pages/TestPage";
 import { PageLoader } from "@shared/ui/PageLoader";
-import { Suspense } from "react";
+import { ReactNode, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
+import { routeConfig } from "../config/routeConfig";
+import { PrivateRoute } from "./PrivateRoute";
+import { BaseLayout } from "./BaseLayout";
+import { Header } from "@widgets/Header";
+import { Footer } from "@widgets/Footer";
 
 export const Routing = () => {
+  const routeElement = (element: ReactNode) => {
+    return <Suspense fallback={<PageLoader />}>{element}</Suspense>;
+  };
+
+  const withLayout = (
+    element: ReactNode,
+    layout: boolean | "header" | "footer"
+  ) => {
+    if (layout == true) {
+      return <BaseLayout>{element}</BaseLayout>;
+    }
+    if (layout == "header") {
+      return (
+        <>
+          <Header />
+          {element}
+        </>
+      );
+    }
+
+    if (layout == "footer") {
+      return (
+        <>
+          {element}
+          <Footer />
+        </>
+      );
+    }
+
+    return element;
+  };
   return (
     <Routes>
-      <Route
-        path="/"
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <HomePage />
-          </Suspense>
-        }
-      />
-      <Route path="/test" element={<TestPage />} />
-      <Route
-        path="/add-object"
-        element={
-          <Suspense fallback={<PageLoader />}>
-            <AddObjectPage />
-          </Suspense>
-        }
-      />
-
-      <Route path="/search-result" element={<SearchResultPage />} />
-      <Route
-        path="/add-object-info"
-        element={
-          <ProtectAddObjectRoute>
-            <AddObjectStepperPage />
-          </ProtectAddObjectRoute>
-        }
-      />
-      <Route path="/add-hotel" element={<AddHotelPage />} />
-      <Route path="/object-detail" element={<ObjectDetailPage />} />
-      <Route path="/calendar" element={<CalendarPage />} />
+      {routeConfig.map((route) => {
+        return (
+          <Route
+            path={route.path}
+            key={route.path}
+            element={
+              route.private ? (
+                <PrivateRoute>
+                  {withLayout(routeElement(route.element), route.layout)}
+                </PrivateRoute>
+              ) : (
+                withLayout(routeElement(route.element), route.layout)
+              )
+            }
+          />
+        );
+      })}
     </Routes>
   );
 };

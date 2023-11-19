@@ -6,28 +6,41 @@ export const CommentItem: FC<PropsWithChildren> = (props) => {
   const { children } = props;
   return (
     <HStack alignItems={"flex-start"} position={"relative"}>
-      <Avatar src="https://bit.ly/broken-link" />
+      <Avatar src="https://bit.ly/broken-link" size={["sm", "md"]} />
       <Stack spacing={3}>
-        <HStack justifyContent={"space-between"}>
+        <HStack justifyContent={"space-between"} spacing={0}>
           <Stack spacing={0}>
-            <Text fontWeight={"medium"}>Jane Doe</Text>
-            <HStack color={"gray.500"}>
+            <Text fontSize={["small", "sm", "md"]} fontWeight={"medium"}>
+              Jane Doe
+            </Text>
+            <HStack
+              color={"gray.500"}
+              flexDirection={["column", "column", "row"]}
+              alignItems={["flex-start", "flex-start", "center"]}
+              spacing={[0, 0, 2]}
+            >
               <HStack>
                 <CalendarIcon />
-                <Text>Сентябрь 2023, 4 суток</Text>
+                <Text fontSize={["small", "sm", "md"]}>
+                  Сентябрь 2023, 4 суток
+                </Text>
               </HStack>
               <HStack>
                 <Icon as={BiUserCircle} />
-                <Text>6 гостей</Text>
+                <Text fontSize={["small", "sm", "md"]}>6 гостей</Text>
               </HStack>
             </HStack>
           </Stack>
           <Stack spacing={0}>
             <HStack spacing={1} justifyContent={"flex-end"}>
-              <StarIcon color={"red.500"} />s
-              <Text fontWeight={"medium"}>9,5</Text>
+              <StarIcon color={"red.500"} />
+              <Text fontWeight={"medium"} fontSize={["sm", "md"]}>
+                9,5
+              </Text>
             </HStack>
-            <Text color={"gray.500"}>15 февраля 2023 г</Text>
+            <Text color={"gray.500"} fontSize={["small", "sm", "md"]}>
+              15 февраля 2023 г
+            </Text>
           </Stack>
         </HStack>
         <Text position={"relative"}>

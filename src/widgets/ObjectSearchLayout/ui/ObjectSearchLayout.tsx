@@ -1,75 +1,74 @@
-import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 import {
   Box,
-  Grid,
-  GridItem,
-  Hide,
-  Show,
-  SimpleGrid,
-  VStack,
-  Text,
-  HStack,
-  Icon,
-  Switch,
-  Stack,
-  Checkbox,
-  Select,
-  Tooltip,
-  FormControl,
-  FormHelperText,
-  Input,
-  InputGroup,
-  InputRightElement,
   Button,
   Center,
-  IconButton,
+  Checkbox,
   Drawer,
-  useDisclosure,
   DrawerBody,
   DrawerCloseButton,
   DrawerContent,
-  DrawerOverlay,
-  InputLeftElement,
-  useMediaQuery,
   DrawerHeader,
+  DrawerOverlay,
+  FormControl,
+  FormHelperText,
+  Grid,
+  GridItem,
+  HStack,
+  Hide,
+  Icon,
+  IconButton,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  InputRightElement,
+  Select,
+  Show,
+  SimpleGrid,
+  Stack,
+  Switch,
+  Text,
+  Tooltip,
+  VStack,
+  useDisclosure,
+  useMediaQuery,
 } from "@chakra-ui/react";
+import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 
 import { SearchMap } from "@entites/Map";
 
-import { HiLightningBolt } from "react-icons/hi";
-import { FaHeart, FaUsers } from "react-icons/fa";
-import { VscSettings } from "react-icons/vsc";
-import { MdBookmarkBorder } from "react-icons/md";
-import { FormCard } from "@shared/ui/FormCard";
 import {
   CalendarIcon,
   QuestionOutlineIcon,
   SearchIcon,
 } from "@chakra-ui/icons";
 import { CheckboxList } from "@shared/ui/CheckboxList";
-import { useState, useCallback, useEffect } from "react";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
+import { FormCard } from "@shared/ui/FormCard";
+import { useCallback, useEffect, useState } from "react";
+import { FaHeart, FaUsers } from "react-icons/fa";
+import { HiLightningBolt } from "react-icons/hi";
+import { MdBookmarkBorder } from "react-icons/md";
+import { VscSettings } from "react-icons/vsc";
 
-import { Swiper, SwiperSlide } from "swiper/react";
 import { FreeMode } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-import { Header } from "@widgets/Header";
-import { Footer } from "@widgets/Footer";
-import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
 import { GuestsModal } from "@entites/Object/ui/GuestsModal";
 import {
   ResultSearch,
   searchObjectAction,
   useSearchObjectData,
 } from "@features/SearchObjects";
+import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
+import { getWordByNum } from "@shared/utils/getWordByNum";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { getWordByNum } from "@shared/utils/getWordByNum";
 import { BiCollapse, BiExpand } from "react-icons/bi";
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
@@ -129,7 +128,6 @@ export const ObjectSearchLayout = () => {
   return (
     <>
       <Show breakpoint="(min-width: 901px)">
-        <Header />
         <Grid
           templateAreas={{
             "2xl": !mapIsOpen
@@ -1223,10 +1221,8 @@ export const ObjectSearchLayout = () => {
             </DrawerContent>
           </Drawer>
         </Show>
-        <Footer />
       </Show>
       <Show breakpoint="(max-width: 900px)">
-        <Header />
         <Box h="calc(100dvh - 48px)">
           <SearchMap
             inputHtmlMarkers={[

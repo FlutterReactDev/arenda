@@ -9,6 +9,8 @@ import {
   ScaleFade,
   IconButton,
   Stack,
+  useOutsideClick,
+  useMergeRefs,
 } from "@chakra-ui/react";
 import type { GuestsType } from "@entites/Object";
 import { SearchSchemaType } from "@features/SearchObjects/model/schema";
@@ -18,8 +20,10 @@ import { getWordByNum } from "@shared/utils/getWordByNum";
 import {
   LegacyRef,
   MutableRefObject,
+  RefObject,
   forwardRef,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import {
@@ -123,6 +127,13 @@ export const DesktopGuests = forwardRef<
   });
   const adultsCount = watch("guests.adultsCount");
   const childrenCount = watch("guests.childrenAges");
+  const containerRef = useRef();
+  const refs = useMergeRefs(ref, containerRef);
+  useOutsideClick({
+    ref: containerRef as unknown as RefObject<HTMLElement>,
+    handler: onClose,
+    enabled: isOpen,
+  });
 
   return (
     <Box
@@ -136,7 +147,7 @@ export const DesktopGuests = forwardRef<
       tabIndex={3}
       borderLeft={"1px solid"}
       borderColor="gray.200"
-      ref={ref as LegacyRef<HTMLDivElement>}
+      ref={refs as LegacyRef<HTMLDivElement>}
     >
       <HStack
         gap={0}
@@ -204,8 +215,7 @@ export const DesktopGuests = forwardRef<
             w="full"
             p={"4"}
             background="white"
-            border="1px solid"
-            borderColor="gray.400"
+            boxShadow={"lg"}
             rounded={"lg"}
           >
             <Stack spacing={4}>
@@ -304,7 +314,7 @@ export const DesktopGuests = forwardRef<
                   </HStack>
                 </HStack>
                 <Divider mt={4} mb={4} />
-                <Stack mt={2} overflowY={"auto"} maxH="40dvh">
+                <Stack mt={2}>
                   {fields.map((item, index) => {
                     return (
                       <Controller

@@ -9,6 +9,18 @@ export const SelectLocationSchema = object({
   country: object({
     name: string().required(),
     id: number().required(),
+    code: string().required(),
+    viewPoint1: object({
+      id: number().required(),
+      latitude: number().required(),
+      longitude: number().required(),
+    }).required(),
+
+    viewPoint2: object({
+      id: number().required(),
+      latitude: number().required(),
+      longitude: number().required(),
+    }).required(),
   }).required(),
   region: object({
     name: string().required(),

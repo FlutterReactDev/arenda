@@ -1,9 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { UserAuthData, UserLoginData } from "../types/UserType";
+import { UserLoginData, UserState } from "../types/UserType";
 import { USER_TOKEN } from "@shared/constants/user";
 const initialState = {
   userAuthData: undefined,
-} as UserAuthData;
+  userAuthModal: {
+    isOpen: false,
+  },
+} as UserState;
 const userSlice = createSlice({
   name: "userSlice",
   initialState,
@@ -20,6 +23,14 @@ const userSlice = createSlice({
       state.userAuthData = undefined;
       localStorage.removeItem(USER_TOKEN.ACCESS_TOKEN);
       localStorage.removeItem(USER_TOKEN.REFRESH_TOKEN);
+    },
+
+    setOnOpen(state) {
+      state.userAuthModal.isOpen = true;
+    },
+
+    setOnClose(state) {
+      state.userAuthModal.isOpen = false;
     },
   },
 });

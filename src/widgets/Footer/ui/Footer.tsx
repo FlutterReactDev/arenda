@@ -10,7 +10,7 @@ import {
   IconButton,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { ReactNode } from "react";
+import { ReactNode, memo } from "react";
 import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import { BiMailSend } from "react-icons/bi";
 
@@ -75,7 +75,7 @@ const ListHeader = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const Footer = () => {
+export const Footer = memo(() => {
   return (
     <Box
       bg={useColorModeValue("gray.50", "gray.900")}
@@ -167,4 +167,4 @@ export const Footer = () => {
       </Container>
     </Box>
   );
-};
+});

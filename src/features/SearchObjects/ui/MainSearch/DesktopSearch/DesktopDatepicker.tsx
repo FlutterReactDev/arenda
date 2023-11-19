@@ -1,13 +1,13 @@
 import {
-  HStack,
   Box,
-  Text,
-  useDisclosure,
+  Button,
+  HStack,
   Portal,
   SlideFade,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
-
   LegacyRef,
   MutableRefObject,
   RefObject,
@@ -16,8 +16,9 @@ import {
   useState,
 } from "react";
 
+import { toDay } from "@features/Calendar/utils/toDay";
 import { RangeDatepicker } from "@shared/ui/Calendar";
-import { format } from "date-fns";
+import { addDays, format, nextSaturday, nextSunday } from "date-fns";
 import { ru } from "date-fns/locale";
 interface DesktopDatepickerProps {
   containerRef: LegacyRef<HTMLDivElement>;
@@ -126,8 +127,7 @@ export const DesktopDatepicker = forwardRef<
               w={"full"}
               h="full"
               background="white"
-              border="1px solid"
-              borderColor="gray.400"
+              boxShadow={"lg"}
               rounded={"lg"}
             >
               <RangeDatepicker
@@ -137,6 +137,99 @@ export const DesktopDatepicker = forwardRef<
                 showTooltipOnHover
                 showTooltipOnSelect={false}
               />
+              <HStack
+                p={2}
+                borderTop={"1px solid"}
+                borderColor={"gray.200"}
+                justifyContent={"space-between"}
+              >
+                <HStack>
+                  <Button
+                    size={"sm"}
+                    rounded={"full"}
+                    onClick={() => {
+                      setDates(() => {
+                        return [
+                          toDay(new Date()),
+                          addDays(toDay(new Date()), 1),
+                        ];
+                      });
+                      onClose();
+                    }}
+                  >
+                    <Text mr={2}>Сегодня:</Text>
+                    <Text mr={1}>{toDay(new Date()).getDate()}</Text>
+                    <Box>-</Box>
+                    <Text ml={1}>
+                      {addDays(toDay(new Date()), 1).getDate()}{" "}
+                      {format(toDay(new Date()), "MMM", {
+                        locale: ru,
+                      })}
+                    </Text>
+                  </Button>
+                  <Button
+                    size={"sm"}
+                    rounded={"full"}
+                    onClick={() => {
+                      setDates(() => {
+                        return [
+                          addDays(toDay(new Date()), 1),
+                          addDays(toDay(new Date()), 2),
+                        ];
+                      });
+                      onClose();
+                    }}
+                  >
+                    <Text mr={2}>Завтра:</Text>
+                    <Text mr={1}>
+                      {" "}
+                      {addDays(toDay(new Date()), 1).getDate()}
+                    </Text>
+                    <Box>-</Box>
+                    <Text ml={1}>
+                      {addDays(toDay(new Date()), 2).getDate()}{" "}
+                      {format(toDay(new Date()), "MMM", {
+                        locale: ru,
+                      })}
+                    </Text>
+                  </Button>
+                  <Button
+                    size={"sm"}
+                    rounded={"full"}
+                    onClick={() => {
+                      setDates(() => {
+                        return [
+                          nextSaturday(toDay(new Date())),
+                          nextSunday(toDay(new Date())),
+                        ];
+                      });
+                      onClose();
+                    }}
+                  >
+                    <Text mr={2}>Выходные:</Text>
+                    <Text mr={1}>
+                      {" "}
+                      {nextSaturday(toDay(new Date())).getDate()}
+                    </Text>
+                    <Box>-</Box>
+                    <Text ml={1}>
+                      {nextSunday(toDay(new Date())).getDate()}{" "}
+                      {format(toDay(new Date()), "MMM", {
+                        locale: ru,
+                      })}
+                    </Text>
+                  </Button>
+                </HStack>
+                <Button
+                  size={"sm"}
+                  rounded={"full"}
+                  onClick={() => {
+                    setDates([]);
+                  }}
+                >
+                  Сбросить даты
+                </Button>
+              </HStack>
             </Box>
           </SlideFade>
         </Box>

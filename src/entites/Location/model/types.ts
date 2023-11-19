@@ -1,14 +1,25 @@
 export interface Country {
-  label: string;
   id: number;
+  name: string;
+  code: string;
+  viewPoint1: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+  viewPoint2: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
 }
 export interface Region {
-  label: string;
   id: number;
+  name: string;
   countryId: number;
 }
 export interface City {
-  label: string;
   id: number;
+  name: string;
   regionId: number;
 }

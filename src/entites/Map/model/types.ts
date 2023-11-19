@@ -14,3 +14,17 @@ export interface Item {
   type: string;
   purpose_name: string;
 }
+
+export interface SearchObjectData {
+  address: string;
+  viewpoint1: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+  viewpoint2: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+}

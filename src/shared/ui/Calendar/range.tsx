@@ -10,7 +10,14 @@ import {
   OnDateSelected,
   PropsConfigs,
 } from "./utils/commonTypes";
-import { addYears, differenceInDays, isEqual, subDays } from "date-fns";
+import {
+  addDays,
+  addYears,
+  differenceInDays,
+  isEqual,
+  isSameDay,
+  subDays,
+} from "date-fns";
 
 interface RangeCalendarPanelProps {
   dayzedHookProps: DayzedHookProps;
@@ -156,6 +163,10 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           const newDates = [...selectedDates];
           if (selectedDates.length) {
             if (selectedDates.length === 1) {
+              if (isSameDay(newDates[0], date)) {
+                onClose && onClose();
+                return [newDates[0], addDays(date, 1)];
+              }
               const firstTime = selectedDates[0];
               if (firstTime < date) {
                 newDates.push(date);
@@ -164,6 +175,7 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
               }
 
               onClose && onClose();
+
               return newDates;
             }
 
@@ -189,7 +201,7 @@ export const RangeDatepicker: React.FC<RangeDatepickerProps> = memo(
           date: new Date(),
           minDate: subDays(new Date(), 1),
           maxDate: addYears(new Date(), 1),
-          firstDayOfWeek: 0,
+          firstDayOfWeek: 1,
         }}
         configs={DefaultConfigs}
         showTooltipOnHover={showTooltipOnHover}

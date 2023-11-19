@@ -4,7 +4,7 @@ import { BookingForm } from "@features/BookingForm";
 import { Footer } from "@widgets/Footer";
 import { Header } from "@widgets/Header";
 
-export const ObjectDetailPage = () => {
+const ObjectDetailPage = () => {
   return (
     <Box bgColor={"blackAlpha.50"} w={"full"}>
       <Header />
@@ -37,3 +37,5 @@ export const ObjectDetailPage = () => {
     </Box>
   );
 };
+
+export default ObjectDetailPage;

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const baseApi = createApi({
   baseQuery: fetchBaseQuery({
-    baseUrl: _MOCK_API_URL_,
+    baseUrl: _BASE_API_URL_,
   }),
   reducerPath: "baseApi",
 

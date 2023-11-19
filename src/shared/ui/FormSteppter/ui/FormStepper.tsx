@@ -53,6 +53,10 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
       searchParams.set("screen", "0");
     }
 
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
     // setSearchParams(searchParams);
   }, [searchParams, setSearchParams]);
 

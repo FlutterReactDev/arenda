@@ -1,1 +1,1 @@
-export { ObjectDetailPage } from "./ui/ObjectDetailPage";
+export { ObjectDetailPageChunk as ObjectDetailPage } from "./ui/ObjectDetailPage.chunk";

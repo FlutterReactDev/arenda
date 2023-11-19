@@ -8,6 +8,7 @@ import { addObjectSliceReducer } from "@features/SelectLocationForm";
 import { userReducer } from "@entites/User";
 import { searchObjectReducer } from "@features/SearchObjects";
 import { calendarReducer } from "@features/Calendar";
+import { dragObjectReducer } from "@features/DragObject";
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
@@ -18,6 +19,7 @@ export const store = configureStore({
     addObjectStep: addObjectStepReducer,
     addHotel: addHotelReducer,
     calendar: calendarReducer,
+    dragObject: dragObjectReducer,
     user: userReducer,
   },
 

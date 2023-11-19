@@ -96,12 +96,11 @@ export const DesktopSearchInput = forwardRef<
           in={isOpen}
         >
           <Box
+            boxShadow={"lg"}
             maxW="full"
             w={"full"}
             p={"2"}
             background="white"
-            border="1px solid"
-            borderColor="gray.400"
             rounded={"lg"}
           >
             <Text>Популярные направления </Text>
@@ -111,6 +110,7 @@ export const DesktopSearchInput = forwardRef<
                 onClick={() => {
                   onChange("Кыргызстан, Ыссык-кол, Бостери");
                   trigger();
+                  onClose();
                 }}
               >
                 <ListIcon as={SearchIcon} color="blackAlpha.800" />

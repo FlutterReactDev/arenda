@@ -7,12 +7,12 @@ interface CalendarHeaderProps {
 export const CalendarHeader: FC<CalendarHeaderProps> = memo((props) => {
   const { monthName, year } = props;
   return (
-    <HStack spacing={0}>
-      <Heading size="sm" minWidth={"5rem"} textAlign="center">
+    <HStack>
+      <Heading size="sm" textAlign="center">
         {monthName}
       </Heading>
 
-      <Heading size="sm" minWidth={"5rem"} textAlign="center">
+      <Heading size="sm" textAlign="center">
         {year}
       </Heading>
     </HStack>

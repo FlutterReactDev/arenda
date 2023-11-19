@@ -10,7 +10,12 @@ import {
 } from "@chakra-ui/react";
 
 import { AddPhoneForm, PhonesList } from "@entites/Phone";
-import { Gender, PhoneSchema, RegisterSchema } from "@entites/User";
+import {
+  Gender,
+  PhoneSchema,
+  RegisterSchema,
+  useAuthModal,
+} from "@entites/User";
 import { useRegisterMutation } from "@entites/User/model/api/userApi";
 
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -27,6 +32,7 @@ const RegisterForm = () => {
     resolver: yupResolver(RegisterSchema),
     mode: "onChange",
   });
+  const { onClose } = useAuthModal();
 
   const { append, fields, update, remove } = useFieldArray({
     control,
@@ -58,7 +64,9 @@ const RegisterForm = () => {
 
         ...(phone.isMain && { isMain: true }),
       })),
-    });
+    })
+      .unwrap()
+      .then(() => onClose());
   };
 
   const onPhoneAdd = ({ phone }: Yup.InferType<typeof PhoneSchema>) => {
@@ -69,6 +77,7 @@ const RegisterForm = () => {
       append({ phoneNumber: phone, isMain: false });
     }
   };
+  
   const onPhoneDelete = (phone: string) => {
     const phoneIndex = fields.findIndex((field) => field.phoneNumber == phone);
     remove(phoneIndex);

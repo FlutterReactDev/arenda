@@ -28,8 +28,10 @@ import {
 import { SearchIcon } from "@chakra-ui/icons";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 export const DesktopSearch = () => {
+  const setSearchCookies = useCookies(["calendar_dates"])[1];
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const searchData = useSearchObjectData();
@@ -47,6 +49,14 @@ export const DesktopSearch = () => {
 
   const onSubmit = (data: SearchSchemaType) => {
     dispatch(searchObjectAction.setSearchData(data));
+    setSearchCookies("calendar_dates", {
+      ...data,
+      dates: {
+        checkIn: JSON.stringify(data.dates.checkIn),
+        checkOut: JSON.stringify(data.dates.checkOut),
+      },
+    });
+
     navigate("/search-result");
   };
 
@@ -66,7 +76,7 @@ export const DesktopSearch = () => {
           ref={containerRef}
           direction="row"
           gap={0}
-          w={isOpen ? "870px" : "700px"}
+          w={isOpen ? "870px" : "750px"}
           transition={"0.3s"}
           minH={14}
           mt={10}
@@ -93,9 +103,11 @@ export const DesktopSearch = () => {
                     onChange={onChange}
                     value={value}
                     ref={ref}
-                    trigger={() => {
-                      methods.trigger("dates");
-                      methods.setFocus("dates");
+                    trigger={async () => {
+                      const trigger = await methods.trigger("dates");
+                      if (!trigger) {
+                        methods.setFocus("dates");
+                      }
                     }}
                   />
                 );
@@ -129,21 +141,21 @@ export const DesktopSearch = () => {
                 );
               }}
             />
+            <Button
+              colorScheme="red"
+              minW={12}
+              h={12}
+              borderRadius={"full"}
+              type="submit"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              mr={1}
+            >
+              <SearchIcon />
+            </Button>
           </HStack>
 
-          <Button
-            colorScheme="red"
-            minW={12}
-            h={12}
-            borderRadius={"full"}
-            type="submit"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            mr={1}
-          >
-            <SearchIcon />
-          </Button>
           <Box
             position={"absolute"}
             top={"-100%"}

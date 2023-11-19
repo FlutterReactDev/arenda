@@ -19,24 +19,56 @@ interface SelectMapProps {
   region?: string;
   streetName: string;
   house: string;
+  viewpoint1: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
+  viewpoint2: {
+    id: number;
+    latitude: number;
+    longitude: number;
+  };
 }
 export const SelectMap: FC<SelectMapProps> = (props) => {
-  const { onChange, value, house, streetName, city, country, region } = props;
+  const {
+    onChange,
+    value,
+    house,
+    streetName,
+    city,
+    country,
+    region,
+    viewpoint1,
+    viewpoint2,
+  } = props;
 
   const [clearMarker, setClearMarker] = useState(value ? true : false);
   const { data, isFetching, isSuccess } = useGetCoordinateByAddressQuery(
-    `${country} ${region}, ${city}, ${streetName} ${house}`,
+    {
+      address: `${region} ${city} ${streetName} ${house}`,
+      viewpoint1,
+      viewpoint2,
+    },
     {
       refetchOnMountOrArgChange: true,
     }
   );
+  console.log(data);
 
   const [center, setCenter] = useState<number[]>();
 
   const { data: notFoundData, isSuccess: notFoundDataIsSuccess } =
-    useGetRegionByAddressQuery(`${country}, ${region}, ${city}`, {
-      refetchOnMountOrArgChange: true,
-    });
+    useGetRegionByAddressQuery(
+      {
+        address: `${country}, ${region}, ${city}`,
+        viewpoint1,
+        viewpoint2,
+      },
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
 
   useEffect(() => {
     if (isSuccess && data.result && data.result.items.length == 1) {

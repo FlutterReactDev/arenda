@@ -1,5 +1,7 @@
 import { Calendar } from "@features/Calendar";
 
-export const CalendarPage = () => {
+const CalendarPage = () => {
   return <Calendar />;
 };
+
+export default CalendarPage;

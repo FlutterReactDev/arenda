@@ -13,16 +13,11 @@ import {
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/SearchObjects";
 
-import { Footer } from "@widgets/Footer";
-import { Header } from "@widgets/Header";
-
 const HomePage = () => {
   return (
-    <Box bgColor={"blackAlpha.50"}>
-      <Header />
-
+    <Box bgColor={"blackAlpha.50"} py={32}>
       <main>
-        <Heading color="blackAlpha.900" size="3xl" textAlign="center" mt={32}>
+        <Heading color="blackAlpha.900" size="3xl" textAlign="center">
           Найдём, где остановиться!
         </Heading>
         <Text
@@ -679,8 +674,6 @@ const HomePage = () => {
         </Box>
         <Box mt={"6"}></Box>
       </main>
-
-      <Footer />
     </Box>
   );
 };

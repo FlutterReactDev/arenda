@@ -48,6 +48,8 @@ import {
   useGetByIdQuery,
 } from "@entites/ObjectTypeProperty";
 import { useNavigate } from "react-router-dom";
+import { OBJECT_TYPE } from "@shared/constants/objectType";
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 
 export const SelectLocationForm = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -122,7 +124,16 @@ export const SelectLocationForm = () => {
     region == undefined;
   const onSumbit = (data: SelectLocationSchemaType) => {
     dispatch(addObjectActions.setLocationData(data));
-    navigate("/add-hotel");
+    console.log(objectTypes?.filter((object) => object.id == objectType)[0]);
+
+    if (
+      objectTypes?.filter((object) => object.id == objectType)[0].objectType ==
+      OBJECT_TYPE.HOTEL
+    ) {
+      navigate(RouteName.ADD_HOTEL_PAGE);
+    } else {
+      navigate(RouteName.ADD_OBJECT_INFO);
+    }
   };
   return (
     <Box>
@@ -282,14 +293,16 @@ export const SelectLocationForm = () => {
                           <Text mb={2}>Страна</Text>
                           <SelectSearch
                             value={value?.id}
-                            onChange={(value) => {
+                            onChange={({ value }) => {
+                              const countryValue = countryData.filter(
+                                (country) => country.id == value
+                              )[0];
                               onChange({
-                                name: value.label,
-                                id: value.value,
+                                ...countryValue,
                               });
                             }}
-                            options={countryData?.map(({ label, id }) => ({
-                              label,
+                            options={countryData?.map(({ id, name }) => ({
+                              label: name,
                               value: id,
                             }))}
                             placeholder="Выберите страну"
@@ -332,8 +345,8 @@ export const SelectLocationForm = () => {
                                 name: label,
                               });
                             }}
-                            options={regionData?.map(({ label, id }) => ({
-                              label,
+                            options={regionData?.map(({ name, id }) => ({
+                              label: name,
                               value: id,
                             }))}
                             placeholder="Выберите регион"
@@ -372,8 +385,8 @@ export const SelectLocationForm = () => {
                                 name: label,
                               });
                             }}
-                            options={cityData?.map(({ label, id }) => ({
-                              label,
+                            options={cityData?.map(({ name, id }) => ({
+                              label: name,
                               value: id,
                             }))}
                             placeholder="Выберите город"

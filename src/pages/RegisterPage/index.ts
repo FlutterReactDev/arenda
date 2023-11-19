@@ -1,0 +1,1 @@
+export {RegisterPageChunk as RegisterPage} from './ui/RegisterPage.chunk'

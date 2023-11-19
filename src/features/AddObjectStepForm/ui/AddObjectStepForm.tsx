@@ -74,21 +74,23 @@ export const AddObjectStepForm = () => {
                 return (
                   <Suspense fallback={<PageLoader />}>
                     <SelectLocationMapForm
+                      city={city.name}
+                      house={addressData.house}
+                      streetName={addressData.streetName}
+                      country={country.name}
+                      region={region.name}
                       stateValue={selectMapData}
                       changeState={(data) => {
                         dispatch(
                           addObjectStepActions.setForm({
-                            screen: 1,
                             step: 0,
+                            screen: 1,
                             data,
                           })
                         );
                       }}
-                      city={city?.name}
-                      country={country?.name}
-                      region={region?.name}
-                      house={addressData.house}
-                      streetName={addressData.streetName}
+                      viewpoint1={country.viewPoint1}
+                      viewpoint2={country.viewPoint2}
                       {...props}
                     />
                   </Suspense>

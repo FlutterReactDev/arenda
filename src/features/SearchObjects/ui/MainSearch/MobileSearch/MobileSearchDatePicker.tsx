@@ -1,19 +1,24 @@
 import {
-  HStack,
   Box,
-  useDisclosure,
+  Button,
+  Center,
   Drawer,
+  DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
-  Text,
-  Button,
-  Center,
-  DrawerBody,
+  HStack,
+  Heading,
   Spinner,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 
+import { toDay } from "@features/Calendar/utils/toDay";
+import { getWordByNum } from "@shared/utils/getWordByNum";
+import { differenceInDays, format, isSameYear } from "date-fns";
+import { ru } from "date-fns/locale";
 import {
   LegacyRef,
   MutableRefObject,
@@ -24,8 +29,6 @@ import {
   useState,
 } from "react";
 import { MobileCalendar } from "../MobileCalendar";
-import { format } from "date-fns";
-import { ru } from "date-fns/locale";
 interface MobileSearchDatePickerProps {
   onChange: (value: { checkIn: Date; checkOut: Date }) => void;
   value: {
@@ -137,15 +140,67 @@ export const MobileSearchDatePicker = forwardRef<
       <Drawer size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent p="0">
-          <DrawerCloseButton />
-          <DrawerHeader>Выбрать дату</DrawerHeader>
-          <Button
-            borderRadius={"none"}
-            size={"lg"}
-            onClick={() => handleSelectDate([])}
-          >
-            Очистить дату
-          </Button>
+          <DrawerCloseButton zIndex={"popover"} />
+          <DrawerHeader p={0}>
+            <Button
+              borderRadius={"none"}
+              size={"lg"}
+              onClick={() => handleSelectDate([])}
+              w="full"
+            >
+              Очистить дату
+            </Button>
+            <Box
+              p={"4"}
+              borderBottom={"1px solid"}
+              borderColor={"gray.300"}
+              bgColor={"white"}
+            >
+              <HStack alignItems={"center"}>
+                <Heading size={"md"}>
+                  {value?.checkIn ? toDay(value?.checkIn).getDate() : "Заезд"}{" "}
+                  {value?.checkIn &&
+                    format(toDay(value?.checkIn), "MMM", {
+                      locale: ru,
+                    })}
+                </Heading>
+                <Box h={"3px"} w={6} bgColor={"black"} />
+                <Heading size={"md"}>
+                  {value?.checkOut ? value?.checkOut.getDate() : "отъезд"}{" "}
+                  {value?.checkOut &&
+                    format(toDay(value?.checkOut), "MMM", {
+                      locale: ru,
+                    })}
+                </Heading>
+                {value?.checkOut &&
+                  !isSameYear(value?.checkIn, value?.checkOut) && (
+                    <Heading size={"md"}>
+                      {format(value?.checkOut, "Y")}
+                    </Heading>
+                  )}
+              </HStack>
+              {value?.checkOut && value?.checkIn && (
+                <Text mt={4} fontWeight={"medium"} color={"gray.500"}>
+                  {Math.abs(differenceInDays(value.checkOut, value.checkIn))}{" "}
+                  {getWordByNum(
+                    Math.abs(differenceInDays(value.checkOut, value.checkIn)),
+                    ["cутки", "сутки", "суток"]
+                  )}
+                </Text>
+              )}
+              {!value?.checkIn && (
+                <Text mt={4} fontWeight={"medium"} color={"gray.500"}>
+                  Выберите дату заезда
+                </Text>
+              )}
+              {value?.checkIn && !value?.checkOut && (
+                <Text mt={4} fontWeight={"medium"} color={"gray.500"}>
+                  Выберите дату отъезда
+                </Text>
+              )}
+            </Box>
+          </DrawerHeader>
+
           <DrawerBody p="0">
             <Suspense
               fallback={

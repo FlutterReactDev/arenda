@@ -18,3 +18,12 @@ export interface UserLoginData {
 export interface UserAuthData {
   userAuthData: UserLoginData | undefined;
 }
+
+export interface UserModalState {
+  isOpen: boolean;
+}
+
+export interface UserState {
+  userAuthData: UserLoginData | undefined;
+  userAuthModal: UserModalState;
+}

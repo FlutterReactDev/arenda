@@ -1,13 +1,15 @@
 import { Box } from "@chakra-ui/react";
 import {
+  AddressForm,
   HotelGeneralInformationForm,
+  ImageUploadForm,
+  SelectLocationMapForm,
   addHotelActions,
   getAddressData,
   getLocationMap,
-  SelectLocationMapForm,
-  AddressForm,
-  ImageUploadForm,
+  useCreateObjectMutation,
 } from "@entites/Object";
+import { hotelGeneralInformationSchema } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
 
 import {
   getHotelGeneralInformation,
@@ -19,11 +21,11 @@ import { FormStepper } from "@shared/ui/FormSteppter";
 import { PageLoader } from "@shared/ui/PageLoader";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { Header } from "@widgets/Header";
 import { Suspense, useEffect } from "react";
-
-export const AddHotelPage = () => {
-  const { city, country, region, objectTypeProperty } = useSelectLocationData();
+import { InferType } from "yup";
+const AddHotelPage = () => {
+  const { city, country, region, objectTypeProperty, objectType } =
+    useSelectLocationData();
   useEffect(() => {}, []);
   const onComlete = () => {};
   const dispatch = useAppDispatch();
@@ -33,27 +35,26 @@ export const AddHotelPage = () => {
   const imageFiles = useAppSelector(getImageFiles);
   const hotelGeneralInformation = useAppSelector(getHotelGeneralInformation);
 
-  // const [createObject, { isLoading }] = useCreateObjectMutation();
+  const [createObject] = useCreateObjectMutation();
 
-  // const onSaveHotel = async (
-  //   data: InferType<typeof hotelGeneralInformationSchema>
-  // ) => {
-  //   await createObject({
-  //     anObjectTypeId: objectType,
-  //     anObjectPropertyTypeId: objectTypeProperty.id,
-  //     fullAddress: selectLocationData.fullAddress,
-  //     latitude: selectLocationData.coordinates[1],
-  //     longitude: selectLocationData.coordinates[0],
-  //     city: city.name,
-  //     country: country.name,
-  //     region: region.name,
-  //     building: "string",
-  //     ...data,
-  //   });
-  // };
+  const onSaveHotel = async (
+    data: InferType<typeof hotelGeneralInformationSchema>
+  ) => {
+    await createObject({
+      anObjectTypeId: objectType,
+      anObjectPropertyTypeId: objectTypeProperty.id,
+      fullAddress: selectLocationData.fullAddress,
+      latitude: selectLocationData.coordinates[1],
+      longitude: selectLocationData.coordinates[0],
+      cityId: city.id,
+      countryId: country.id,
+      regionId: region.id,
+      building: "string",
+      ...data,
+    });
+  };
   return (
     <Box>
-      <Header />
       <FormStepper
         forms={[
           {
@@ -90,6 +91,8 @@ export const AddHotelPage = () => {
                         changeState={(data) => {
                           dispatch(addHotelActions.setLocationMap(data));
                         }}
+                        viewpoint1={country.viewPoint1}
+                        viewpoint2={country.viewPoint2}
                         {...props}
                       />
                     </Suspense>
@@ -109,6 +112,7 @@ export const AddHotelPage = () => {
                           dispatch(
                             addHotelActions.setHotelGeneralInformation(data)
                           );
+                          onSaveHotel(data);
                         }}
                         objectTypeName={objectTypeProperty.name}
                       />
@@ -145,3 +149,5 @@ export const AddHotelPage = () => {
     </Box>
   );
 };
+
+export default AddHotelPage;

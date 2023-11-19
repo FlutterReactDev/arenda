@@ -1,22 +1,22 @@
-import { baseApi } from "@shared/api/rtk";
+import { baseApiWithReAuth } from "@shared/api/rtk";
 import { City, Country, Region } from "./types";
 
-const locationApi = baseApi.injectEndpoints({
+const locationApi = baseApiWithReAuth.injectEndpoints({
   endpoints: (build) => ({
     getCountry: build.query<Country[], null>({
       query: () => ({
-        url: "/country",
+        url: "/Countires",
       }),
     }),
     getRegion: build.query<Region[], number>({
       query: (id) => ({
-        url: `/country/${id}/regions`,
+        url: `/Regions/${id}`,
       }),
     }),
 
     getCity: build.query<City[], number>({
       query: (id) => ({
-        url: `/regions/${id}/city`,
+        url: `/Cities/${id}`,
       }),
     }),
   }),

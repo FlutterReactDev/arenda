@@ -9,7 +9,7 @@ import {
   FormErrorMessage,
   Stack,
 } from "@chakra-ui/react";
-import { LoginSchema, userAction } from "@entites/User";
+import { LoginSchema, useAuthModal, userAction } from "@entites/User";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PhoneInput } from "@shared/ui/PhoneInput";
 import { useForm, Controller } from "react-hook-form";
@@ -18,6 +18,8 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useLoginMutation } from "@entites/User/model/api/userApi";
+import { useLocation, useNavigate } from "react-router-dom";
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 const LoginForm = () => {
   const {
     handleSubmit,
@@ -30,11 +32,25 @@ const LoginForm = () => {
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useAppDispatch();
+  const { onClose } = useAuthModal();
+
+  const navigate = useNavigate();
+  const location = useLocation();
+  console.log(location);
+
   const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
     await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") })
       .unwrap()
       .then((data) => {
         dispatch(userAction.setAuthData(data));
+        onClose();
+        if (location.state?.from) {
+          return navigate(location.state?.from, {
+            replace: true,
+          });
+        }
+
+        navigate(RouteName.MAIN_PAGE);
       });
   };
 

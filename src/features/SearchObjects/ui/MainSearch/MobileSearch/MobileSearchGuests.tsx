@@ -138,7 +138,7 @@ export const MobileSearchGuests = forwardRef<
   const adultsCount = watch("guests.adultsCount");
   const childrenCount = watch("guests.childrenAges");
   return (
-    <Box w={"full"}>
+    <Box w={"full"} h="full">
       <Box
         rounded={"full"}
         h={"50px"}
@@ -199,132 +199,131 @@ export const MobileSearchGuests = forwardRef<
         <DrawerContent>
           <DrawerBody>
             <DrawerCloseButton />
-            <DrawerHeader>Выбор гостей</DrawerHeader>
-            <DrawerBody p="0">
-              <Stack spacing={4}>
-                <Divider />
-                <Box>
-                  <HStack justifyContent={"space-between"}>
-                    <Stack spacing={0}>
-                      <Text fontSize={"lg"} fontWeight={"medium"}>
-                        Взрослые
-                      </Text>
+            <DrawerHeader top={0}>Выбор гостей</DrawerHeader>
 
-                      <Text>от 18 лет</Text>
-                    </Stack>
-                    <HStack spacing={3}>
-                      <Controller
-                        control={control}
-                        name="guests.adultsCount"
-                        render={({ field: { onChange, value } }) => {
-                          return (
-                            <IconButton
-                              onClick={() => {
-                                onChange(value - 1);
-                              }}
-                              aria-label="decrease"
-                              isRound
-                              isDisabled={value == 1}
-                            >
-                              <MinusIcon />
-                            </IconButton>
-                          );
-                        }}
-                      />
+            <Stack spacing={4}>
+              <Divider />
+              <Box>
+                <HStack justifyContent={"space-between"}>
+                  <Stack spacing={0}>
+                    <Text fontSize={"lg"} fontWeight={"medium"}>
+                      Взрослые
+                    </Text>
 
-                      <Text fontSize={"lg"} fontWeight={"medium"}>
-                        {adultsCount || getValues("guests.adultsCount")}
-                      </Text>
-                      <Controller
-                        control={control}
-                        name="guests.adultsCount"
-                        render={({ field: { onChange, value } }) => {
-                          return (
-                            <IconButton
-                              onClick={() => {
-                                onChange(value + 1);
-                              }}
-                              aria-label="increase"
-                              isRound
-                              isDisabled={value == 100}
-                            >
-                              <AddIcon />
-                            </IconButton>
-                          );
-                        }}
-                      />
-                    </HStack>
-                  </HStack>
-                </Box>
-                <Divider />
-                <Box>
-                  <HStack justifyContent={"space-between"}>
-                    <Stack spacing={0}>
-                      <Text fontSize={"lg"} fontWeight={"medium"}>
-                        Дети
-                      </Text>
-
-                      <Text>от 0 до 17 лет</Text>
-                    </Stack>
-                    <HStack spacing={3}>
-                      <IconButton
-                        onClick={() => {
-                          remove(fields.length - 1);
-                        }}
-                        aria-label="decrease"
-                        isRound
-                        isDisabled={fields.length == 0}
-                      >
-                        <MinusIcon />
-                      </IconButton>
-
-                      <Text fontSize={"lg"} fontWeight={"medium"}>
-                        {fields.length}
-                      </Text>
-
-                      <IconButton
-                        onClick={() => {
-                          append({
-                            age: "",
-                          });
-                        }}
-                        aria-label="increase"
-                        isRound
-                        isDisabled={fields.length == 10}
-                      >
-                        <AddIcon />
-                      </IconButton>
-                    </HStack>
-                  </HStack>
-                  <Divider mt={4} mb={4} />
-                  <Stack mt={2}>
-                    {fields.map((item, index) => {
-                      return (
-                        <Controller
-                          control={control}
-                          name={`guests.childrenAges.${index}.age`}
-                          key={item.id}
-                          render={({
-                            field: { onChange, value },
-                            fieldState: { error },
-                          }) => {
-                            return (
-                              <CollapseSelect
-                                options={ageOptions}
-                                value={value}
-                                onChange={onChange}
-                                onDelete={() => remove(index)}
-                                errors={error?.message}
-                              />
-                            );
-                          }}
-                        />
-                      );
-                    })}
+                    <Text>от 18 лет</Text>
                   </Stack>
-                </Box>
-              </Stack>
-            </DrawerBody>
+                  <HStack spacing={3}>
+                    <Controller
+                      control={control}
+                      name="guests.adultsCount"
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <IconButton
+                            onClick={() => {
+                              onChange(value - 1);
+                            }}
+                            aria-label="decrease"
+                            isRound
+                            isDisabled={value == 1}
+                          >
+                            <MinusIcon />
+                          </IconButton>
+                        );
+                      }}
+                    />
+
+                    <Text fontSize={"lg"} fontWeight={"medium"}>
+                      {adultsCount || getValues("guests.adultsCount")}
+                    </Text>
+                    <Controller
+                      control={control}
+                      name="guests.adultsCount"
+                      render={({ field: { onChange, value } }) => {
+                        return (
+                          <IconButton
+                            onClick={() => {
+                              onChange(value + 1);
+                            }}
+                            aria-label="increase"
+                            isRound
+                            isDisabled={value == 100}
+                          >
+                            <AddIcon />
+                          </IconButton>
+                        );
+                      }}
+                    />
+                  </HStack>
+                </HStack>
+              </Box>
+              <Divider />
+              <Box>
+                <HStack justifyContent={"space-between"}>
+                  <Stack spacing={0}>
+                    <Text fontSize={"lg"} fontWeight={"medium"}>
+                      Дети
+                    </Text>
+
+                    <Text>от 0 до 17 лет</Text>
+                  </Stack>
+                  <HStack spacing={3}>
+                    <IconButton
+                      onClick={() => {
+                        remove(fields.length - 1);
+                      }}
+                      aria-label="decrease"
+                      isRound
+                      isDisabled={fields.length == 0}
+                    >
+                      <MinusIcon />
+                    </IconButton>
+
+                    <Text fontSize={"lg"} fontWeight={"medium"}>
+                      {fields.length}
+                    </Text>
+
+                    <IconButton
+                      onClick={() => {
+                        append({
+                          age: "",
+                        });
+                      }}
+                      aria-label="increase"
+                      isRound
+                      isDisabled={fields.length == 10}
+                    >
+                      <AddIcon />
+                    </IconButton>
+                  </HStack>
+                </HStack>
+                <Divider mt={4} mb={4} />
+                <Stack mt={2}>
+                  {fields.map((item, index) => {
+                    return (
+                      <Controller
+                        control={control}
+                        name={`guests.childrenAges.${index}.age`}
+                        key={item.id}
+                        render={({
+                          field: { onChange, value },
+                          fieldState: { error },
+                        }) => {
+                          return (
+                            <CollapseSelect
+                              options={ageOptions}
+                              value={value}
+                              onChange={onChange}
+                              onDelete={() => remove(index)}
+                              errors={error?.message}
+                            />
+                          );
+                        }}
+                      />
+                    );
+                  })}
+                </Stack>
+              </Box>
+            </Stack>
           </DrawerBody>
         </DrawerContent>
       </Drawer>

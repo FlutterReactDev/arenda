@@ -1,23 +1,21 @@
 import {
-  VStack,
-  SimpleGrid,
   Box,
+  IconButton,
+  SimpleGrid,
   Stack,
-  Button,
+  VStack,
   useMediaQuery,
-  HStack,
 } from "@chakra-ui/react";
-import { useDayzed, Props as DayzedHookProps, DateObj } from "dayzed";
+import { DateObj, Props as DayzedHookProps, useDayzed } from "dayzed";
 
-import React, { useMemo, useCallback, SyntheticEvent, memo } from "react";
+import React, { SyntheticEvent, memo, useCallback, useMemo } from "react";
 import { CalendarConfigs, DatepickerProps } from "../utils/commonTypes";
 
-import { DayOfMonth } from "./DayOfMonth";
-import { Weekday } from "./Weekday";
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { isEqual } from "date-fns";
-import { ArrowLeftIcon, ArrowRightIcon } from "@chakra-ui/icons";
 import { CalendarHeader } from "./CalendarHeader";
+import { DayOfMonth } from "./DayOfMonth";
+import { Weekday } from "./Weekday";
 
 export interface CalendarPanelProps extends DatepickerProps {
   dayzedHookProps: Omit<DayzedHookProps, "children" | "render">;
@@ -88,36 +86,34 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     };
 
     return (
-      <Stack
-        className="datepicker-calendar"
-        direction={adaptive()}
-        w="full"
-        h="full"
-        position={"relative"}
-        pt={10}
-      >
+      <Stack direction={adaptive()} position={"relative"} pt={10}>
         {showNavigationButton && (
           <>
-            <HStack spacing={2} position={"absolute"} top={"8px"} left={"8px"}>
-              <Button {...getBackProps({ calendars, offset: 12 })} size={"md"}>
-                <ArrowLeftIcon />
-              </Button>
-              <Button {...getBackProps({ calendars })} size={"sm"}>
-                <ChevronLeftIcon />
-              </Button>
-            </HStack>
+            <IconButton
+              aria-label="left arrow"
+              colorScheme="red"
+              {...getBackProps({ calendars })}
+              position={"absolute"}
+              top={"8px"}
+              left={"8px"}
+              isRound
+              fontSize={"lg"}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
 
-            <HStack spacing={2} position={"absolute"} top={"8px"} right={"8px"}>
-              <Button {...getForwardProps({ calendars })} size={"sm"}>
-                <ChevronRightIcon />
-              </Button>
-              <Button
-                {...getForwardProps({ calendars, offset: 12 })}
-                size={"md"}
-              >
-                <ArrowRightIcon />
-              </Button>
-            </HStack>
+            <IconButton
+              aria-label="right arrow"
+              isRound
+              colorScheme="red"
+              {...getForwardProps({ calendars })}
+              position={"absolute"}
+              top={"8px"}
+              right={"8px"}
+              fontSize={"lg"}
+            >
+              <ChevronRightIcon />
+            </IconButton>
           </>
         )}
 

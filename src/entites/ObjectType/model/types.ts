@@ -4,4 +4,5 @@ export interface ObjectType {
   description: string;
   info: string;
   iconName: string;
+  objectType: number;
 }

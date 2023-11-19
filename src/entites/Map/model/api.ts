@@ -1,13 +1,18 @@
 import { base2GISApi } from "@shared/api/2GiSApi";
+import { SearchObjectData } from "./types";
 
 const geocodeApi = base2GISApi.injectEndpoints({
   endpoints(build) {
     return {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getCoordinateByAddress: build.query<any, string>({
-        query: (address) => ({
-          url: `/suggests?q=${address}&fields=items.point,items.address&type=building,adm_div.city&viewpoint1=77.17534951496107,42.64697794798821&viewpoint2=77.17686189669992,42.64364062175027&key=demo`,
-        }),
+      getCoordinateByAddress: build.query<any, SearchObjectData>({
+        query: ({ address, viewpoint1, viewpoint2 }) => {
+          console.log(address, viewpoint1, viewpoint2);
+
+          return {
+            url: `/items?q=${address}&fields=items.point,items.address&type=building&viewpoint1=${viewpoint1.longitude},${viewpoint1.latitude}&viewpoint2=${viewpoint2.longitude},${viewpoint2.latitude}&key=demo`,
+          };
+        },
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getObjectByCoordinates: build.query<any, number[]>({
@@ -16,9 +21,9 @@ const geocodeApi = base2GISApi.injectEndpoints({
         }),
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getRegionByAddress: build.query<any, string>({
-        query: (address) => ({
-          url: `/suggests?q=${address}&fields=items.point,items.address&viewpoint1=77.17534951496107,42.64697794798821&viewpoint2=77.17686189669992,42.64364062175027&key=demo`,
+      getRegionByAddress: build.query<any, SearchObjectData>({
+        query: ({ address, viewpoint1, viewpoint2 }) => ({
+          url: `/items?q=${address}&fields=items.point,items.address&viewpoint1=${viewpoint1.longitude},${viewpoint1.latitude}&viewpoint2=${viewpoint2.longitude},${viewpoint2.latitude}&key=demo`,
         }),
       }),
     };
