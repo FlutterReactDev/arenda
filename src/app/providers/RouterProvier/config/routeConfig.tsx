@@ -62,7 +62,7 @@ export const routeConfig: Route[] = [
     path: RouteName.SEARCH_PAGE,
     element: <SearchResultPage />,
     private: false,
-    layout: true,
+    layout: "header",
   },
   {
     path: RouteName.ADD_OBJECT,
