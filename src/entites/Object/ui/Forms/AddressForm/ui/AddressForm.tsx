@@ -12,9 +12,10 @@ import * as Yup from "yup";
 
 import { InferType } from "yup";
 import { FormCard } from "@shared/ui/FormCard";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { addressFormSchema } from "@entites/Object/model/schemas/addressFormSchema";
+import { FormProps } from "@entites/Object";
 
 interface AddressFormProps {
   defaultValues?: InferType<typeof addressFormSchema>;

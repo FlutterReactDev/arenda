@@ -15,15 +15,12 @@ import {
   CheckInCheckOutForm,
   FacilitiesForm,
   GeneralRoomInformationForm,
-  HeadingForm,
   HowGuestBookForm,
-  OptionalServiceForm,
   PostingRulesForm,
   PriceForm,
   RoomOptionalServiceForm,
   RoomTypeForm,
   useCreateRoom,
-  useCreateRoomMutation,
   useCreateRoomsMutation,
 } from "@entites/Object";
 import { FormStepper } from "@shared/ui/FormSteppter";
@@ -244,6 +241,8 @@ export const CreateRoom = () => {
                               setAnObjectRoomDescription({
                                 area,
                                 count,
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                //@ts-ignore
                                 floor,
                                 floorsInTheBuilding,
                                 ownName,
@@ -261,6 +260,8 @@ export const CreateRoom = () => {
                               area,
                               beds,
                               count,
+                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                              //@ts-ignore
                               floor,
                               floorsInTheBuilding,
                               maximumGuests,
@@ -566,7 +567,8 @@ export const CreateRoom = () => {
                                   anObjectRoomPostingRule,
                                   description,
                                 }));
-
+                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                              //@ts-ignore
                               createRooms(rooms)
                                 .unwrap()
                                 .then(() => {

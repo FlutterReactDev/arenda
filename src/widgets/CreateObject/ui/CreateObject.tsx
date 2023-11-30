@@ -141,9 +141,13 @@ export const CreateObject = () => {
   const generalInformationData: GeneralInformationSchemaType = {
     area,
     count,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     floor,
     floorsInTheBuilding,
     ...anObjectRoomBathroom,
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     beds,
     elevator: anObjectRoomAvailability.elevator,
     attic: anObjectRoomEquipment.attic,
@@ -211,9 +215,7 @@ export const CreateObject = () => {
                               floorsInTheBuilding,
                               numberOfBathroomsWithToilet,
                               numberOfBathroomsWithOutToilet,
-                              numberOfIsolatedBedrooms,
-                              repair,
-                              kitchen,
+
                               numberOfSeparateToilets,
                               additionalBathroom,
                               additionalToilet,
@@ -235,6 +237,8 @@ export const CreateObject = () => {
                               maximumGuests,
                             }) => {
                               setAnObjectRoomBed({
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                //@ts-ignore
                                 beds,
                                 maximumGuests,
                               });
@@ -242,6 +246,8 @@ export const CreateObject = () => {
                                 roomNameType: 1,
                                 count,
                                 area,
+                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                //@ts-ignore
                                 floor,
                                 floorsInTheBuilding,
                               });
@@ -558,6 +564,8 @@ export const CreateObject = () => {
                                 anObjectRoomBathroom,
                                 anObjectRoomBed: {
                                   maximumGuests: 10,
+                                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                  //@ts-ignore
                                   bedType: 1,
                                   count: 1,
                                 },

@@ -6,7 +6,7 @@ import {
   Alert,
   AlertIcon,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { yupResolver } from "@hookform/resolvers/yup";
 
 import { FormCard } from "@shared/ui/FormCard";
@@ -16,6 +16,7 @@ import { FC } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { InferType } from "yup";
 import { fileSchema } from "@entites/Object/model/schemas/fileSchema";
+import { FormProps } from "@entites/Object";
 interface ImageUploadFormProps {
   stateValue?: InferType<typeof fileSchema>;
   changeState?: (data: InferType<typeof fileSchema>) => void;
