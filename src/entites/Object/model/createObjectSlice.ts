@@ -140,6 +140,8 @@ const createObjectSlice = createSlice({
     setInternetAccessSumm(state, action) {
       state.internetAccessSumm = action.payload;
     },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     clearForm(state) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       state = initialState;
