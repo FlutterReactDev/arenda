@@ -27,10 +27,14 @@ import {
   useGetFoodTypeQuery,
   useGetReportingDocumentTypeQuery,
   useGetObjectStarRatingQuery,
+  useGetMealServiceTypesQuery,
 } from "@entites/CommonReference";
 
-import { hotelGeneralInformationSchema } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
-import { AdditionalServices, FormProps } from "@entites/Object/model/types";
+import {
+  HotelGeneralInformationType,
+  hotelGeneralInformationSchema,
+} from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FormCard } from "@shared/ui/FormCard";
@@ -41,10 +45,17 @@ import { Controller, useForm } from "react-hook-form";
 import { InferType } from "yup";
 import { getDeclension } from "@shared/utils/getDeclension";
 import { getCurrencySymbol } from "@shared/utils/getCurrencySymbol";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
+import {
+  AdditionalServices,
+  FoodType,
+  InternetAccess,
+  Parking,
+} from "@entites/Object/model/types/createObjectTypes";
 
 interface HotelGeneralInformationFormProps {
-  stateValue?: InferType<typeof hotelGeneralInformationSchema>;
-  changeState?: (data: InferType<typeof hotelGeneralInformationSchema>) => void;
+  stateValue: HotelGeneralInformationType;
+  changeState?: (data: HotelGeneralInformationType) => void;
   objectTypeName: string;
 }
 const HotelGeneralInformationForm: FC<
@@ -113,28 +124,66 @@ const HotelGeneralInformationForm: FC<
   });
 
   const {
+    data: mealServiceTypes,
+    isFetching: mealServiceTypesIsLoading,
+    isSuccess: mealServiceTypesIsSuccesss,
+  } = useGetMealServiceTypesQuery("", {
+    refetchOnMountOrArgChange: true,
+  });
+
+  const {
     register,
     watch,
     handleSubmit,
     control,
     formState: { errors },
-  } = useForm({
+  } = useForm<HotelGeneralInformationType>({
     resolver: yupResolver(hotelGeneralInformationSchema),
-    defaultValues: stateValue,
+    defaultValues: {
+      ...stateValue,
+      internetAccess: stateValue.internetAccess || undefined,
+      parking: stateValue.parking || undefined,
+      anObjectDetail: {
+        ...stateValue.anObjectDetail,
+        yearOfConstruntion:
+          stateValue.anObjectDetail.yearOfConstruntion || undefined,
+        smokingOnSite: stateValue.anObjectDetail.smokingOnSite || undefined,
+        paymentType: stateValue.anObjectDetail.paymentType || undefined,
+      },
+      anObjectMeal: {
+        ...stateValue.anObjectMeal,
+        breakfast: stateValue.anObjectMeal.breakfast || undefined,
+        lunch: stateValue.anObjectMeal.lunch || undefined,
+        dinner: stateValue.anObjectMeal.dinner || undefined,
+      },
+      anObjectFeeAdditionalService: {
+        ...stateValue.anObjectFeeAdditionalService,
+        cleaning: stateValue.anObjectFeeAdditionalService.cleaning || undefined,
+        bedLinen: stateValue.anObjectFeeAdditionalService.bedLinen || undefined,
+        reportingDocuments:
+          stateValue.anObjectFeeAdditionalService.reportingDocuments ||
+          undefined,
+      },
+    },
   });
 
-  console.log(errors);
+  const hasTransfer = watch("anObjectFeeAdditionalService.hasTransfer");
+  const allInclusive = watch("anObjectMeal.allInclusive");
+  const cleaning = watch("anObjectFeeAdditionalService.cleaning");
+  const bedLinen = watch("anObjectFeeAdditionalService.bedLinen");
+  const internetAccessForm = watch("internetAccess");
+  const parkingForm = watch("parking");
 
-  const hasTransfer = watch("anObjectFeeAdditionalServices.hasTransfer");
-  const allInclusive = watch("anObjectMeals.allInclusive");
-  const cleaning = watch("anObjectFeeAdditionalServices.cleaning");
-  const bedLinen = watch("anObjectFeeAdditionalServices.bedLinen");
+  const breakfast = watch("anObjectMeal.breakfast");
+  const dinner = watch("anObjectMeal.dinner");
+  const lunch = watch("anObjectMeal.lunch");
   const onSubmit = (data: InferType<typeof hotelGeneralInformationSchema>) => {
-    console.log(data);
-
     changeState && changeState(data);
     onNext && onNext();
   };
+
+  console.log(errors);
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
@@ -197,6 +246,27 @@ const HotelGeneralInformationForm: FC<
                   ))}
               </Select>
             </Skeleton>
+            {internetAccessForm == InternetAccess.PAID && (
+              <FormControl
+                isInvalid={!!errors.internetAccessSumm?.message}
+                mt={2}
+              >
+                <FormLabel>сколько стоит интернет</FormLabel>
+                <InputGroup>
+                  <Input
+                    {...register("internetAccessSumm")}
+                    placeholder="сколько стоит интернет"
+                    type="number"
+                  />
+                  <InputRightElement>
+                    {getCurrencySymbol("ru-RU", "KGS")}
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>
+                  {!!errors.internetAccessSumm?.message}
+                </FormErrorMessage>
+              </FormControl>
+            )}
             <FormErrorMessage>
               {errors.internetAccess?.message}
             </FormErrorMessage>
@@ -218,18 +288,36 @@ const HotelGeneralInformationForm: FC<
                   ))}
               </Select>
             </Skeleton>
+            {parkingForm == Parking.PAID && (
+              <FormControl isInvalid={!!errors.parkingSumm?.message} mt={2}>
+                <FormLabel>сколько стоит парковка</FormLabel>
+                <InputGroup>
+                  <Input
+                    {...register("parkingSumm")}
+                    placeholder="сколько стоит паковка"
+                    type="number"
+                  />
+                  <InputRightElement>
+                    {getCurrencySymbol("ru-RU", "KGS")}
+                  </InputRightElement>
+                </InputGroup>
+                <FormErrorMessage>
+                  {!!errors.parkingSumm?.message}
+                </FormErrorMessage>
+              </FormControl>
+            )}
             <FormErrorMessage>{errors.parking?.message}</FormErrorMessage>
           </FormControl>
         </FormCard>
         <FormCard title="Сведения">
           <Stack spacing={3}>
             <FormControl
-              isInvalid={!!errors.anObjectDetails?.yearOfConstruntion?.message}
+              isInvalid={!!errors.anObjectDetail?.yearOfConstruntion?.message}
             >
               <FormLabel>Год постройки</FormLabel>
               <Select
                 placeholder="Выберите год постройки"
-                {...register("anObjectDetails.yearOfConstruntion")}
+                {...register("anObjectDetail.yearOfConstruntion")}
               >
                 {generateYearsBetween(getYear(subYears(new Date(), 100)))
                   .reverse()
@@ -242,30 +330,30 @@ const HotelGeneralInformationForm: FC<
                   })}
               </Select>
               <FormErrorMessage>
-                {errors.anObjectDetails?.yearOfConstruntion?.message}
+                {errors.anObjectDetail?.yearOfConstruntion?.message}
               </FormErrorMessage>
             </FormControl>
             <HStack alignItems={"flex-start"}>
               <FormControl
-                isInvalid={!!errors.anObjectDetails?.numberOfRooms?.message}
+                isInvalid={!!errors.anObjectDetail?.numberOfRooms?.message}
               >
                 <FormLabel>Количество номеров</FormLabel>
                 <Input
                   type="number"
                   placeholder="Количество номеров"
-                  {...register("anObjectDetails.numberOfRooms")}
+                  {...register("anObjectDetail.numberOfRooms")}
                 />
                 <FormErrorMessage>
-                  {errors.anObjectDetails?.numberOfRooms?.message}
+                  {errors.anObjectDetail?.numberOfRooms?.message}
                 </FormErrorMessage>
               </FormControl>
               <FormControl
-                isInvalid={!!errors.anObjectDetails?.areaOfTheLand?.message}
+                isInvalid={!!errors.anObjectDetail?.areaOfTheLand?.message}
               >
                 <FormLabel>Площадь территории</FormLabel>
                 <InputGroup>
                   <Input
-                    {...register("anObjectDetails.areaOfTheLand")}
+                    {...register("anObjectDetail.areaOfTheLand")}
                     type="number"
                     placeholder="Площадь"
                   />
@@ -276,17 +364,17 @@ const HotelGeneralInformationForm: FC<
                   </InputRightElement>
                 </InputGroup>
                 <FormErrorMessage>
-                  {errors.anObjectDetails?.areaOfTheLand?.message}
+                  {errors.anObjectDetail?.areaOfTheLand?.message}
                 </FormErrorMessage>
               </FormControl>
             </HStack>
             <HStack>
               <FormControl
-                isInvalid={!!errors.anObjectDetails?.checkInAfter?.message}
+                isInvalid={!!errors.anObjectDetail?.checkInAfter?.message}
               >
                 <FormLabel>заезд после</FormLabel>
                 <Select
-                  {...register("anObjectDetails.checkInAfter")}
+                  {...register("anObjectDetail.checkInAfter")}
                   defaultValue={"14:00"}
                 >
                   <option value="00:00">00:00</option>
@@ -315,15 +403,15 @@ const HotelGeneralInformationForm: FC<
                   <option value="23:00">23:00</option>
                 </Select>
                 <FormErrorMessage>
-                  {errors.anObjectDetails?.checkInAfter?.message}
+                  {errors.anObjectDetail?.checkInAfter?.message}
                 </FormErrorMessage>
               </FormControl>
               <FormControl
-                isInvalid={!!errors.anObjectDetails?.checkOutAfter?.message}
+                isInvalid={!!errors.anObjectDetail?.checkOutAfter?.message}
               >
                 <FormLabel>отъезд до</FormLabel>
                 <Select
-                  {...register("anObjectDetails.checkOutAfter")}
+                  {...register("anObjectDetail.checkOutAfter")}
                   defaultValue={"12:00"}
                 >
                   <option value="00:00">00:00</option>
@@ -352,12 +440,12 @@ const HotelGeneralInformationForm: FC<
                   <option value="23:00">23:00</option>
                 </Select>
                 <FormErrorMessage>
-                  {errors.anObjectDetails?.checkOutAfter?.message}
+                  {errors.anObjectDetail?.checkOutAfter?.message}
                 </FormErrorMessage>
               </FormControl>
             </HStack>
             <FormControl
-              isInvalid={!!errors.anObjectDetails?.smokingOnSite?.message}
+              isInvalid={!!errors.anObjectDetail?.smokingOnSite?.message}
             >
               <FormLabel>Курение на территории</FormLabel>
 
@@ -367,7 +455,7 @@ const HotelGeneralInformationForm: FC<
               >
                 <Select
                   placeholder="выберите"
-                  {...register("anObjectDetails.smokingOnSite")}
+                  {...register("anObjectDetail.smokingOnSite")}
                 >
                   {smokingOnSite &&
                     smokingOnSite.map((option) => (
@@ -378,11 +466,11 @@ const HotelGeneralInformationForm: FC<
                 </Select>
               </Skeleton>
               <FormErrorMessage>
-                {errors.anObjectDetails?.smokingOnSite?.message}
+                {errors.anObjectDetail?.smokingOnSite?.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl
-              isInvalid={!!errors.anObjectDetails?.paymentType?.message}
+              isInvalid={!!errors.anObjectDetail?.paymentType?.message}
             >
               <FormLabel>Принимаемая оплата</FormLabel>
 
@@ -392,7 +480,7 @@ const HotelGeneralInformationForm: FC<
               >
                 <Select
                   placeholder="выберите"
-                  {...register("anObjectDetails.paymentType")}
+                  {...register("anObjectDetail.paymentType")}
                 >
                   {paymentType &&
                     paymentType.map((option) => (
@@ -403,7 +491,7 @@ const HotelGeneralInformationForm: FC<
                 </Select>
               </Skeleton>
               <FormErrorMessage>
-                {errors.anObjectDetails?.paymentType?.message}
+                {errors.anObjectDetail?.paymentType?.message}
               </FormErrorMessage>
             </FormControl>
           </Stack>
@@ -412,7 +500,7 @@ const HotelGeneralInformationForm: FC<
           <HStack flexWrap={"wrap"} mt={4}>
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.restaurant"
+              name="anObjectAdditionalComfort.restaurant"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -434,7 +522,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.barCounter"
+              name="anObjectAdditionalComfort.barCounter"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -456,7 +544,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.sauna"
+              name="anObjectAdditionalComfort.sauna"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -478,7 +566,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.garden"
+              name="anObjectAdditionalComfort.garden"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -500,7 +588,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.spaCenter"
+              name="anObjectAdditionalComfort.spaCenter"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -522,7 +610,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.tennisCourt"
+              name="anObjectAdditionalComfort.tennisCourt"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -544,7 +632,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.aquapark"
+              name="anObjectAdditionalComfort.aquapark"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -566,7 +654,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.indoorPool"
+              name="anObjectAdditionalComfort.indoorPool"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -588,7 +676,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.privateBeach"
+              name="anObjectAdditionalComfort.privateBeach"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -610,7 +698,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.elevator"
+              name="anObjectAdditionalComfort.elevator"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -632,7 +720,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.childrenSwimmingPool"
+              name="anObjectAdditionalComfort.childrenSwimmingPool"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -654,7 +742,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.roomDelivery"
+              name="anObjectAdditionalComfort.roomDelivery"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -676,7 +764,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.twentyFourhourFrontDesk"
+              name="anObjectAdditionalComfort.twentyFourhourFrontDesk"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -698,7 +786,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.gym"
+              name="anObjectAdditionalComfort.gym"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -720,7 +808,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.terrace"
+              name="anObjectAdditionalComfort.terrace"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -742,7 +830,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.footballField"
+              name="anObjectAdditionalComfort.footballField"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -764,7 +852,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.golf"
+              name="anObjectAdditionalComfort.golf"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -786,7 +874,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.openPool"
+              name="anObjectAdditionalComfort.openPool"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -808,7 +896,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.jacuzzi"
+              name="anObjectAdditionalComfort.jacuzzi"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -830,7 +918,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.playground"
+              name="anObjectAdditionalComfort.playground"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -852,7 +940,7 @@ const HotelGeneralInformationForm: FC<
             />
             <Controller
               control={control}
-              name="anObjectAdditionalComforts.ramp"
+              name="anObjectAdditionalComfort.ramp"
               render={({
                 field: { name, onBlur, onChange, ref, value, disabled },
               }) => {
@@ -883,7 +971,7 @@ const HotelGeneralInformationForm: FC<
               <HStack justifyContent={"space-between"}>
                 <FormLabel>всё включено</FormLabel>
                 <Switch
-                  {...register("anObjectMeals.allInclusive")}
+                  {...register("anObjectMeal.allInclusive")}
                   colorScheme="red"
                 />
               </HStack>
@@ -891,7 +979,7 @@ const HotelGeneralInformationForm: FC<
             {!allInclusive && (
               <>
                 <FormControl
-                  isInvalid={!!errors.anObjectMeals?.breakfast?.message}
+                  isInvalid={!!errors.anObjectMeal?.breakfast?.message}
                 >
                   <FormLabel>завтрак</FormLabel>
                   <Skeleton
@@ -900,7 +988,7 @@ const HotelGeneralInformationForm: FC<
                   >
                     <Select
                       placeholder="выберите"
-                      {...register("anObjectMeals.breakfast")}
+                      {...register("anObjectMeal.breakfast")}
                     >
                       {foodType &&
                         foodType.map((option) => (
@@ -910,11 +998,46 @@ const HotelGeneralInformationForm: FC<
                         ))}
                     </Select>
                   </Skeleton>
+
+                  {breakfast && breakfast != FoodType.NOT_PROVIDING && (
+                    <FormControl
+                      isInvalid={
+                        !!errors.anObjectMeal?.breakfastService?.message
+                      }
+                      mt={4}
+                    >
+                      <Skeleton
+                        height="35px"
+                        isLoaded={
+                          !mealServiceTypesIsLoading &&
+                          mealServiceTypesIsSuccesss
+                        }
+                      >
+                        <Select
+                          placeholder="выберите"
+                          {...register("anObjectMeal.breakfastService")}
+                        >
+                          {mealServiceTypes &&
+                            mealServiceTypes.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.name}
+                              </option>
+                            ))}
+                        </Select>
+                      </Skeleton>
+
+                      <FormErrorMessage>
+                        {errors.anObjectMeal?.breakfastService?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+
                   <FormErrorMessage>
-                    {errors.anObjectMeals?.breakfast?.message}
+                    {errors.anObjectMeal?.breakfast?.message}
                   </FormErrorMessage>
                 </FormControl>
-                <FormControl isInvalid={!!errors.anObjectMeals?.lunch?.message}>
+
+                <FormControl isInvalid={!!errors.anObjectMeal?.lunch?.message}>
                   <FormLabel>обед</FormLabel>
                   <Skeleton
                     height="35px"
@@ -922,7 +1045,7 @@ const HotelGeneralInformationForm: FC<
                   >
                     <Select
                       placeholder="выберите"
-                      {...register("anObjectMeals.lunch")}
+                      {...register("anObjectMeal.lunch")}
                     >
                       {foodType &&
                         foodType.map((option) => (
@@ -932,13 +1055,41 @@ const HotelGeneralInformationForm: FC<
                         ))}
                     </Select>
                   </Skeleton>
+                  {lunch && lunch != FoodType.NOT_PROVIDING && (
+                    <FormControl
+                      isInvalid={!!errors.anObjectMeal?.lunchService?.message}
+                      mt={4}
+                    >
+                      <Skeleton
+                        height="35px"
+                        isLoaded={
+                          !mealServiceTypesIsLoading &&
+                          mealServiceTypesIsSuccesss
+                        }
+                      >
+                        <Select
+                          placeholder="выберите"
+                          {...register("anObjectMeal.lunchService")}
+                        >
+                          {mealServiceTypes &&
+                            mealServiceTypes.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.name}
+                              </option>
+                            ))}
+                        </Select>
+                      </Skeleton>
+
+                      <FormErrorMessage>
+                        {errors.anObjectMeal?.lunchService?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
                   <FormErrorMessage>
-                    {errors.anObjectMeals?.lunch?.message}
+                    {errors.anObjectMeal?.lunch?.message}
                   </FormErrorMessage>
                 </FormControl>
-                <FormControl
-                  isInvalid={!!errors.anObjectMeals?.dinner?.message}
-                >
+                <FormControl isInvalid={!!errors.anObjectMeal?.dinner?.message}>
                   <FormLabel>ужин</FormLabel>
                   <Skeleton
                     height="35px"
@@ -946,7 +1097,7 @@ const HotelGeneralInformationForm: FC<
                   >
                     <Select
                       placeholder="выберите"
-                      {...register("anObjectMeals.dinner")}
+                      {...register("anObjectMeal.dinner")}
                     >
                       {foodType &&
                         foodType.map((option) => (
@@ -956,8 +1107,38 @@ const HotelGeneralInformationForm: FC<
                         ))}
                     </Select>
                   </Skeleton>
+                  {dinner && dinner != FoodType.NOT_PROVIDING && (
+                    <FormControl
+                      isInvalid={!!errors.anObjectMeal?.dinnerService?.message}
+                      mt={4}
+                    >
+                      <Skeleton
+                        height="35px"
+                        isLoaded={
+                          !mealServiceTypesIsLoading &&
+                          mealServiceTypesIsSuccesss
+                        }
+                      >
+                        <Select
+                          placeholder="выберите"
+                          {...register("anObjectMeal.dinnerService")}
+                        >
+                          {mealServiceTypes &&
+                            mealServiceTypes.map((option) => (
+                              <option key={option.value} value={option.value}>
+                                {option.name}
+                              </option>
+                            ))}
+                        </Select>
+                      </Skeleton>
+
+                      <FormErrorMessage>
+                        {errors.anObjectMeal?.dinnerService?.message}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
                   <FormErrorMessage>
-                    {errors.anObjectMeals?.dinner?.message}
+                    {errors.anObjectMeal?.dinner?.message}
                   </FormErrorMessage>
                 </FormControl>
               </>
@@ -979,7 +1160,7 @@ const HotelGeneralInformationForm: FC<
           <Stack spacing={3} mt={2}>
             <FormControl
               isInvalid={
-                !!errors.anObjectFeeAdditionalServices?.cleaning?.message
+                !!errors.anObjectFeeAdditionalService?.cleaning?.message
               }
             >
               <FormLabel>Уборка</FormLabel>
@@ -991,7 +1172,7 @@ const HotelGeneralInformationForm: FC<
               >
                 <Select
                   placeholder="выберите"
-                  {...register("anObjectFeeAdditionalServices.cleaning")}
+                  {...register("anObjectFeeAdditionalService.cleaning")}
                 >
                   {additionalService &&
                     additionalService.map((option) => (
@@ -1004,14 +1185,14 @@ const HotelGeneralInformationForm: FC<
               {cleaning == AdditionalServices.PAID && (
                 <FormControl
                   isInvalid={
-                    !!errors.anObjectFeeAdditionalServices?.cleaningSum?.message
+                    !!errors.anObjectFeeAdditionalService?.cleaningSum?.message
                   }
                   mt={2}
                 >
                   <FormLabel>сколько стоит уборка</FormLabel>
                   <InputGroup>
                     <Input
-                      {...register("anObjectFeeAdditionalServices.cleaningSum")}
+                      {...register("anObjectFeeAdditionalService.cleaningSum")}
                       placeholder="сколько стоит уборка"
                       type="number"
                     />
@@ -1020,18 +1201,18 @@ const HotelGeneralInformationForm: FC<
                     </InputRightElement>
                   </InputGroup>
                   <FormErrorMessage>
-                    {errors.anObjectFeeAdditionalServices?.cleaningSum?.message}
+                    {errors.anObjectFeeAdditionalService?.cleaningSum?.message}
                   </FormErrorMessage>
                 </FormControl>
               )}
               <FormErrorMessage>
-                {errors.anObjectFeeAdditionalServices?.cleaning?.message}
+                {errors.anObjectFeeAdditionalService?.cleaning?.message}
               </FormErrorMessage>
             </FormControl>
 
             <FormControl
               isInvalid={
-                !!errors.anObjectFeeAdditionalServices?.bedLinen?.message
+                !!errors.anObjectFeeAdditionalService?.bedLinen?.message
               }
             >
               <FormLabel>Постельное бельё</FormLabel>
@@ -1043,7 +1224,7 @@ const HotelGeneralInformationForm: FC<
               >
                 <Select
                   placeholder="выберите"
-                  {...register("anObjectFeeAdditionalServices.bedLinen")}
+                  {...register("anObjectFeeAdditionalService.bedLinen")}
                 >
                   {additionalService &&
                     additionalService.map((option) => (
@@ -1056,14 +1237,14 @@ const HotelGeneralInformationForm: FC<
               {bedLinen == AdditionalServices.PAID && (
                 <FormControl
                   isInvalid={
-                    !!errors.anObjectFeeAdditionalServices?.bedLinenSum?.message
+                    !!errors.anObjectFeeAdditionalService?.bedLinenSum?.message
                   }
                   mt={2}
                 >
                   <FormLabel>стоимость комплекта белья</FormLabel>
                   <InputGroup>
                     <Input
-                      {...register("anObjectFeeAdditionalServices.bedLinenSum")}
+                      {...register("anObjectFeeAdditionalService.bedLinenSum")}
                       placeholder="стоимость комплекта белья"
                       type="number"
                     />
@@ -1072,17 +1253,17 @@ const HotelGeneralInformationForm: FC<
                     </InputRightElement>
                   </InputGroup>
                   <FormErrorMessage>
-                    {errors.anObjectFeeAdditionalServices?.bedLinenSum?.message}
+                    {errors.anObjectFeeAdditionalService?.bedLinenSum?.message}
                   </FormErrorMessage>
                 </FormControl>
               )}
               <FormErrorMessage>
-                {errors.anObjectFeeAdditionalServices?.bedLinen?.message}
+                {errors.anObjectFeeAdditionalService?.bedLinen?.message}
               </FormErrorMessage>
             </FormControl>
             <FormControl
               isInvalid={
-                !!errors.anObjectFeeAdditionalServices?.reportingDocuments
+                !!errors.anObjectFeeAdditionalService?.reportingDocuments
                   ?.message
               }
             >
@@ -1097,7 +1278,7 @@ const HotelGeneralInformationForm: FC<
                 <Select
                   placeholder="выберите"
                   {...register(
-                    "anObjectFeeAdditionalServices.reportingDocuments"
+                    "anObjectFeeAdditionalService.reportingDocuments"
                   )}
                 >
                   {reportingDocumentTypes &&
@@ -1110,7 +1291,7 @@ const HotelGeneralInformationForm: FC<
               </Skeleton>
               <FormErrorMessage>
                 {
-                  errors.anObjectFeeAdditionalServices?.reportingDocuments
+                  errors.anObjectFeeAdditionalService?.reportingDocuments
                     ?.message
                 }
               </FormErrorMessage>
@@ -1130,7 +1311,7 @@ const HotelGeneralInformationForm: FC<
               <HStack justifyContent={"space-between"}>
                 <FormLabel>Предоставляется трансфер</FormLabel>
                 <Switch
-                  {...register("anObjectFeeAdditionalServices.hasTransfer")}
+                  {...register("anObjectFeeAdditionalService.hasTransfer")}
                   colorScheme="red"
                 />
               </HStack>
@@ -1138,17 +1319,17 @@ const HotelGeneralInformationForm: FC<
             {hasTransfer && (
               <FormControl
                 isInvalid={
-                  !!errors?.anObjectFeeAdditionalServices?.transferDetails
+                  !!errors?.anObjectFeeAdditionalService?.transferDetails
                     ?.message
                 }
               >
                 <Textarea
-                  {...register("anObjectFeeAdditionalServices.transferDetails")}
+                  {...register("anObjectFeeAdditionalService.transferDetails")}
                   placeholder="Опишите условия предоставления трансфера"
                 />
                 <FormErrorMessage>
                   {
-                    errors?.anObjectFeeAdditionalServices?.transferDetails
+                    errors?.anObjectFeeAdditionalService?.transferDetails
                       ?.message
                   }
                 </FormErrorMessage>
@@ -1158,7 +1339,7 @@ const HotelGeneralInformationForm: FC<
         </FormCard>
         <FormCard title="Подробное описание">
           <Textarea
-            {...register("anObjectFeeAdditionalServices.detailComment")}
+            {...register("anObjectFeeAdditionalService.detailComment")}
             placeholder="Здесь можно рассказать об объекте подробнее (кроме той информации, которую вы указали выше)"
           />
         </FormCard>
@@ -1171,7 +1352,7 @@ const HotelGeneralInformationForm: FC<
             placeholder="укажите ссылки на ваш объект размещения, каждую на новой строке"
             mt={2}
             {...register(
-              "anObjectFeeAdditionalServices.objectInAnotherResources"
+              "anObjectFeeAdditionalService.objectInAnotherResources"
             )}
           />
         </FormCard>

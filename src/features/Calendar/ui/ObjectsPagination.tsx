@@ -1,46 +1,31 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { Box, HStack, IconButton } from "@chakra-ui/react";
+import { Button, ButtonGroup, Flex, Text } from "@chakra-ui/react";
 import { usePagination } from "../model/usePagination";
 
 export const ObjectPagination = () => {
   const { totalPage, onNext, onPrev, currentPage } = usePagination();
   return (
-    <HStack fontSize={"lg"} fontWeight={"medium"} ml={2} mt={2}>
-      <IconButton
-        aria-label="prev objects"
-        isRound
-        bgColor={"white"}
-        color="black"
-        fontSize={"2xl"}
-        border={"1px solid"}
-        borderColor={"#444"}
-        onClick={onPrev}
-      >
+    <ButtonGroup h={10} w="full" justifyContent={"space-between"}>
+      <Button fontSize={"xl"} bgColor={"white"} onClick={onPrev}>
         <ChevronLeftIcon />
-      </IconButton>
-      <Box
+      </Button>
+      <Flex
         bgColor={"white"}
-        color={"black"}
         rounded={"lg"}
-        px={3}
-        py={1}
-        border={"1px solid"}
-        borderColor={"#444"}
+        alignItems={"cente"}
+        justifyContent={"center"}
+        h="full"
+        py={1.5}
+        px={2}
+        w="full"
       >
-        {currentPage} / {totalPage}
-      </Box>
-      <IconButton
-        aria-label="next object"
-        isRound
-        bgColor={"white"}
-        color="black"
-        fontSize={"2xl"}
-        border={"1px solid"}
-        borderColor={"#444"}
-        onClick={onNext}
-      >
+        <Text fontSize={"lg"} fontWeight={"medium"}>
+          {currentPage} из {totalPage}
+        </Text>
+      </Flex>
+      <Button fontSize={"xl"} bgColor={"white"} onClick={onNext}>
         <ChevronRightIcon />
-      </IconButton>
-    </HStack>
+      </Button>
+    </ButtonGroup>
   );
 };

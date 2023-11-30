@@ -1,55 +1,50 @@
 import {
-  Box,
   Alert,
   AlertIcon,
+  Box,
   FormControl,
-  FormLabel,
-  InputGroup,
-  Input,
-  InputRightElement,
   FormErrorMessage,
   FormHelperText,
-  Textarea,
+  FormLabel,
+  Input,
+  InputGroup,
+  InputRightElement,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
 
-import { getForm } from "@entites/Object/model/selectors";
+import {
+  HeadingFormType,
+  headingFormSchema,
+} from "@entites/Object/model/schemas/headingFormSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC } from "react";
-import { useForm, useWatch, Controller } from "react-hook-form";
-import { InferType } from "yup";
-import { headingFormSchema } from "@entites/Object/model/schemas/headingFormSchema";
+import { Controller, useForm, useWatch } from "react-hook-form";
+interface HeadingFormProps {
+  value: HeadingFormType;
+  onChange: (value: HeadingFormType) => void;
+}
+const HeadingForm: FC<FormProps & HeadingFormProps> = (props) => {
+  const { navigation, onNext, onChange, value } = props;
 
-const HeadingForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-  const headingData = useAppSelector(getForm(5, 0));
   const {
     handleSubmit,
     control,
     formState: { errors },
     register,
-  } = useForm<InferType<typeof headingFormSchema>>({
+  } = useForm<HeadingFormType>({
     resolver: yupResolver(headingFormSchema),
-    defaultValues: { ...headingData } as InferType<typeof headingFormSchema>,
+    defaultValues: value,
   });
-  const dispatch = useAppDispatch();
 
   const title = useWatch({ control, name: "title" });
 
-  const onSubmit = (data: InferType<typeof headingFormSchema>) => {
-    dispatch(
-      addObjectStepActions.setForm({
-        screen: 5,
-        step: 0,
-        data,
-      })
-    );
+  const onSubmit = (data: HeadingFormType) => {
+    onChange(data);
     onNext && onNext();
   };
 
@@ -71,14 +66,17 @@ const HeadingForm: FC<FormProps> = (props) => {
               <Controller
                 control={control}
                 name="title"
-                render={({ field: { onChange, ...otherField } }) => {
+                render={({ field: { onChange, value, ...otherField } }) => {
                   return (
                     <Input
                       onChange={(e) => {
                         if (e.target.value.length <= 70) {
                           onChange(e.target.value);
+                        } else {
+                          onChange(value);
                         }
                       }}
+                      value={value}
                       {...otherField}
                       placeholder="Введите загаловок"
                       pr={7}
@@ -96,6 +94,14 @@ const HeadingForm: FC<FormProps> = (props) => {
             <FormHelperText>
               Сделайте название коротким и уникальным. Это название гости будут
               видеть на Суточно.ру
+            </FormHelperText>
+          </FormControl>
+          <FormControl mt={4}>
+            <FormLabel>Свое название (не обязательно)</FormLabel>
+            <Input {...register("ownName")} type="text" />
+            <FormHelperText>
+              Для удобства можете ввести уникальное название\номер, которое
+              будете видеть только вы
             </FormHelperText>
           </FormControl>
         </FormCard>

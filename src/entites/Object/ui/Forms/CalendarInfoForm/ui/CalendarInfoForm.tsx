@@ -6,44 +6,41 @@ import {
   Button,
   HStack,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { getForm } from "@entites/Object/model/selectors";
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { InferType } from "yup";
-import { calendarInfoSchema } from "@entites/Object/model/schemas/calendarInfoSchema";
-import { addObjectStepActions } from "@entites/Object";
-const CalendarInfoForm: FC<FormProps> = (props) => {
-  const { onNext, onPrev } = props;
-  const calendarInfoData = useAppSelector(getForm(4, 1));
-  const dispatch = useAppDispatch();
+
+import {
+  CalendarInfoType,
+  calendarInfoSchema,
+} from "@entites/Object/model/schemas/calendarInfoSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
+interface CalendarInfoFormProps {
+  value: CalendarInfoType;
+  onChange: (value: CalendarInfoType) => void;
+}
+
+const CalendarInfoForm: FC<FormProps & CalendarInfoFormProps> = (props) => {
+  const { onNext, onPrev, value, onChange } = props;
+
   const {
     register,
     handleSubmit,
     watch,
     formState: { errors },
-  } = useForm<InferType<typeof calendarInfoSchema>>({
+  } = useForm<CalendarInfoType>({
     resolver: yupResolver(calendarInfoSchema),
-    defaultValues: { ...calendarInfoData } as InferType<
-      typeof calendarInfoSchema
-    >,
+    defaultValues: value,
   });
 
   const calendarAgree = watch("calendarAgree");
-  const onSubmit = (data: InferType<typeof calendarInfoSchema>) => {
-    dispatch(
-      addObjectStepActions.setForm({
-        data,
-        screen: 4,
-        step: 1,
-      })
-    );
+  const onSubmit = (data: CalendarInfoType) => {
+    onChange(data);
     onNext && onNext();
   };
 

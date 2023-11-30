@@ -16,16 +16,51 @@ export { PostingRulesForm } from "./ui/Forms/PostingRulesForm";
 export { PriceForm } from "./ui/Forms/PriceForm";
 export { SelectLocationMapForm } from "./ui/Forms/SelectLocationMapForm";
 export { HotelGeneralInformationForm } from "./ui/Forms/HotelGeneralInformationForm";
+export { RoomTypeForm } from "./ui/Forms/RoomTypeForm";
+export { GeneralRoomInformationForm } from "./ui/Forms/GeneralRoomInformationForm";
+export { RoomOptionalServiceForm } from "./ui/Forms/RoomOptionalServiceForm";
 export {
-  addObjectStepActions,
-  addObjectStepReducer,
-} from "./model/addObjectStepSlice";
-
-export { addHotelActions, addHotelReducer } from "./model/addHotelSlice";
-
-export { getAddressData, getForm, getLocationMap } from "./model/selectors";
+  createObjectAction,
+  createObjectReducer,
+} from "./model/createObjectSlice";
+export { createRoomAction, createRoomReducer } from "./model/createRoomSlice";
 export { guestsSchema } from "./model/schemas/guestsSchema";
 export type { GuestsType } from "./model/schemas/guestsSchema";
-export type { ObjectType } from "./model/types";
-export { useCreateObjectMutation } from "./model/api/objectApi";
+
+export {
+  useCreateObjectMutation,
+  useCreateRoomMutation,
+  useCreateRoomsMutation,
+} from "./model/api/objectApi";
 export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";
+export { useCreateObject } from "./model/useCreateObject";
+export { useCreateRoom } from "./model/useCreateRoom";
+export type {
+  AdditionalServices,
+  AddressData,
+  AnObjectAdditionalComfort,
+  AnObjectDetail,
+  AnObjectFeeAdditionalService,
+  AnObjectMeal,
+} from "./model/types/createObjectTypes";
+export type {
+  AnObjectRoomAmenities,
+  AnObjectRoomAvailability,
+  AnObjectRoomBaseCost,
+  AnObjectRoomBathroom,
+  AnObjectRoomBed,
+  AnObjectRoomCleaningFee,
+  AnObjectRoomDescription,
+  AnObjectRoomEquipment,
+  AnObjectRoomForChildren,
+  AnObjectRoomImage,
+  AnObjectRoomIndoorRelaxation,
+  AnObjectRoomInfrastructureLeisureNearby,
+  AnObjectRoomInsuranceDeposit,
+  AnObjectRoomKitchenEquipment,
+  AnObjectRoomOutsideRelaxation,
+  AnObjectRoomViewFromWindow,
+  BedTypes,
+} from "./model/types/createRoomTypes";
+
+export type { FormProps } from "./model/types/objectTypes";

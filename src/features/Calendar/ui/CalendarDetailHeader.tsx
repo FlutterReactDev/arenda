@@ -83,12 +83,11 @@ export const CalendarDetailHeader: FC<CalendarDetailHeaderProps> = (props) => {
       right={0}
       pos={"sticky"}
       top={0}
-      h={"70px"}
       bgColor={"#ededed"}
       zIndex={"banner"}
       py={1}
     >
-      <HStack alignItems={"center"} px={6} h="full">
+      <HStack alignItems={"center"} px={6} h="full" flexWrap={"wrap"}>
         <Button
           bgColor={"white"}
           rounded={"full"}
@@ -120,7 +119,7 @@ export const CalendarDetailHeader: FC<CalendarDetailHeaderProps> = (props) => {
             }}
             rightIcon={<ChevronDownIcon />}
             size={["sm", "md", "lg"]}
-            minW={"max-content"}
+            maxW={["130px", "max-content", "max-content"]}
           >
             {format(
               eachMonthOfInterval({
@@ -228,7 +227,7 @@ export const CalendarDetailHeader: FC<CalendarDetailHeaderProps> = (props) => {
           <SearchComment
             onEventClick={onEventClick}
             includesAvailabilities={availabilities}
-            h="full"
+            h="10"
           />
         </Hide>
         <Show below="md">

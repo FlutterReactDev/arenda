@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { base2GISApi } from "@shared/api/2GiSApi";
 import { baseApiWithReAuth, baseApi } from "@shared/api/rtk";
-import { addHotelReducer, addObjectStepReducer } from "@entites/Object";
+import { createRoomReducer, createObjectReducer } from "@entites/Object";
 
 import { addObjectSliceReducer } from "@features/SelectLocationForm";
 
@@ -9,6 +9,7 @@ import { userReducer } from "@entites/User";
 import { searchObjectReducer } from "@features/SearchObjects";
 import { calendarReducer } from "@features/Calendar";
 import { dragObjectReducer } from "@features/DragObject";
+
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
@@ -16,10 +17,10 @@ export const store = configureStore({
     [base2GISApi.reducerPath]: base2GISApi.reducer,
     searchObject: searchObjectReducer,
     addObjectForm: addObjectSliceReducer,
-    addObjectStep: addObjectStepReducer,
-    addHotel: addHotelReducer,
+    createObject: createObjectReducer,
     calendar: calendarReducer,
     dragObject: dragObjectReducer,
+    createRoom: createRoomReducer,
     user: userReducer,
   },
 

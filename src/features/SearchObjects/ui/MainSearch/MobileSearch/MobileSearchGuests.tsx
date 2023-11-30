@@ -194,9 +194,9 @@ export const MobileSearchGuests = forwardRef<
           )}
         </Text>
       </Box>
-      <Drawer size="full" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="bottom" size="full" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent h={"90dvh"} roundedTop={"2xl"}>
           <DrawerBody>
             <DrawerCloseButton />
             <DrawerHeader top={0}>Выбор гостей</DrawerHeader>

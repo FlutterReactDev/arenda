@@ -1,76 +1,73 @@
 import {
-  Box,
-  FormControl,
-  FormLabel,
-  Select,
-  FormHelperText,
-  InputGroup,
-  Input,
-  InputRightElement,
-  FormErrorMessage,
   Alert,
   AlertIcon,
-  Stack,
+  Box,
+  FormControl,
+  FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   HStack,
+  Input,
+  InputGroup,
+  InputRightElement,
+  Select,
+  Stack,
   Switch,
-  Textarea,
   Text,
+  Textarea,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
-import { getForm } from "@entites/Object/model/selectors";
+
+import {
+  OptionalServiceType,
+  optionalServiceSchema,
+} from "@entites/Object/model/schemas/optionalServiceSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 import { FormCard } from "@shared/ui/FormCard";
 import { getCurrencySymbol } from "@shared/utils/getCurrencySymbol";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { InferType } from "yup";
-import { optionalServiceSchema } from "@entites/Object/model/schemas/optionalServiceSchema";
-import { priceSchema } from "@entites/Object/model/schemas/priceSchema";
+import {
+  CleaningFeeTypes,
+  Currency,
+} from "@entites/CommonReference/model/types";
+import { CleaningFeeType } from "@entites/Object/model/types/createRoomTypes";
+interface OptionalServiceFormProps {
+  value: OptionalServiceType;
+  onChange: (value: OptionalServiceType) => void;
+  cleaningFeeTypes: CleaningFeeTypes[];
+  currentCurrencyId: number;
+  currencies: Currency[];
+}
+const OptionalServiceForm: FC<FormProps & OptionalServiceFormProps> = (
+  props
+) => {
+  const {
+    navigation,
+    onNext,
+    onChange,
+    value,
+    cleaningFeeTypes,
+    currencies,
+    currentCurrencyId,
+  } = props;
 
-const OptionalServiceForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-
-  const optionalServiceData = useAppSelector(getForm(1, 2)) as InferType<
-    typeof optionalServiceSchema
-  >;
-
-  const { currency } = useAppSelector(getForm(0, 2)) as InferType<
-    typeof priceSchema
-  >;
-  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     watch,
     formState: { errors },
     register,
-  } = useForm<InferType<typeof optionalServiceSchema>>({
+  } = useForm<OptionalServiceType>({
     resolver: yupResolver(optionalServiceSchema),
-    defaultValues: { ...optionalServiceData } as InferType<
-      typeof optionalServiceSchema
-    >,
+    defaultValues: value,
   });
 
   const transfer = watch("transfer");
-  const finalCleaning = watch("finalCleaning");
-  const onSubmit = (data: InferType<typeof optionalServiceSchema>) => {
-    if (!data.transfer) {
-      delete data.transferDescription;
-    }
-    if (data.finalCleaning == "2") {
-      delete data.cleaningCost;
-    }
-
-    dispatch(
-      addObjectStepActions.setForm({
-        data: { ...data },
-        screen: 1,
-        step: 2,
-      })
-    );
+  const cleaningFeeType = watch("cleaningFeeType");
+  const onSubmit = (data: OptionalServiceType) => {
+    onChange(data);
     onNext && onNext();
   };
   return (
@@ -79,31 +76,33 @@ const OptionalServiceForm: FC<FormProps> = (props) => {
         <FormCard title="Плата за уборку">
           <FormControl>
             <FormLabel>Финальная уборка</FormLabel>
-            <Select {...register("finalCleaning")} defaultValue={"2"}>
-              <option value="1">оплачивается отдельно</option>
-              <option value="2">
-                включена в стоимость проживания (рекомендуется)
-              </option>
+            <Select {...register("cleaningFeeType")} defaultValue={"2"}>
+              {cleaningFeeTypes.map(({ name, value }) => (
+                <option value={value} key={value}>
+                  {name}
+                </option>
+              ))}
             </Select>
             <FormHelperText>
               Цена уборки уже учитывается в стоимости проживания
             </FormHelperText>
           </FormControl>
-          {finalCleaning == "1" && (
-            <FormControl mt={2} isInvalid={!!errors.cleaningCost?.message}>
+          {cleaningFeeType == CleaningFeeType.PAID_SEPARATELY && (
+            <FormControl mt={2} isInvalid={!!errors.cleaningAmount?.message}>
               <FormLabel>Cколько стоит уборка</FormLabel>
               <InputGroup>
-                <Input
-                  defaultValue={optionalServiceData.cleaningCost || 0}
-                  {...register("cleaningCost")}
-                  type="number"
-                />
+                <Input {...register("cleaningAmount")} type="number" />
                 <InputRightElement>
-                  {getCurrencySymbol("ru-RU", currency)}
+                  {getCurrencySymbol(
+                    "ru-RU",
+                    currencies.filter(
+                      (currency) => currency.id == currentCurrencyId
+                    )[0].symbol
+                  )}
                 </InputRightElement>
               </InputGroup>
               <FormErrorMessage>
-                {errors.cleaningCost?.message}
+                {errors.cleaningAmount?.message}
               </FormErrorMessage>
             </FormControl>
           )}
@@ -118,7 +117,12 @@ const OptionalServiceForm: FC<FormProps> = (props) => {
                 defaultValue={0}
               />
               <InputRightElement>
-                {getCurrencySymbol("ru-RU", currency)}
+                {getCurrencySymbol(
+                  "ru-RU",
+                  currencies.filter(
+                    (currency) => currency.id == currentCurrencyId
+                  )[0].symbol
+                )}
               </InputRightElement>
             </InputGroup>
             <FormErrorMessage>{errors.depositAmount?.message}</FormErrorMessage>

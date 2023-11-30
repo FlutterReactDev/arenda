@@ -54,10 +54,6 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
       refetchOnMountOrArgChange: true,
     }
   );
-  console.log(data);
-
-  const [center, setCenter] = useState<number[]>();
-
   const { data: notFoundData, isSuccess: notFoundDataIsSuccess } =
     useGetRegionByAddressQuery(
       {
@@ -69,6 +65,8 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
         refetchOnMountOrArgChange: true,
       }
     );
+
+  const [center, setCenter] = useState<number[]>();
 
   useEffect(() => {
     if (isSuccess && data.result && data.result.items.length == 1) {

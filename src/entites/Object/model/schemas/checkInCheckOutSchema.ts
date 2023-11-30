@@ -1,5 +1,7 @@
 import * as Yup from "yup";
 export const checkInCheckOutSchema = Yup.object({
-  checkIn: Yup.string().required(),
-  checkOut: Yup.string().required(),
+  checkInAfter: Yup.string().required(),
+  checkOutAfter: Yup.string().required(),
 });
+
+export type CheckInCheckOutType = Yup.InferType<typeof checkInCheckOutSchema>;

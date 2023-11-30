@@ -1,16 +1,44 @@
 import * as Yup from "yup";
-import { AdditionalServices } from "../types";
+import {
+  AdditionalServices,
+  FoodType,
+  InternetAccess,
+  Parking,
+} from "../types/createObjectTypes";
+
 export const hotelGeneralInformationSchema = Yup.object({
   name: Yup.string().required("Поле обязательно для заполнения"),
-  rating: Yup.number().typeError("Выберите один из предложенных вариантов"),
+  rating: Yup.number()
+    .transform((value) =>
+      isNaN(value) || value === null || value === undefined ? 0 : value
+    )
+    .typeError("Выберите один из предложенных вариантов"),
   internetAccess: Yup.number()
     .typeError("Выберите один из предложенных вариантов")
     .required("Выберите один из предложенных вариантов"),
+  internetAccessSumm: Yup.number().when("parking", (internetAccess, schema) => {
+    if (internetAccess[0] == InternetAccess.PAID) {
+      return schema
+        .moreThan(0, "Стоимость услуги должна быть больше 0")
+        .typeError("Стоимость услуги должна быть больше 0")
+        .required("Стоимость услуги должна быть больше 0");
+    }
+    return schema;
+  }),
   parking: Yup.number()
     .typeError("Выберите один из предложенных вариантов")
     .required("Выберите один из предложенных вариантов"),
-  anObjectDetails: Yup.object({
-    yearOfConstruntion: Yup.string().required(
+  parkingSumm: Yup.number().when("parking", (parking, schema) => {
+    if (parking[0] == Parking.PAID) {
+      return schema
+        .moreThan(0, "Стоимость услуги должна быть больше 0")
+        .typeError("Стоимость услуги должна быть больше 0")
+        .required("Стоимость услуги должна быть больше 0");
+    }
+    return schema;
+  }),
+  anObjectDetail: Yup.object({
+    yearOfConstruntion: Yup.number().required(
       "Выберите один из предложенных вариантов"
     ),
     numberOfRooms: Yup.number()
@@ -34,10 +62,11 @@ export const hotelGeneralInformationSchema = Yup.object({
       .typeError("Выберите один из предложенных вариантов")
       .required("Выберите один из предложенных вариантов"),
   }).required(),
-  anObjectMeals: Yup.object({
-    allInclusive: Yup.boolean(),
+  anObjectMeal: Yup.object({
+    allInclusive: Yup.boolean().required(),
     breakfast: Yup.number()
       .typeError("Выберите один из предложенных вариантов")
+
       .transform((value) =>
         isNaN(value) || value === null || value === undefined ? 0 : value
       )
@@ -47,13 +76,30 @@ export const hotelGeneralInformationSchema = Yup.object({
         }
         return schema;
       }),
+    breakfastService: Yup.number().when("breakfast", (breakfast, schema) => {
+      if (breakfast[0] != FoodType.NOT_PROVIDING) {
+        return schema
+          .typeError("Выберите один из предложенных вариантов")
+          .required("Выберите один из предложенных вариантов");
+      }
+      return schema;
+    }),
     lunch: Yup.number()
       .typeError("Выберите один из предложенных вариантов")
       .transform((value) =>
         isNaN(value) || value === null || value === undefined ? 0 : value
       )
+
       .when("allInclusive", (allInclusive, schema) => {
         if (!allInclusive[0]) {
+          return schema.required("Выберите один из предложенных вариантов");
+        }
+        return schema;
+      }),
+    lunchService: Yup.number()
+      .typeError("Выберите один из предложенных вариантов")
+      .when("lunch", (lunch, schema) => {
+        if (lunch[0] != FoodType.NOT_PROVIDING) {
           return schema.required("Выберите один из предложенных вариантов");
         }
         return schema;
@@ -63,30 +109,35 @@ export const hotelGeneralInformationSchema = Yup.object({
       .transform((value) =>
         isNaN(value) || value === null || value === undefined ? 0 : value
       )
+
       .when("allInclusive", (allInclusive, schema) => {
         if (!allInclusive[0]) {
           return schema.required("Выберите один из предложенных вариантов");
         }
         return schema;
       }),
-  }).required(),
-  anObjectFeeAdditionalServices: Yup.object({
-    cleaning: Yup.number()
+    dinnerService: Yup.number()
       .typeError("Выберите один из предложенных вариантов")
-      .required("Выберите один из предложенных вариантов"),
-    cleaningSum: Yup.number()
-      .transform((value) =>
-        isNaN(value) || value === null || value === undefined ? 0 : value
-      )
-      .when("cleaning", (cleaning, schema) => {
-        if (cleaning[0] == AdditionalServices.PAID) {
-          return schema
-            .moreThan(0, "Стоимость услуги должна быть больше 0")
-            .typeError("Стоимость услуги должна быть больше 0")
-            .required("Стоимость услуги должна быть больше 0");
+      .when("dinner", (dinner, schema) => {
+        if (dinner[0] != FoodType.NOT_PROVIDING) {
+          return schema.required("Выберите один из предложенных вариантов");
         }
         return schema;
       }),
+  }).required(),
+  anObjectFeeAdditionalService: Yup.object({
+    cleaning: Yup.number()
+      .typeError("Выберите один из предложенных вариантов")
+      .required("Выберите один из предложенных вариантов"),
+    cleaningSum: Yup.number().when("cleaning", (cleaning, schema) => {
+      if (cleaning[0] == AdditionalServices.PAID) {
+        return schema
+          .moreThan(0, "Стоимость услуги должна быть больше 0")
+          .typeError("Стоимость услуги должна быть больше 0")
+          .required("Стоимость услуги должна быть больше 0");
+      }
+      return schema;
+    }),
     bedLinen: Yup.number()
       .typeError("Выберите один из предложенных вариантов")
       .required("Выберите один из предложенных вариантов"),
@@ -108,7 +159,7 @@ export const hotelGeneralInformationSchema = Yup.object({
     reportingDocuments: Yup.number()
       .typeError("Выберите один из предложенных вариантов")
       .required("Выберите один из предложенных вариантов"),
-    hasTransfer: Yup.boolean(),
+    hasTransfer: Yup.boolean().required(),
     transferDetails: Yup.string().when("hasTransfer", (transfer, schema) => {
       if (transfer[0]) {
         return schema.required("Поле обязательно для заполнения");
@@ -118,28 +169,32 @@ export const hotelGeneralInformationSchema = Yup.object({
     detailComment: Yup.string(),
     objectInAnotherResources: Yup.string(),
   }).required(),
-  anObjectAdditionalComforts: Yup.object({
-    restaurant: Yup.boolean(),
-    barCounter: Yup.boolean(),
-    sauna: Yup.boolean(),
-    garden: Yup.boolean(),
-    spaCenter: Yup.boolean(),
-    tennisCourt: Yup.boolean(),
-    aquapark: Yup.boolean(),
-    indoorPool: Yup.boolean(),
-    privateBeach: Yup.boolean(),
-    elevator: Yup.boolean(),
-    childrenSwimmingPool: Yup.boolean(),
-    roomDelivery: Yup.boolean(),
-    twentyFourhourFrontDesk: Yup.boolean(),
-    gym: Yup.boolean(),
-    terrace: Yup.boolean(),
-    footballField: Yup.boolean(),
-    golf: Yup.boolean(),
-    openPool: Yup.boolean(),
-    jacuzzi: Yup.boolean(),
-    playground: Yup.boolean(),
-    ramp: Yup.boolean(),
-    laundry: Yup.boolean(),
+  anObjectAdditionalComfort: Yup.object({
+    restaurant: Yup.boolean().required(),
+    barCounter: Yup.boolean().required(),
+    sauna: Yup.boolean().required(),
+    garden: Yup.boolean().required(),
+    spaCenter: Yup.boolean().required(),
+    tennisCourt: Yup.boolean().required(),
+    aquapark: Yup.boolean().required(),
+    indoorPool: Yup.boolean().required(),
+    privateBeach: Yup.boolean().required(),
+    elevator: Yup.boolean().required(),
+    childrenSwimmingPool: Yup.boolean().required(),
+    roomDelivery: Yup.boolean().required(),
+    twentyFourhourFrontDesk: Yup.boolean().required(),
+    gym: Yup.boolean().required(),
+    terrace: Yup.boolean().required(),
+    footballField: Yup.boolean().required(),
+    golf: Yup.boolean().required(),
+    openPool: Yup.boolean().required(),
+    jacuzzi: Yup.boolean().required(),
+    playground: Yup.boolean().required(),
+    ramp: Yup.boolean().required(),
+    laundry: Yup.boolean().required(),
   }),
 });
+
+export type HotelGeneralInformationType = Yup.InferType<
+  typeof hotelGeneralInformationSchema
+>;

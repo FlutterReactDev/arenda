@@ -14,13 +14,21 @@ import {
   Select,
   Stack,
   useDisclosure,
-  useMediaQuery
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CalendarPanel, DefaultConfigs } from "@shared/ui/Calendar";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { format, isAfter, isBefore, subDays } from "date-fns";
+import {
+  addDays,
+  format,
+  isAfter,
+  isBefore,
+  isEqual,
+  isSameDay,
+  subDays,
+} from "date-fns";
 import { ru } from "date-fns/locale";
 import { FC, memo } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -30,6 +38,7 @@ import { getObjects } from "../model/selectors";
 import { SidebarType } from "../model/types";
 import { useSidebar } from "../model/useSidebar";
 import { toDay } from "../utils/toDay";
+
 interface AddBookingFormProps {
   onClose: () => void;
 }
@@ -142,7 +151,15 @@ export const AddBookingForm: FC<AddBookingFormProps> = memo((props) => {
                                 selected: value,
                                 onDateSelected: ({ date }) => {
                                   if (isAfter(date, checkOut)) {
-                                    setValue("checkOut", date);
+                                    setValue("checkOut", addDays(date, 1));
+                                  }
+
+                                  if (!checkOut) {
+                                    setValue("checkOut", addDays(date, 1));
+                                  }
+
+                                  if (checkOut && isEqual(date, checkOut)) {
+                                    setValue("checkOut", addDays(date, 1));
                                   }
                                   onChange(date);
                                   startOnClose();
@@ -178,7 +195,14 @@ export const AddBookingForm: FC<AddBookingFormProps> = memo((props) => {
                   name="checkOut"
                   render={({ field: { value, onChange } }) => {
                     return (
-                      <Popover isLazy isOpen={endIsOpen} onClose={endOnClose}>
+                      <Popover
+                        isLazy
+                        isOpen={endIsOpen}
+                        onClose={endOnClose}
+                        {...(isSm && {
+                          matchWidth: true,
+                        })}
+                      >
                         <PopoverTrigger>
                           <Button
                             onClick={endOnOpen}
@@ -203,13 +227,18 @@ export const AddBookingForm: FC<AddBookingFormProps> = memo((props) => {
                                 selected: value,
                                 onDateSelected: ({ date }) => {
                                   if (isBefore(date, checkIn)) {
-                                    setValue("checkIn", date);
+                                    setValue("checkIn", subDays(date, 1));
                                   }
+
+                                  if (checkIn && isSameDay(date, checkOut)) {
+                                    setValue("checkIn", subDays(date, 1));
+                                  }
+
                                   onChange(date);
                                   endOnClose();
                                 },
                                 monthsToDisplay: 1,
-                                date: value,
+                                date: value || checkIn,
                                 firstDayOfWeek: 1,
                                 minDate: subDays(new Date(), 1),
                                 maxDate: new Date(

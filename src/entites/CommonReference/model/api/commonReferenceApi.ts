@@ -1,8 +1,14 @@
 import { baseApi, baseApiWithReAuth } from "@shared/api/rtk";
 import {
   AdditionalService,
+  BedType,
+  CleaningFeeTypes,
+  Currency,
   FoodType,
+  FromBookingToCheckIn,
+  InstantBookingValid,
   InternetAccess,
+  MealServiceTypes,
   ObjectStarRating,
   Parking,
   PaymentType,
@@ -72,6 +78,43 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/ObjectStarRating",
       }),
     }),
+    getCurrencies: build.query<Currency[], unknown>({
+      query: () => ({
+        url: "/Currencies",
+      }),
+    }),
+    getBedTypes: build.query<BedType[], unknown>({
+      query: () => ({
+        url: "/BedTypes",
+      }),
+    }),
+    getCleaningFeeTypes: build.query<CleaningFeeTypes[], unknown>({
+      query: () => ({
+        url: "/CleaningFeeTypes",
+      }),
+    }),
+
+    getMealServiceTypes: build.query<MealServiceTypes[], unknown>({
+      query: () => ({
+        url: "/MealServiceTypes",
+      }),
+    }),
+    getFromBookingToCheckIn: build.query<FromBookingToCheckIn[], unknown>({
+      query: () => ({
+        url: "/FromBookingToCheckIn",
+      }),
+    }),
+    getInstantBookingValid: build.query<InstantBookingValid[], unknown>({
+      query: () => ({
+        url: "/InstantBookingValid",
+      }),
+    }),
+
+    getRoomNameTypes: build.query<InstantBookingValid[], unknown>({
+      query: () => ({
+        url: "/RoomNameTypes",
+      }),
+    }),
   }),
 });
 
@@ -87,4 +130,11 @@ export const {
   useGetRoomCategoriesQuery,
   useGetReportingDocumentTypeQuery,
   useGetObjectStarRatingQuery,
+  useGetCurrenciesQuery,
+  useGetBedTypesQuery,
+  useGetCleaningFeeTypesQuery,
+  useGetMealServiceTypesQuery,
+  useGetFromBookingToCheckInQuery,
+  useGetInstantBookingValidQuery,
+  useGetRoomNameTypesQuery,
 } = commonReferencePrivateApi;

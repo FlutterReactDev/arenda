@@ -11,7 +11,7 @@ import {
   StepTitle,
   Stepper,
 } from "@chakra-ui/react";
-import { FC, PropsWithChildren, ReactNode, useEffect } from "react";
+import { FC, PropsWithChildren, ReactNode, useEffect, useState } from "react";
 import { FormNavigation, FormStep } from "..";
 import { useSearchParams } from "react-router-dom";
 import { FormStepperProvider } from "./FormStepperContext";
@@ -43,7 +43,7 @@ export interface FormStepValue {
 export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
   const { forms, onComplete, finalView } = props;
   const [searchParams, setSearchParams] = useSearchParams();
-
+  const [pastStages, setPastStages] = useState(0);
   useEffect(() => {
     if (searchParams.get("step") == undefined) {
       searchParams.set("step", "0");
@@ -55,7 +55,7 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
 
     window.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: "instant",
     });
     // setSearchParams(searchParams);
   }, [searchParams, setSearchParams]);
@@ -64,13 +64,13 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
     if (forms) {
       const queryStep = Number(searchParams.get("step"));
       const queryScreen = Number(searchParams.get("screen"));
-      console.log(queryStep, queryScreen);
 
       if (forms[queryStep]?.stepScreens[queryScreen]?.onComplete) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         forms[queryStep]?.stepScreens[queryScreen]?.onComplete();
       }
+
       const step = forms[queryStep];
       const nextScreen = step.stepScreens[queryScreen + 1] || undefined;
 
@@ -81,27 +81,18 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
 
       if (nextScreen == undefined && forms[queryStep + 1] != undefined) {
         searchParams.set("step", `${Number(searchParams.get("step")) + 1}`);
+        setPastStages((prev) =>
+          Math.max(prev, Number(searchParams.get("step")) + 1)
+        );
         searchParams.set("screen", `0`);
         setSearchParams(searchParams);
       }
 
       if (
         forms.length - 1 == Number(searchParams.get("step")) &&
-        forms[forms.length - 1].stepScreens.length - 1 ==
-          Number(searchParams.get("step"))
+        nextScreen == undefined
       ) {
         onComplete && onComplete();
-      }
-
-      if (
-        finalView &&
-        forms.length - 1 == Number(searchParams.get("step")) &&
-        forms[forms.length - 1].stepScreens.length - 1 ==
-          Number(searchParams.get("screen"))
-      ) {
-        searchParams.set("step", `${Number(forms.length)}`);
-        searchParams.set("screen", `0`);
-        setSearchParams(searchParams);
       }
     }
   };
@@ -132,6 +123,13 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
     }
   };
 
+  const jump = (step: number) => {
+    searchParams.set("step", `${step}`);
+    searchParams.set("screen", `${0}`);
+
+    setSearchParams(searchParams);
+  };
+
   return (
     <Box minH="100vh" pt={4} pb={"24"} bgColor={"blackAlpha.100"}>
       <FormStepperProvider
@@ -148,8 +146,15 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
           mb={6}
         >
           {forms?.map((step, index) => (
-            <Step key={index}>
-              <StepIndicator>
+            <Step
+              key={index}
+              onClick={() => {
+                if (pastStages >= index) {
+                  jump(index);
+                }
+              }}
+            >
+              <StepIndicator cursor={"pointer"}>
                 <StepStatus
                   complete={<StepIcon />}
                   incomplete={<StepNumber />}
@@ -157,7 +162,11 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
                 />
               </StepIndicator>
 
-              <Stack direction={["column", "row"]} flexShrink="0">
+              <Stack
+                cursor={"pointer"}
+                direction={["column", "row"]}
+                flexShrink="0"
+              >
                 <StepTitle>{step.stepTitle}</StepTitle>
               </Stack>
 

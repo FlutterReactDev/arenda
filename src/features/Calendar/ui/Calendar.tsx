@@ -1,11 +1,6 @@
-import {
-  CalendarIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "@chakra-ui/icons";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Button,
   Flex,
   Grid,
   GridItem,
@@ -13,6 +8,7 @@ import {
   Hide,
   IconButton,
   Select,
+  Show,
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -32,11 +28,12 @@ import { Day } from "./Day";
 import { useDrag } from "@use-gesture/react";
 
 import { ActionTop } from "./ActionTop";
-import { CalendarNavigationBtns } from "./CalendarNavigationBtns";
 import { CalendarScroller } from "./CalendarScroller";
 import { ModalDeleteAvailibility } from "./ModalDeleteAvailibility";
 import { ObjectItem } from "./ObjectItem";
 import { ObjectPagination } from "./ObjectsPagination";
+import { SearchAvailibilityRoomsBtn } from "./SearchAvailibilityRoomsBtn";
+import { SearchAvailibilityRoomsModal } from "./SearchAvailibilityRoomsModal";
 import { SearchObject } from "./SearchObject";
 import { Sidebar } from "./Sidebar";
 import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
@@ -111,7 +108,7 @@ export const Calendar = memo(() => {
   }, []);
 
   return (
-    <Box bgColor={"blackAlpha.50"}>
+    <Box >
       <Box>
         <Grid
           gridTemplateColumns={isLessThan968 ? "1fr" : "270px 1fr"}
@@ -133,14 +130,12 @@ export const Calendar = memo(() => {
                 <option>Дом, коттедж</option>
               </Select>
               <Hide breakpoint="(max-width: 968px)">
-                <Button leftIcon={<CalendarIcon />}>
-                  Найти свободные на даты
-                </Button>
+                <SearchAvailibilityRoomsBtn />
                 <SearchObject />
               </Hide>
-              <Box>
+              <Box w="full">
                 <Hide breakpoint="(max-width: 968px)">
-                  <CalendarNavigationBtns />
+                  <ObjectPagination />
                 </Hide>
               </Box>
             </Stack>
@@ -228,9 +223,14 @@ export const Calendar = memo(() => {
           );
         })}
         <CalendarScroller />
-        <ObjectPagination />
+        <Show breakpoint="(max-width: 968px)">
+          <Box maxW={"64"} mt={4}>
+            <ObjectPagination />
+          </Box>
+        </Show>
       </Box>
       <ModalDeleteAvailibility />
+      <SearchAvailibilityRoomsModal />
       <Sidebar />
     </Box>
   );

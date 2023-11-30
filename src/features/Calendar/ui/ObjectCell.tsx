@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { FC, forwardRef, memo } from "react";
+import { FC, memo } from "react";
 import { getCommonSettings } from "../model/selectors";
 
 import { SmallAddIcon } from "@chakra-ui/icons";
@@ -16,13 +16,11 @@ interface ObjectCellProps {
   onMouseMove: (date: Date) => void;
   onMouseDown: (date: Date) => void;
   onMouseUp: () => void;
-  onTouchStart: (date: Date) => void;
-  onTouchMove: (pageX: number) => void;
-  onTouchEnd: () => void;
+
   date: Date;
 }
 export const ObjectCell: FC<ObjectCellProps> = memo(
-  forwardRef((props) => {
+  (props) => {
     const {
       inRange,
       cost,
@@ -53,14 +51,13 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
         borderColor={"#d8d8d8"}
         h="full"
         overflow={"hidden"}
-        color={"gray.500"}
         w={`${currentWidth}px`}
         onMouseDown={onDown}
         onMouseMove={onMove}
         onMouseUp={onUp}
         {...(inRange && {
           border: "1px solid ",
-          borderColor: "black",
+          borderColor: "#333",
           borderRightColor: "transparent",
         })}
         {...(isPast && {
@@ -106,6 +103,7 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
           maxW={"55px"}
           whiteSpace={"nowrap"}
           overflow={"hidden"}
+          color={"gray.500"}
           {...(isSaturday(date) &&
             !isPast && {
               color: "white",
@@ -129,6 +127,7 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
           maxW={"55px"}
           whiteSpace={"nowrap"}
           overflow={"hidden"}
+          color={"gray.500"}
           {...(isToday(date) && {
             color: "white",
           })}
@@ -178,7 +177,7 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
             top={0}
             h="full"
             w="1px"
-            bgColor={"black"}
+            bgColor={"#333"}
           />
         )}
 
@@ -189,12 +188,12 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
             top={0}
             h="full"
             w="1px"
-            bgColor={"black"}
+            bgColor={"#333"}
           />
         )}
       </Box>
     );
-  }),
+  },
   (oldProps, newProps) =>
     oldProps.cost === newProps.cost &&
     oldProps.inRange === newProps.inRange &&
@@ -205,8 +204,5 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
     isEqual(oldProps.date, newProps.date) &&
     oldProps.onMouseDown == newProps.onMouseDown &&
     oldProps.onMouseMove == newProps.onMouseMove &&
-    oldProps.onMouseUp == newProps.onMouseUp &&
-    oldProps.onTouchStart == newProps.onTouchStart &&
-    oldProps.onTouchMove == newProps.onTouchMove &&
-    oldProps.onTouchEnd == newProps.onTouchEnd
+    oldProps.onMouseUp == newProps.onMouseUp
 );

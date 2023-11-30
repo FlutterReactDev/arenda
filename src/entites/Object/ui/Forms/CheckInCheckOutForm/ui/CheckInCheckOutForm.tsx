@@ -1,46 +1,39 @@
 import {
   Box,
-  Stack,
   FormControl,
   FormLabel,
   Select,
+  Stack,
   Text,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
 
-import { getForm } from "@entites/Object/model/selectors";
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { InferType } from "yup";
-import { checkInCheckOutSchema } from "@entites/Object/model/schemas/checkInCheckOutSchema";
-import { addObjectStepActions } from "@entites/Object";
-const CheckInCheckOutForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
 
-  const checkInCheckOutData = useAppSelector(getForm(1, 1));
-  const dispatch = useAppDispatch();
-  const { handleSubmit, register } = useForm<
-    InferType<typeof checkInCheckOutSchema>
-  >({
+import {
+  CheckInCheckOutType,
+  checkInCheckOutSchema,
+} from "@entites/Object/model/schemas/checkInCheckOutSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
+interface CheckInCheckOutForm {
+  value: CheckInCheckOutType;
+  onChange: (value: CheckInCheckOutType) => void;
+}
+const CheckInCheckOutForm: FC<FormProps & CheckInCheckOutForm> = (props) => {
+  const { navigation, onNext, value, onChange } = props;
+
+  const { handleSubmit, register } = useForm<CheckInCheckOutType>({
     resolver: yupResolver(checkInCheckOutSchema),
-    defaultValues: { ...checkInCheckOutData } as InferType<
-      typeof checkInCheckOutSchema
-    >,
+    defaultValues: value,
   });
 
-  const onSubmit = (data: InferType<typeof checkInCheckOutSchema>) => {
-    dispatch(
-      addObjectStepActions.setForm({
-        data,
-        screen: 1,
-        step: 1,
-      })
-    );
+  const onSubmit = (data: CheckInCheckOutType) => {
+    onChange(data);
     onNext && onNext();
   };
 
@@ -54,7 +47,7 @@ const CheckInCheckOutForm: FC<FormProps> = (props) => {
           <Stack spacing={2}>
             <FormControl>
               <FormLabel>расчетное время заезда</FormLabel>
-              <Select {...register("checkIn")} defaultValue={"14:00"}>
+              <Select {...register("checkInAfter")}>
                 <option value="1:00">с 1:00</option>
                 <option value="2:00">с 2:00</option>
                 <option value="3:00">с 3:00</option>
@@ -82,7 +75,7 @@ const CheckInCheckOutForm: FC<FormProps> = (props) => {
             </FormControl>
             <FormControl>
               <FormLabel>расчетное время отъезда</FormLabel>
-              <Select {...register("checkOut")} defaultValue={"12:00"}>
+              <Select {...register("checkOutAfter")}>
                 <option value="1:00">до 1:00</option>
                 <option value="2:00">до 2:00</option>
                 <option value="3:00">до 3:00</option>

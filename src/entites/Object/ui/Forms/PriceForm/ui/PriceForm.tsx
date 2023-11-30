@@ -1,76 +1,77 @@
 import { CheckIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Stack,
   Alert,
   AlertIcon,
+  Box,
   FormControl,
-  Text,
-  FormLabel,
-  Select,
-  FormHelperText,
-  HStack,
-  InputGroup,
-  Input,
-  InputRightElement,
   FormErrorMessage,
+  FormHelperText,
+  FormLabel,
+  HStack,
   Heading,
+  Input,
+  InputGroup,
+  InputRightElement,
   List,
-  ListItem,
   ListIcon,
+  ListItem,
+  Select,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
 
-import { getForm } from "@entites/Object/model/selectors";
+import { Currency } from "@entites/CommonReference/model/types";
+import {
+  PriceFormType,
+  priceSchema,
+} from "@entites/Object/model/schemas/priceSchema";
 import { FormCard } from "@shared/ui/FormCard";
 import { getCurrencySymbol } from "@shared/utils/getCurrencySymbol";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC } from "react";
 import { useForm } from "react-hook-form";
-import { InferType } from "yup";
-import { priceSchema } from "@entites/Object/model/schemas/priceSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
+interface PriceFormProps {
+  value: PriceFormType;
+  onChange: (value: PriceFormType) => void;
+  currencies: Currency[];
+}
+const PriceForm: FC<FormProps & PriceFormProps> = (props) => {
+  const { navigation, onNext, currencies, onChange, value } = props;
 
-const PriceForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-  const priceData = useAppSelector(getForm(0, 2)) as InferType<
-    typeof priceSchema
-  >;
-  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     watch,
     register,
     formState: { errors },
-  } = useForm<InferType<typeof priceSchema>>({
+  } = useForm<PriceFormType>({
     resolver: yupResolver(priceSchema),
     defaultValues: {
-      ...priceData,
-      currency: priceData.currency || "KGS",
-    } as InferType<typeof priceSchema>,
+      ...value,
+
+      ...(!value.currencyId && {
+        currencyId: currencies[0].id,
+      }),
+    },
   });
 
-  const onSubmit = (data: InferType<typeof priceSchema>) => {
-    dispatch(
-      addObjectStepActions.setForm({
-        data,
-        screen: 0,
-        step: 2,
-      })
-    );
+  const onSubmit = (data: PriceFormType) => {
     onNext && onNext();
+    onChange(data);
   };
 
-  const currency = watch("currency");
+  const currency = watch("currencyId") || currencies[0].id;
   const pricePerDay = watch("pricePerDay");
-  const minLengthOfStay = watch("minLengthOfStay");
+  const minLengthOfStay = watch("minimumLengthOfStay");
+  const currencySymbol = currencies.filter((c) => c.id == currency)[0].symbol;
+
   const currencyFormat = new Intl.NumberFormat("ru-RU", {
     style: "currency",
-    currency,
+    currency: currencySymbol,
   });
+
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
@@ -88,18 +89,17 @@ const PriceForm: FC<FormProps> = (props) => {
           <Stack spacing={3} mt={4}>
             <FormControl>
               <FormLabel>Валюта для расчётов</FormLabel>
-              <Select {...register("currency")} defaultValue={"KGS"}>
-                <option value="KGS">KGS - Киргизский сом</option>
-                <option value="USD">USD - Доллар США</option>
-                <option value="EUR">EUR - Евро</option>
-                <option value="RUB">RUB - Российский рубль</option>
-                <option value="KZT">KZT - Казахский тенге</option>
-                <option value="CNY">CNY - Китайский юань</option>
+              <Select {...register("currencyId")}>
+                {currencies.map((currency) => (
+                  <option value={currency.id}>
+                    {currency.symbol} - {currency.name}
+                  </option>
+                ))}
               </Select>
             </FormControl>
             <FormControl>
               <FormLabel>Минимальный срок проживания</FormLabel>
-              <Select {...register("minLengthOfStay")}>
+              <Select {...register("minimumLengthOfStay")}>
                 <option value="1">1 сутки (рекомендуется)</option>
                 <option value="2">2 суток</option>
                 <option value="3">3 суток</option>
@@ -143,7 +143,7 @@ const PriceForm: FC<FormProps> = (props) => {
                 <InputGroup>
                   <Input {...register("pricePerDay")} type="number" />
                   <InputRightElement>
-                    {getCurrencySymbol("ru-RU", currency)}
+                    {getCurrencySymbol("ru-RU", currencySymbol)}
                   </InputRightElement>
                 </InputGroup>
                 <FormErrorMessage>
@@ -158,7 +158,7 @@ const PriceForm: FC<FormProps> = (props) => {
               </FormControl>
             </HStack>
           </Stack>
-          {pricePerDay && Number(pricePerDay) != 0 && (
+          {pricePerDay != undefined && Number(pricePerDay) != 0 && (
             <Box mt={4} p={4}>
               <Heading size={"md"} fontWeight={"medium"}>
                 Пример расчёта стоимости проживания 1 чел. за {minLengthOfStay}{" "}

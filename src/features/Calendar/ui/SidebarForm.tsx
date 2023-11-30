@@ -38,16 +38,17 @@ import { CalendarPanel, DefaultConfigs } from "@shared/ui/Calendar";
 import {
   eachDayOfInterval,
   format,
-  getOverlappingDaysInIntervals,
+  getHours,
   isAfter,
   isBefore,
-  isWithinInterval,
   max,
   min,
+  setHours,
   subDays,
 } from "date-fns";
 import { ru } from "date-fns/locale";
 
+import { PhoneInput } from "@entites/Phone";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
@@ -66,13 +67,18 @@ import { calendarActions } from "..";
 import { CalendarSchema, CalendarSchemaType } from "../model/schema";
 import {
   getCalendar,
+  getObject,
   getObjectAvailibility,
   getObjectAvailibilityById,
   getSeasonPriceByDate,
 } from "../model/selectors";
-import { useSidebar } from "../model/useSidebar";
-import { toDay } from "../utils/toDay";
 import { SidebarType } from "../model/types";
+import { useSidebar } from "../model/useSidebar";
+import { converHourToString } from "../utils/converHourToString";
+import { convertToHour } from "../utils/convertToHour";
+import { getHourList } from "../utils/getHoursList";
+import { isOverlaping } from "../utils/isOverlaping";
+import { toDay } from "../utils/toDay";
 
 export const SidebarForm = memo(() => {
   const dispatch = useAppDispatch();
@@ -104,7 +110,14 @@ export const SidebarForm = memo(() => {
     onOpen: alertModalOnOpen,
   } = useDisclosure();
   const cancelRef = useRef() as MutableRefObject<HTMLButtonElement>;
-  const { onClose, objectId, type: sidebarType, availabilityId } = useSidebar();
+  const {
+    onClose,
+    objectId,
+    type: sidebarType,
+    availabilityId,
+    checkIn,
+    checkOut,
+  } = useSidebar();
 
   const { rangeSelect } = useAppSelector(getCalendar);
   const availability = useAppSelector(
@@ -113,6 +126,8 @@ export const SidebarForm = memo(() => {
   const availabilityInfo = useAppSelector(
     getObjectAvailibilityById(objectId, availabilityId)
   );
+  const object = useAppSelector(getObject(objectId as number));
+
   const selectedDatesForCost = useAppSelector(
     getSeasonPriceByDate(
       objectId,
@@ -167,6 +182,28 @@ export const SidebarForm = memo(() => {
       ...(sidebarType == SidebarType.EDIT && {
         comment: availabilityInfo?.comment,
       }),
+      checkIn:
+        sidebarType == SidebarType.EDIT
+          ? converHourToString(getHours(availabilityInfo.minDate))
+          : object?.checkIn,
+      checkOut:
+        sidebarType == SidebarType.EDIT
+          ? converHourToString(getHours(availabilityInfo.maxDate))
+          : object?.checkOut,
+      ...(sidebarType == SidebarType.BOOK &&
+        checkIn &&
+        checkOut && {
+          checkIn,
+          checkOut,
+        }),
+
+      ...(sidebarType == SidebarType.EDIT && {
+        clientFullName: availabilityInfo.clientFullname,
+      }),
+
+      ...(sidebarType == SidebarType.EDIT && {
+        phoneNumber: availabilityInfo.phoneNumber,
+      }),
     },
   });
 
@@ -193,41 +230,31 @@ export const SidebarForm = memo(() => {
     minDate,
     comment,
     color,
+    phoneNumber,
+    clientFullname,
+    checkIn,
+    checkOut,
   }: {
     minDate: Date;
     maxDate: Date;
     comment: string;
     id: number;
     color: string;
+    phoneNumber?: string;
+    clientFullname?: string;
+    checkIn: string;
+    checkOut: string;
   }) => {
     const isCanSelect = availability.filter((a) => {
-      return (
-        isWithinInterval(minDate, {
+      return isOverlaping(
+        {
+          start: setHours(minDate, convertToHour(checkIn) || 0),
+          end: setHours(maxDate, convertToHour(checkOut) || 0),
+        },
+        {
           start: a.minDate,
           end: a.maxDate,
-        }) ||
-        isWithinInterval(maxDate, {
-          start: a.minDate,
-          end: a.maxDate,
-        }) ||
-        isWithinInterval(a.minDate, {
-          start: minDate,
-          end: maxDate,
-        }) ||
-        isWithinInterval(a.maxDate, {
-          start: minDate,
-          end: maxDate,
-        }) ||
-        !!getOverlappingDaysInIntervals(
-          {
-            start: min([maxDate, minDate]),
-            end: max([maxDate, minDate]),
-          },
-          {
-            start: a.minDate,
-            end: a.maxDate,
-          }
-        )
+        }
       );
     });
 
@@ -236,8 +263,8 @@ export const SidebarForm = memo(() => {
         dispatch(
           calendarActions.createAvailability({
             id,
-            minDate,
-            maxDate,
+            minDate: setHours(minDate, convertToHour(checkIn) || 0),
+            maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
             objectId,
             comment,
             color,
@@ -246,6 +273,8 @@ export const SidebarForm = memo(() => {
               (acc, cur) => acc + cur.cost,
               0
             ),
+            phoneNumber: phoneNumber || "",
+            clientFullname: clientFullname || "",
           })
         );
       reset();
@@ -284,6 +313,10 @@ export const SidebarForm = memo(() => {
     color,
     id,
     objectId,
+    phoneNumber,
+    clientFullname,
+    checkIn,
+    checkOut,
   }: {
     minDate: Date;
     maxDate: Date;
@@ -291,38 +324,22 @@ export const SidebarForm = memo(() => {
     id: number;
     color: string;
     objectId: number;
+    phoneNumber?: string;
+    clientFullname?: string;
+    checkIn: string;
+    checkOut: string;
   }) => {
-    console.log("dasdasd");
-
     const isCanSelect = availability
       .filter((a) => {
-        return (
-          isWithinInterval(minDate, {
+        return isOverlaping(
+          {
+            start: setHours(minDate, convertToHour(checkIn) || 0),
+            end: setHours(maxDate, convertToHour(checkOut) || 0),
+          },
+          {
             start: a.minDate,
             end: a.maxDate,
-          }) ||
-          isWithinInterval(maxDate, {
-            start: a.minDate,
-            end: a.maxDate,
-          }) ||
-          isWithinInterval(a.minDate, {
-            start: minDate,
-            end: maxDate,
-          }) ||
-          isWithinInterval(a.maxDate, {
-            start: minDate,
-            end: maxDate,
-          }) ||
-          !!getOverlappingDaysInIntervals(
-            {
-              start: min([maxDate, minDate]),
-              end: max([maxDate, minDate]),
-            },
-            {
-              start: a.minDate,
-              end: a.maxDate,
-            }
-          )
+          }
         );
       })
       .filter((a) => a.id != id);
@@ -333,10 +350,12 @@ export const SidebarForm = memo(() => {
           calendarActions.editAvailability({
             color,
             comment,
-            maxDate,
-            minDate,
+            minDate: setHours(minDate, convertToHour(checkIn) || 0),
+            maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
             id,
             objectId,
+            phoneNumber: phoneNumber || "",
+            clientFullname: clientFullname || "",
           })
         );
       reset();
@@ -358,6 +377,10 @@ export const SidebarForm = memo(() => {
         maxDate: data.maxDate,
         comment: data.comment as string,
         color: data.bookingColor,
+        phoneNumber: data.phoneNumber,
+        clientFullname: data.clientFullName,
+        checkIn: data.checkIn,
+        checkOut: data.checkOut,
       });
     }
 
@@ -383,6 +406,10 @@ export const SidebarForm = memo(() => {
           comment: data.comment as string,
           color: data.bookingColor,
           objectId,
+          clientFullname: data.clientFullName,
+          phoneNumber: data.phoneNumber,
+          checkIn: data.checkIn,
+          checkOut: data.checkOut,
         });
       }
     }
@@ -675,6 +702,41 @@ export const SidebarForm = memo(() => {
                 </Button>
               </FormControl>
             </>
+          )}
+          {type == "closeForBooking" && (
+            <FormControl>
+              <FormLabel>Время</FormLabel>
+              <HStack>
+                <Select {...register("checkIn")}>
+                  {getHourList().map((hour) => (
+                    <option value={hour}>c {hour}</option>
+                  ))}
+                </Select>
+                <Select {...register("checkOut")}>
+                  {getHourList().map((hour) => (
+                    <option value={hour}>до {hour}</option>
+                  ))}
+                </Select>
+              </HStack>
+            </FormControl>
+          )}
+          {type == "closeForBooking" && (
+            <FormControl>
+              <FormLabel>Данные клиента</FormLabel>
+              <Stack>
+                <Input
+                  placeholder="ФИО Клиента"
+                  {...register("clientFullName")}
+                />
+                <Controller
+                  control={control}
+                  name="phoneNumber"
+                  render={({ field: { value, onChange } }) => {
+                    return <PhoneInput value={value} onChange={onChange} />;
+                  }}
+                />
+              </Stack>
+            </FormControl>
           )}
           {type == "closeForBooking" && (
             <FormControl>

@@ -9,12 +9,20 @@ export interface EmploymentCalendarState {
   pagination: CalendarPagination;
   search: string;
   searchPopover: SearchPopover;
+  searchAvailibilityRoomsModal: SearchAvailibilityRoomsModal;
 }
 
 export interface DeleteModal {
   isOpen: boolean;
   objectId: number | null;
   availibilityId: number | null;
+}
+export interface SearchAvailibilityRoomsModal {
+  isOpen: boolean;
+  minDate: Date | null;
+  maxDate: Date | null;
+  checkIn: string | null;
+  checkOut: string | null;
 }
 export interface CalendarState {
   rangeSelect: {
@@ -33,6 +41,8 @@ export interface SidebarState {
   objectId: number | null;
   type?: SidebarType;
   availabilityId?: number;
+  checkIn?: string;
+  checkOut?: string;
 }
 
 export enum SidebarType {
@@ -66,6 +76,8 @@ export interface CalendarObject {
   id: number;
   name: string;
   address: string;
+  checkIn: string;
+  checkOut: string;
 }
 
 export interface CalendarAvailability {
@@ -77,6 +89,8 @@ export interface CalendarAvailability {
   objectId: number;
   createdDate: Date;
   totalSum: number;
+  clientFullname: string;
+  phoneNumber: string;
 }
 
 export interface CalendarSeasonsPrice {

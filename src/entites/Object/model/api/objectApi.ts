@@ -1,4 +1,5 @@
 import { baseApiWithReAuth } from "@shared/api/rtk";
+import { CreateRoomType } from "../types/createRoomTypes";
 
 const objectApi = baseApiWithReAuth.injectEndpoints({
   endpoints: (build) => ({
@@ -9,7 +10,27 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
         method: "POST",
       }),
     }),
+
+    createRoom: build.mutation<unknown, CreateRoomType>({
+      query: (data) => ({
+        url: "/CreateRoom",
+        body: data,
+        method: "POST",
+      }),
+    }),
+
+    createRooms: build.mutation<unknown, CreateRoomType[]>({
+      query: (data) => ({
+        url: "/CreateRooms",
+        body: data,
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useCreateObjectMutation } = objectApi;
+export const {
+  useCreateObjectMutation,
+  useCreateRoomMutation,
+  useCreateRoomsMutation,
+} = objectApi;

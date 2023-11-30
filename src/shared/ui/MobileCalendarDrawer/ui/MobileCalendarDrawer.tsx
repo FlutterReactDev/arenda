@@ -31,11 +31,12 @@ export const MobileCalendarDrawer: FC<MobileCalendarDrawerProps> = memo(
     const { dates, handleSelectDate, onClose, isOpen } = props;
 
     return (
-      <Drawer size="full" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
         <DrawerContent
           p="0"
-          h={"100dvh"}
+          maxH={"95dvh"}
+          roundedTop={"2xl"}
           onTouchStart={(e) => e.stopPropagation()}
           onTouchMove={(e) => e.stopPropagation()}
           onTouchEnd={(e) => e.stopPropagation()}
@@ -47,6 +48,7 @@ export const MobileCalendarDrawer: FC<MobileCalendarDrawerProps> = memo(
               size={"lg"}
               onClick={() => handleSelectDate([])}
               w="full"
+              mt={12}
             >
               Очистить дату
             </Button>
@@ -97,7 +99,7 @@ export const MobileCalendarDrawer: FC<MobileCalendarDrawerProps> = memo(
               )}
             </Box>
           </DrawerHeader>
-          <DrawerBody p="0">
+          <DrawerBody p="0" w="full">
             <Suspense fallback={<PageLoader />}>
               <MobileRangeDatepicker
                 dates={dates.filter((date) => Boolean(date))}

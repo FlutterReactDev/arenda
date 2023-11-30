@@ -61,9 +61,9 @@ export const MobileSearchInput = forwardRef<
           </Text>
         </Box>
       </Box>
-      <Drawer size="full" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent h={"90dvh"} roundedTop={"2xl"}>
           <DrawerBody>
             <DrawerCloseButton />
             <DrawerHeader>Выбрать направления</DrawerHeader>

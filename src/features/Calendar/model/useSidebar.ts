@@ -6,22 +6,29 @@ import { SidebarType } from "./types";
 
 export const useSidebar = () => {
   const dispatch = useAppDispatch();
-  const { isOpen, objectId, type, availabilityId } = useAppSelector(getSidebar);
+  const { isOpen, objectId, type, availabilityId, checkIn, checkOut } =
+    useAppSelector(getSidebar);
 
   const onOpen = ({
     objectId,
     type,
     availabilityId,
+    checkIn,
+    checkOut,
   }: {
     objectId: number;
     type?: SidebarType;
     availabilityId?: number;
+    checkIn?: string;
+    checkOut?: string;
   }) => {
     dispatch(
       calendarActions.setOnOpen({
         objectId,
         type,
         availabilityId,
+        checkIn,
+        checkOut,
       })
     );
   };
@@ -34,5 +41,7 @@ export const useSidebar = () => {
     objectId,
     type,
     availabilityId,
+    checkIn,
+    checkOut,
   };
 };

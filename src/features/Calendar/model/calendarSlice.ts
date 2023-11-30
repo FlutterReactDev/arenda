@@ -57,6 +57,8 @@ const initialState = {
       id: 0,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Каприз",
+      checkIn: "12:00",
+      checkOut: "12:00",
     },
     {
       availability: [],
@@ -74,6 +76,8 @@ const initialState = {
       id: 1,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Номер Стандарт 1",
+      checkIn: "12:00",
+      checkOut: "12:00",
     },
     {
       availability: [],
@@ -91,6 +95,8 @@ const initialState = {
       id: 2,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Номер LUX",
+      checkIn: "14:00",
+      checkOut: "12:00",
     },
     {
       availability: [],
@@ -108,6 +114,8 @@ const initialState = {
       id: 3,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Комната на 3 человека LUX",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -125,6 +133,8 @@ const initialState = {
       id: 4,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Комната с кухней",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -142,6 +152,8 @@ const initialState = {
       id: 5,
       address: "Бостери,Казак-тукуму, 60/1",
       name: "Коттедж",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -159,6 +171,8 @@ const initialState = {
       id: 6,
       address: "Бостери,Казак-тукуму, 62/1",
       name: "Хаят",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -176,6 +190,8 @@ const initialState = {
       id: 7,
       address: "Бостери,Казак-тукуму, 50/1",
       name: "NOVATEL",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -193,6 +209,8 @@ const initialState = {
       id: 8,
       address: "Бостери,Казак-тукуму, 1/1",
       name: "Турак Hotel",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -210,6 +228,8 @@ const initialState = {
       id: 9,
       address: "Бостери,Казак-тукуму, 2/1",
       name: "Арноо",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -227,6 +247,8 @@ const initialState = {
       id: 10,
       address: "Бостери,Казак-тукуму, 20/1",
       name: "Imperia Hotel",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
     {
       availability: [],
@@ -244,6 +266,8 @@ const initialState = {
       id: 11,
       address: "Бостери,Казак-тукуму, 30/1",
       name: "Major Hotel",
+      checkIn: "12:00",
+      checkOut: "14:00",
     },
   ],
   currentVisbleId: 0,
@@ -254,6 +278,13 @@ const initialState = {
   search: "",
   searchPopover: {
     isOpen: false,
+  },
+  searchAvailibilityRoomsModal: {
+    isOpen: false,
+    checkIn: null,
+    checkOut: null,
+    minDate: null,
+    maxDate: null,
   },
 } as EmploymentCalendarState;
 
@@ -364,6 +395,8 @@ const calendarSlice = createSlice({
         objectId: number;
         type?: SidebarType;
         availabilityId?: number;
+        checkIn?: string;
+        checkOut?: string;
       }>
     ) {
       state.sidebar.isOpen = true;
@@ -371,6 +404,8 @@ const calendarSlice = createSlice({
       state.sidebar.type = action.payload.type;
       if (action.payload.availabilityId)
         state.sidebar.availabilityId = action.payload.availabilityId;
+      state.sidebar.checkIn = action.payload.checkIn;
+      state.sidebar.checkOut = action.payload.checkOut;
     },
 
     setOnClose(state) {
@@ -387,6 +422,8 @@ const calendarSlice = createSlice({
         maxDate: Date;
         comment: string;
         color: string;
+        phoneNumber: string;
+        clientFullname: string;
       }>
     ) {
       const objectIndex = state.objects.findIndex(
@@ -409,6 +446,8 @@ const calendarSlice = createSlice({
           maxDate: action.payload.maxDate,
           color: action.payload.color,
           comment: action.payload.comment,
+          phoneNumber: action.payload.phoneNumber,
+          clientFullname: action.payload.clientFullname,
         },
       ];
     },
@@ -423,6 +462,8 @@ const calendarSlice = createSlice({
         color: string;
         createdDate: Date;
         totalSum: number;
+        phoneNumber: string;
+        clientFullname: string;
       }>
     ) {
       const objectIndex = state.objects.findIndex(
@@ -440,6 +481,8 @@ const calendarSlice = createSlice({
           createdDate: action.payload.createdDate,
           objectId: action.payload.objectId,
           totalSum: action.payload.totalSum,
+          clientFullname: action.payload.clientFullname,
+          phoneNumber: action.payload.phoneNumber,
         },
       ];
     },
@@ -576,6 +619,31 @@ const calendarSlice = createSlice({
 
     setCloseSearchPopover(state) {
       state.searchPopover.isOpen = false;
+    },
+
+    setOpenSearchAvailibilityRooms(
+      state,
+      action: PayloadAction<{
+        minDate: Date;
+        maxDate: Date;
+        checkIn: string;
+        checkOut: string;
+      }>
+    ) {
+      const { checkIn, checkOut, maxDate, minDate } = action.payload;
+      state.searchAvailibilityRoomsModal.isOpen = true;
+      state.searchAvailibilityRoomsModal.checkIn = checkIn;
+      state.searchAvailibilityRoomsModal.checkOut = checkOut;
+      state.searchAvailibilityRoomsModal.minDate = minDate;
+      state.searchAvailibilityRoomsModal.maxDate = maxDate;
+    },
+
+    setCloseSearchAvailibilityRooms(state) {
+      state.searchAvailibilityRoomsModal.isOpen = false;
+      state.searchAvailibilityRoomsModal.checkIn = null;
+      state.searchAvailibilityRoomsModal.checkOut = null;
+      state.searchAvailibilityRoomsModal.minDate = null;
+      state.searchAvailibilityRoomsModal.maxDate = null;
     },
   },
 });

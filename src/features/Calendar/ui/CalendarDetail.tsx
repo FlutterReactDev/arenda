@@ -2,13 +2,19 @@ import {
   addDays,
   addMonths,
   eachDayOfInterval,
+  eachHourOfInterval,
   eachMonthOfInterval,
+  endOfDay,
+  getHours,
   isSameDay,
+  isSameHour,
   isSameMonth,
   isSameWeek,
   isSunday,
   lastDayOfMonth,
   max,
+  setHours,
+  startOfDay,
   subDays,
 } from "date-fns";
 
@@ -25,6 +31,7 @@ import {
 import { DragPopover } from "@shared/ui/DragPopover";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+import { ru } from "date-fns/locale";
 import { useDayzed } from "dayzed";
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -131,12 +138,12 @@ export const CalendarDetail = () => {
       const splitedDays = getIntervalDays.filter((date) => {
         return isSunday(date);
       });
-      let leftDate = minDate;
+      let leftDate = toDay(minDate);
       const result = splitedDays.map((date) => {
         const leftMin =
           eachDayOfInterval({
             start: leftDate,
-            end: date,
+            end: toDay(date),
           }).length - 1;
 
         const coords = {
@@ -173,7 +180,7 @@ export const CalendarDetail = () => {
 
       if (
         getIntervalDays.length > 7 ||
-        !isSameWeek(item.minDate, item.maxDate)
+        !isSameWeek(item.minDate, item.maxDate, { locale: ru })
       ) {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
@@ -204,15 +211,69 @@ export const CalendarDetail = () => {
           })
           .filter((monthId) => monthId != undefined)[0] as number;
         const monthAvailability = createMonthAvailability(item);
+        const hours = eachHourOfInterval({
+          start: startOfDay(new Date()),
+          end: endOfDay(new Date()),
+        });
         if (monthAvailability.length == 1) {
+          const findLeftIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(new Date(), getHours(monthAvailability[0].minDate))
+            )
+          );
+
+          const findRightIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(new Date(), getHours(monthAvailability[0].maxDate))
+            )
+          );
+          const leftHourPercent = (findLeftIndexHour / hours.length) * 100;
+          const rightHourPercent = (findRightIndexHour / hours.length) * 100;
+          const rightPadding = rightHourPercent / 100;
+          const leftPadding = leftHourPercent / 100;
           monthAvailability[0].isLeftRounded = true;
           monthAvailability[0].isRightRounded = true;
           monthAvailability[0].comment = item.comment;
+          monthAvailability[0].left =
+            monthAvailability[0].left + leftHourPercent / 100;
+          monthAvailability[0].width =
+            monthAvailability[0].width - 1 - leftPadding + rightPadding;
         }
         if (monthAvailability.length > 1) {
+          const findLeftIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(new Date(), getHours(monthAvailability[0].minDate))
+            )
+          );
+
+          const findRightIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(
+                new Date(),
+                getHours(
+                  monthAvailability[monthAvailability.length - 1].maxDate
+                )
+              )
+            )
+          );
+          const leftHourPercent = (findLeftIndexHour / hours.length) * 100;
+          const rightHourPercent = (findRightIndexHour / hours.length) * 100;
           monthAvailability[0].isLeftRounded = true;
           monthAvailability[0].comment = item.comment;
           monthAvailability[monthAvailability.length - 1].isRightRounded = true;
+          monthAvailability[0].left =
+            monthAvailability[0].left + leftHourPercent / 100;
+          monthAvailability[0].width =
+            monthAvailability[0].width - leftHourPercent / 100;
+
+          monthAvailability[monthAvailability.length - 1].width =
+            monthAvailability[monthAvailability.length - 1].width -
+            1 +
+            rightHourPercent / 100;
         }
         calendarMap[calendarIdx] = [
           ...calendarMap[calendarIdx],
@@ -220,6 +281,11 @@ export const CalendarDetail = () => {
         ].flat();
       }
       if (!isSameMonth(item.minDate, item.maxDate)) {
+        const hours = eachHourOfInterval({
+          start: startOfDay(new Date()),
+          end: endOfDay(new Date()),
+        });
+
         eachMonthOfInterval({
           start: item.minDate,
           end: item.maxDate,
@@ -241,14 +307,41 @@ export const CalendarDetail = () => {
               : lastDayOfMonth(date),
             color: item.color,
           });
+          const findLeftIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(new Date(), getHours(monthAvailability[0].minDate))
+            )
+          );
 
+          const findRightIndexHour = hours.findIndex((hour) =>
+            isSameHour(
+              hour,
+              setHours(
+                new Date(),
+                getHours(
+                  monthAvailability[monthAvailability.length - 1].maxDate
+                )
+              )
+            )
+          );
+          const leftHourPercent = (findLeftIndexHour / hours.length) * 100;
+          const rightHourPercent = (findRightIndexHour / hours.length) * 100;
           if (idx == 0) {
             monthAvailability[0].isLeftRounded = true;
             monthAvailability[0].comment = item.comment;
+            monthAvailability[0].left =
+              monthAvailability[0].left + leftHourPercent / 100;
+            monthAvailability[0].width =
+              monthAvailability[0].width - leftHourPercent / 100;
           }
           if (idx == arr.length - 1) {
             monthAvailability[monthAvailability.length - 1].isRightRounded =
               true;
+            monthAvailability[monthAvailability.length - 1].width =
+              monthAvailability[monthAvailability.length - 1].width -
+              1 +
+              rightHourPercent / 100;
           }
           calendarMap[calendarIdx] = [
             ...calendarMap[calendarIdx],

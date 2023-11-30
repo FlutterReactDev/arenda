@@ -1,33 +1,32 @@
 import { useEffect, useState } from "react";
 
-import { GiBunkBeds, GiSpookyHouse } from "react-icons/gi";
-import { BiBuildingHouse } from "react-icons/bi";
-import { BsDoorOpen } from "react-icons/bs";
-import { CiLocationOn } from "react-icons/ci";
-import { ImEarth } from "react-icons/im";
 import {
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel,
-  Text,
   Box,
+  Button,
+  Center,
   HStack,
   Icon,
-  SlideFade,
-  Center,
-  Stack,
-  Spinner,
-  Button,
   SimpleGrid,
   Skeleton,
+  SlideFade,
+  Spinner,
+  Stack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
+  Text,
 } from "@chakra-ui/react";
 import { ObjectSelectList } from "@entites/Object";
 import { SelectSearch } from "@shared/ui/SelectSearch";
+import { BiBuildingHouse } from "react-icons/bi";
+import { BsDoorOpen } from "react-icons/bs";
+import { CiLocationOn } from "react-icons/ci";
+import { GiBunkBeds, GiSpookyHouse } from "react-icons/gi";
+import { ImEarth } from "react-icons/im";
 
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { addObjectActions } from "..";
+import { useAddObject } from "..";
 
 import {
   useGetCityQuery,
@@ -36,20 +35,20 @@ import {
 } from "@entites/Location";
 
 import { useGetAllObjectTypesQuery } from "@entites/ObjectType";
-import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
 import {
   SelectLocationSchema,
   SelectLocationSchemaType,
 } from "../model/schema";
 
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import {
   ObjectTypePropertyTabPanel,
   useGetByIdQuery,
 } from "@entites/ObjectTypeProperty";
-import { useNavigate } from "react-router-dom";
 import { OBJECT_TYPE } from "@shared/constants/objectType";
-import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
+import { useNavigate } from "react-router-dom";
 
 export const SelectLocationForm = () => {
   const [tabIndex, setTabIndex] = useState(0);
@@ -57,13 +56,15 @@ export const SelectLocationForm = () => {
     useForm<SelectLocationSchemaType>({
       resolver: yupResolver(SelectLocationSchema),
     });
-  const dispatch = useAppDispatch();
+  const { setAddObjectData } = useAddObject();
   const navigate = useNavigate();
+
   const objectType = watch("objectType");
   const objectTypeProperty = watch("objectTypeProperty");
   const country = watch("country");
   const region = watch("region");
   const city = watch("city");
+
   const { data: objectTypes, isSuccess: objectTypesIsSuccess } =
     useGetAllObjectTypesQuery("");
 
@@ -75,11 +76,13 @@ export const SelectLocationForm = () => {
     refetchOnMountOrArgChange: true,
     skip: objectType == undefined,
   });
+
   useEffect(() => {
     if (objectTypesIsSuccess) {
       setValue("objectType", objectTypes[0].id);
     }
   }, [objectTypes, objectTypesIsSuccess, setValue]);
+
   useEffect(() => {
     if (objectPropertyTypesIsSuccess && !objectPropertyTypesIsLoading) {
       setValue("objectTypeProperty", objectPropertyTypes[0]);
@@ -123,16 +126,14 @@ export const SelectLocationForm = () => {
     objectTypeProperty == undefined ||
     region == undefined;
   const onSumbit = (data: SelectLocationSchemaType) => {
-    dispatch(addObjectActions.setLocationData(data));
-    console.log(objectTypes?.filter((object) => object.id == objectType)[0]);
-
+    setAddObjectData(data);
     if (
       objectTypes?.filter((object) => object.id == objectType)[0].objectType ==
       OBJECT_TYPE.HOTEL
     ) {
-      navigate(RouteName.ADD_HOTEL_PAGE);
+      navigate(RouteName.CREATE_HOTEL);
     } else {
-      navigate(RouteName.ADD_OBJECT_INFO);
+      navigate(RouteName.CREATE_OBJECT);
     }
   };
   return (

@@ -1360,7 +1360,7 @@ export const ObjectSearchLayout = () => {
         </Box>
         <Drawer
           isOpen={mobileFilterIsOpen}
-          placement="right"
+          placement="bottom"
           onClose={mobileFilterOnClose}
           size={"full"}
         >
@@ -1370,19 +1370,11 @@ export const ObjectSearchLayout = () => {
             onTouchMove={(e) => e.stopPropagation()}
             onTouchEnd={(e) => e.stopPropagation()}
             bgColor={"none"}
-            h={"100dvh"}
+            h={"95dvh"}
+            roundedTop={"2xl"}
           >
+            <DrawerHeader p={6}>Фильтры</DrawerHeader>
             <DrawerCloseButton />
-            <DrawerHeader p={2}>
-              <Button
-                size={"sm"}
-                colorScheme="red"
-                rounded={"full"}
-                variant={"outline"}
-              >
-                Сбросить все фильтры
-              </Button>
-            </DrawerHeader>
             <DrawerBody h={"100dvh"} p={0} bgColor={"white"}>
               <Stack
                 spacing={4}

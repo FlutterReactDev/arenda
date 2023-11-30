@@ -1,9 +1,9 @@
 import {
-  Flex,
   Grid,
   GridItem,
   HStack,
   Hide,
+  IconButton,
   Show,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -14,11 +14,13 @@ import { calendarActions } from "..";
 import { getObjectsBySearchAvailibility } from "../model/selectors";
 import { EventClickProps } from "../model/types";
 import { usePagination } from "../model/usePagination";
-import { CalendarNavigationBtns } from "./CalendarNavigationBtns";
+
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { GoToDateBtn } from "./GoToDateBtn";
 import { GoToMonth } from "./GoToMonth";
 import { GoTodayBtn } from "./GoTodayBtn";
 import { NewBookingBtn } from "./NewBookingBtn";
+import { SearchAvailibilityRoomsBtn } from "./SearchAvailibilityRoomsBtn";
 import { SearchComment } from "./SearchComment";
 import { TodayCalendarInfo } from "./TodayCalendarInfo";
 
@@ -31,6 +33,13 @@ export const ActionTop = memo(() => {
   const onEventClick = ({ availibilityInfo, page }: EventClickProps) => {
     dispatch(calendarActions.setBeginDate(availibilityInfo.minDate));
     jump(page);
+  };
+
+  const onPrev = () => {
+    dispatch(calendarActions.decreaseStep());
+  };
+  const onNext = () => {
+    dispatch(calendarActions.increaseStep());
   };
   return (
     <GridItem area={"actionsTop"}>
@@ -62,9 +71,33 @@ export const ActionTop = memo(() => {
           <TodayCalendarInfo />
         </GridItem>
         <Show breakpoint="(max-width: 968px)">
-          <Flex justifyContent={"center"}>
-            <CalendarNavigationBtns />
-          </Flex>
+          <HStack justifyContent={"center"}>
+            <SearchAvailibilityRoomsBtn />
+          </HStack>
+
+          <HStack px={4} justifyContent={"space-between"} w="full" mt={3}>
+            <IconButton
+              aria-label="left arrow"
+              onClick={onPrev}
+              isRound
+              bgColor={"white"}
+              fontSize={"xl"}
+              size={"lg"}
+            >
+              <ChevronLeftIcon />
+            </IconButton>
+
+            <IconButton
+              aria-label="right arrow"
+              onClick={onNext}
+              isRound
+              bgColor={"white"}
+              fontSize={"xl"}
+              size={"lg"}
+            >
+              <ChevronRightIcon />
+            </IconButton>
+          </HStack>
         </Show>
       </Grid>
     </GridItem>

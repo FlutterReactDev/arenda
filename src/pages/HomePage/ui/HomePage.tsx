@@ -4,12 +4,12 @@ import {
   CardBody,
   Container,
   Heading,
-  LinkOverlay,
-  Tag,
-  VStack,
-  Text,
   Image,
+  LinkOverlay,
   SimpleGrid,
+  Tag,
+  Text,
+  VStack,
 } from "@chakra-ui/react";
 import { MainSearch } from "@features/SearchObjects";
 

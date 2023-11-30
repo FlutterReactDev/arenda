@@ -1,35 +1,28 @@
 import { Grid, GridItem, HStack, useMediaQuery } from "@chakra-ui/react";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import {
-  getCalendarActions,
-  getColumnDays,
-  getCommonSettings,
-} from "../model/selectors";
+import { getColumnDays, getCommonSettings } from "../model/selectors";
 
 import {
   addDays,
   getOverlappingDaysInIntervals,
   isBefore,
   isEqual,
-  isPast,
   isSameDay,
   isWithinInterval,
   max,
   min,
-  subDays,
 } from "date-fns";
 import { Availibility } from "./Availibility";
 import { ObjectCell } from "./ObjectCell";
 
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { FC, memo, useCallback, useEffect, useRef, useState } from "react";
+import { FC, memo, useCallback, useEffect, useState } from "react";
 import { calendarActions } from "..";
 import { CalendarObject } from "../model/types";
 import { useSidebar } from "../model/useSidebar";
 import { isInRange } from "../utils/isInRange";
-import { ObjectInfo } from "./ObjectInfo";
 import { toDay } from "../utils/toDay";
-import { useDebounce } from "@shared/hooks/useDebounce";
+import { ObjectInfo } from "./ObjectInfo";
 interface ObjectItemProps extends CalendarObject {
   setRangeObjectId: (id: number) => void;
   rangeObjectId: number | null;
@@ -49,9 +42,9 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const { onOpen, isOpen } = useSidebar();
   const days = useAppSelector(getColumnDays);
-  const { beginDate, countDay } = useAppSelector(getCalendarActions);
-  const cellRefs = useRef<HTMLElement[]>([]);
+
   const { sidebarWidth } = useAppSelector(getCommonSettings);
+
   const [range, setRange] = useState<{
     in: Date | null;
     out: Date | null;
@@ -74,29 +67,15 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
 
       if (prevRanges.in != null) {
         isCanSelect = !!availability.filter((a) => {
-          return (
-            isWithinInterval(date, {
-              start: a.minDate,
-              end: a.maxDate,
-            }) ||
-            isWithinInterval(a.minDate, {
-              start: min([prevRanges.in as Date, date]),
-              end: max([prevRanges.in as Date, date]),
-            }) ||
-            isWithinInterval(a.maxDate, {
-              start: min([prevRanges.in as Date, date]),
-              end: max([prevRanges.in as Date, date]),
-            }) ||
-            !!getOverlappingDaysInIntervals(
-              {
-                start: min([prevRanges.in as Date, date]),
-                end: max([prevRanges.in as Date, date]),
-              },
-              {
-                start: a.minDate,
-                end: a.maxDate,
-              }
-            )
+          return !!getOverlappingDaysInIntervals(
+            {
+              start: min([toDay(prevRanges.in as Date), toDay(date)]),
+              end: max([toDay(prevRanges.in as Date), toDay(date)]),
+            },
+            {
+              start: min([toDay(a.minDate), toDay(a.maxDate)]),
+              end: max([toDay(a.minDate), toDay(a.maxDate)]),
+            }
           );
         }).length;
 
@@ -133,7 +112,7 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
         const minDate = min([prevState.in, prevState.out]);
         const maxDate = max([prevState.in, prevState.out]);
         dispatch(calendarActions.setRangeIn(minDate));
-        dispatch(calendarActions.setRangeOut(maxDate));
+        dispatch(calendarActions.setRangeOut(addDays(maxDate, 1)));
         onOpen({
           objectId: id,
         });
@@ -143,7 +122,7 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
           out: maxDate,
         };
       } else if (prevState.in && !prevState.out) {
-        dispatch(calendarActions.setRangeOut(prevState.in));
+        dispatch(calendarActions.setRangeOut(addDays(prevState.in, 1)));
         onOpen({
           objectId: id,
         });
@@ -172,85 +151,6 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
     onUpHandler();
   }, []);
 
-  const debounceIncreaseDate = useDebounce((out: Date) => {
-    dispatch(calendarActions.increaseDay());
-    onMove(out);
-  }, 50);
-
-  const onTouchMove = useCallback(
-    (pageX: number) => {
-      const coords = cellRefs.current
-        .map((el) => {
-          return el?.getBoundingClientRect();
-        })
-        .filter(Boolean)
-
-        .filter((value, index, arr) => {
-          const _value = JSON.stringify(value);
-          return (
-            index ===
-            arr.findIndex((obj) => {
-              return JSON.stringify(obj) === _value;
-            })
-          );
-        })
-        .filter(
-          (value) =>
-            value.bottom &&
-            value.height &&
-            value.left &&
-            value.right &&
-            value.top &&
-            value.width &&
-            value.x &&
-            value.y
-        );
-
-      const date = coords
-        .map((coord, idx) => {
-          if (coord.left <= pageX) {
-            return idx;
-          }
-        })
-        .filter((idx) => idx != undefined);
-
-      const out = addDays(
-        subDays(beginDate, 1),
-        date.length ? (date[date.length - 1] as number) : 0
-      );
-      if (isEqual(addDays(beginDate, countDay), out)) {
-        debounceIncreaseDate(out);
-        return;
-      }
-      if (range.in) {
-        if (isPast(addDays(out, 1))) {
-          onMove(toDay(new Date()));
-        } else {
-          onMove(out);
-        }
-      }
-    },
-    [beginDate, onMove, range.in]
-  );
-
-  const onScroll = useCallback(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    (event) => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      if (event.deltaY > 1) {
-        dispatch(calendarActions.increaseDay());
-      } else {
-        dispatch(calendarActions.decreaseDay());
-      }
-    },
-    [dispatch]
-  );
-
-  const addToRef = useCallback((element: HTMLElement) => {
-    return cellRefs.current.push(element);
-  }, []);
   return (
     <Grid
       gridTemplateColumns={`calc(${
@@ -270,7 +170,6 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
           h="full"
           alignItems={"center"}
           position={"relative"}
-          onWheel={onScroll}
           onMouseLeave={() => {
             if (!isOpen) {
               setRange(() => {
@@ -353,15 +252,15 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
                     ? isInRange(date, range.in, range.out)
                     : false
                 }
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                //@ts-ignore
-
-                ref={addToRef}
                 isBlocked={
                   !!availability.filter((a) => {
+                    if (isSameDay(a.maxDate, date)) {
+                      return false;
+                    }
+
                     return isWithinInterval(date, {
-                      start: a.minDate,
-                      end: a.maxDate,
+                      start: toDay(a.minDate),
+                      end: toDay(a.maxDate),
                     });
                   }).length
                 }
@@ -376,9 +275,6 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
                 onMouseDown={onDown}
                 onMouseMove={onMove}
                 onMouseUp={onUp}
-                onTouchStart={onDown}
-                onTouchMove={onTouchMove}
-                onTouchEnd={onUp}
                 cost={
                   seasonsPrice.filter((price) => isSameDay(price.date, date))[0]
                     ?.cost || objectDefaultPerDayCost
@@ -388,32 +284,9 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
             );
           })}
 
-          {availability.map(
-            ({
-              id,
-              maxDate,
-              minDate,
-              comment,
-              color,
-              createdDate,
-              objectId,
-              totalSum,
-            }) => {
-              return (
-                <Availibility
-                  comment={comment}
-                  key={id}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                  color={color}
-                  createdDate={createdDate}
-                  id={id}
-                  objectId={objectId}
-                  totalSum={totalSum}
-                />
-              );
-            }
-          )}
+          {availability.map((a) => {
+            return <Availibility {...a} />;
+          })}
         </HStack>
       </GridItem>
     </Grid>

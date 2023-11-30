@@ -9,10 +9,13 @@ import {
   isPast,
   isSameDay,
   isToday,
+  setHours,
   subDays,
 } from "date-fns";
 import { toDay } from "../utils/toDay";
 import { search } from "@shared/ui/SelectSearch/lib/fuzzySearch";
+import { isOverlaping } from "../utils/isOverlaping";
+import { convertToHour } from "../utils/convertToHour";
 
 const selectBeginDate = (state: RootState) => state.calendar.actions.beginDate;
 const selectCountDay = (state: RootState) => state.calendar.actions.countDay;
@@ -34,8 +37,6 @@ export const getColumnDays = createSelector(
       const getMonthIndex = () => {
         return currentWidth == 72 ? 1 : 0;
       };
-
-      console.log(getMonthIndex());
 
       return {
         date,
@@ -63,6 +64,8 @@ export const getCalendarActions = (state: RootState) => state.calendar.actions;
 export const getSidebar = (state: RootState) => state.calendar.sidebar;
 export const getDeleteModal = (state: RootState) => state.calendar.deleteModal;
 export const getObjects = (state: RootState) => state.calendar.objects;
+export const getSearchAvailibilityRoomsModal = (state: RootState) =>
+  state.calendar.searchAvailibilityRoomsModal;
 export const getObject = (objectId: number) =>
   createSelector([selectObjects], (objects) => {
     const id = objects.findIndex((object) => object.id == objectId);
@@ -121,6 +124,7 @@ export const getObjectAvailibility = (objectId: number) =>
   createSelector([selectObjects], (objects) => {
     return objects.filter((object) => object.id == objectId)[0]?.availability;
   });
+
 export const getObjectAvailibilityById = (
   objectId: number | null,
   availabilityId: number | null | undefined
@@ -163,6 +167,33 @@ export const getSeasonPriceByDate = (objectId: number | null, dates: Date[]) =>
 export const getAvailibilities = createSelector([selectObjects], (objects) => {
   return objects.map((object) => object.availability);
 });
+
+export const getAvailibilityRooms = createSelector(
+  [getObjects, getSearchAvailibilityRoomsModal],
+  (objects, { checkIn, checkOut, maxDate, minDate }) => {
+    if (minDate && maxDate && checkOut && checkIn) {
+      return objects.filter(({ availability }) => {
+        const res = availability.filter(
+          ({ minDate: minDate1, maxDate: maxDate1 }) => {
+            return isOverlaping(
+              {
+                start: minDate1,
+                end: maxDate1,
+              },
+              {
+                start: setHours(minDate, convertToHour(checkIn) || 0),
+                end: setHours(maxDate, convertToHour(checkOut) || 0),
+              }
+            );
+          }
+        );
+
+        return res.length == 0;
+      });
+    }
+    return [];
+  }
+);
 
 export const getTodayCheckIn = createSelector(
   [getObjectsBySearch],

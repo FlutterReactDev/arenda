@@ -1,57 +1,44 @@
 import {
-  Box,
-  Stack,
-  RadioGroup,
-  FormControl,
-  Radio,
-  HStack,
-  Icon,
   Badge,
+  Box,
+  FormControl,
   FormHelperText,
   FormLabel,
+  HStack,
+  Icon,
+  Radio,
+  RadioGroup,
+  Stack,
   Switch,
   Text,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
 
-import { getForm } from "@entites/Object/model/selectors";
+import {
+  HowGuestBookType,
+  howGuestBookSchema,
+} from "@entites/Object/model/schemas/howGuestBookSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { IoIosFlash } from "react-icons/io";
-import { InferType } from "yup";
-import { howGuestBookSchema } from "@entites/Object/model/schemas/howGuestBookSchema";
+interface HowGuestBookFormProps {
+  value: HowGuestBookType;
+  onChange: (value: HowGuestBookType) => void;
+}
+const HowGuestBookForm: FC<FormProps & HowGuestBookFormProps> = (props) => {
+  const { navigation, onNext, value, onChange } = props;
 
-const HowGuestBookForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-
-  const howGuestBookData = useAppSelector(getForm(2, 1));
-  const dispatch = useAppDispatch();
-  const { handleSubmit, watch, control, register } = useForm<
-    InferType<typeof howGuestBookSchema>
-  >({
+  const { handleSubmit, watch, control, register } = useForm<HowGuestBookType>({
     resolver: yupResolver(howGuestBookSchema),
-    defaultValues: { ...howGuestBookData } as InferType<
-      typeof howGuestBookSchema
-    >,
+    defaultValues: value,
   });
 
-  const onSubmit = (data: InferType<typeof howGuestBookSchema>) => {
-    if (data.bookingType == "sendRequest") {
-      delete data.highlyRatedGuestsBookInstantly;
-    }
-    dispatch(
-      addObjectStepActions.setForm({
-        data,
-        screen: 2,
-        step: 1,
-      })
-    );
+  const onSubmit = (data: HowGuestBookType) => {
+    onChange(data);
     onNext && onNext();
   };
 

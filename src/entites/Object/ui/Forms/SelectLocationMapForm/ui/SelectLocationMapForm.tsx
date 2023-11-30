@@ -8,10 +8,10 @@ import { InferType } from "yup";
 import { useGetObjectByCoordinatesQuery } from "@entites/Map/model/api";
 import { FormCard } from "@shared/ui/FormCard";
 
-import { FormProps } from "@entites/Object/model/types";
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 
 import { selectMapSchema } from "@entites/Object/model/schemas/selectMapSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 
 interface SelectLocationMapFormProps {
   stateValue?: InferType<typeof selectMapSchema>;

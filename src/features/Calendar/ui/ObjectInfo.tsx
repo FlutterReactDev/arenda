@@ -1,4 +1,3 @@
-import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Box,
@@ -40,7 +39,7 @@ export const ObjectInfo: FC<ObjectInfoProps> = memo((props) => {
           py={2}
           pos={"relative"}
           as={Link}
-          to={RouteName.CALENDAR_PAGE + "/" + objectId}
+          to={`${objectId}`}
           onMouseEnter={() => {
             setHover(true);
           }}

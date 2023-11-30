@@ -1,47 +1,51 @@
-import { QuestionOutlineIcon, CloseIcon } from "@chakra-ui/icons";
+import { CloseIcon, QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Stack,
+  Button,
+  Center,
+  Checkbox,
   FormControl,
-  FormLabel,
-  InputGroup,
-  Input,
-  InputRightElement,
   FormErrorMessage,
+  FormHelperText,
+  FormLabel,
   HStack,
-  Select,
+  Heading,
+  IconButton,
+  Input,
+  InputGroup,
+  InputRightElement,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  NumberIncrementStepper,
-  NumberDecrementStepper,
-  Checkbox,
-  Tooltip,
-  FormHelperText,
-  Heading,
-  IconButton,
-  Center,
-  Button,
+  Select,
+  Stack,
   Text,
+  Tooltip,
 } from "@chakra-ui/react";
-import { generalInformationSchema } from "@entites/Object/model/schemas/generalInformationSchema";
-import { FormProps } from "@entites/Object/model/types";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
+import { BedType } from "@entites/CommonReference/model/types";
+import {
+  GeneralInformationSchemaType,
+  generalInformationSchema,
+} from "@entites/Object/model/schemas/generalInformationSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 
-import { getForm } from "@entites/Object/model/selectors";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC, useEffect, useMemo, useState } from "react";
-import { useForm, useFieldArray, useWatch, Controller } from "react-hook-form";
+import { Controller, useFieldArray, useForm, useWatch } from "react-hook-form";
 import { InferType } from "yup";
-const GeneralInformationForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-  const dispatch = useAppDispatch();
-  const generalInformationData = useAppSelector(getForm(2, 0)) as InferType<
-    typeof generalInformationSchema
-  >;
+interface GeneralInformationFormProps {
+  value: GeneralInformationSchemaType;
+  onChange: (value: GeneralInformationSchemaType) => void;
+  bedTypes: BedType[];
+}
+const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
+  props
+) => {
+  const { navigation, onNext, onChange, value, bedTypes } = props;
 
   const {
     control,
@@ -50,73 +54,41 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
     register,
     trigger,
     setValue,
-  } = useForm<InferType<typeof generalInformationSchema>>({
+  } = useForm<GeneralInformationSchemaType>({
     resolver: yupResolver(generalInformationSchema),
     mode: "onChange",
     defaultValues: {
-      ...generalInformationData,
-      typeAndCountBeds: [
-        {
-          bedType: "singleBed",
-          bedsCount: "1",
-        },
-      ],
+      ...value,
     },
   });
 
   const availableOptions = useMemo(
-    () => [
-      "singleBed",
-      "doubleBed",
-      "doubleSofaBed",
-      "doubleWideKingSize",
-      "extraWideDoubleSuperKingSize",
-      "bunkBed",
-      "sofaBed",
-    ],
-    []
+    () => bedTypes.map((type) => type.value),
+    [bedTypes]
   );
 
-  const [bathroomAmenities, setBathroomAmenities] = useState<string[]>(
-    generalInformationData.bathroomAmenities || []
-  );
-
-  const onCheckboxChange = (option: string) => {
-    if (bathroomAmenities.includes(option)) {
-      return setBathroomAmenities(
-        bathroomAmenities.filter((item) => item != option)
-      );
-    }
-    setBathroomAmenities([...bathroomAmenities, option]);
-  };
-  const [validOptions, setValidOptions] = useState<
-    | "singleBed"
-    | "doubleBed"
-    | "doubleSofaBed"
-    | "doubleWideKingSize"
-    | "extraWideDoubleSuperKingSize"
-    | "bunkBed"
-    | "sofaBed"
-  >();
+  const [validOptions, setValidOptions] = useState<number[]>([]);
 
   const { append, remove, fields } = useFieldArray({
     control,
-    name: "typeAndCountBeds",
+    name: "beds",
   });
 
-  const typeAndCountBeds = useWatch({ control, name: "typeAndCountBeds" });
+  const typeAndCountBeds = useWatch({ control, name: "beds" });
   const floors = useWatch({ control, name: "floor" });
-  const floorInHouse = useWatch({ control, name: "floorsInHouse" });
-  const roomsCount = useWatch({ control, name: "roomsCount" });
+  const floorInHouse = useWatch({ control, name: "floorsInTheBuilding" });
+  const roomsCount = useWatch({ control, name: "count" });
   const numberOfIsolatedBedrooms = useWatch({
     control,
     name: "numberOfIsolatedBedrooms",
   });
 
   useEffect(() => {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    setValidOptions(typeAndCountBeds.map((field) => field.bedType));
+    console.log(typeAndCountBeds.map((field) => Number(field.type)));
+
+    setValidOptions([
+      ...new Set(typeAndCountBeds.map((field) => Number(field.type))),
+    ]);
   }, [typeAndCountBeds]);
 
   useEffect(() => {
@@ -128,12 +100,12 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
     if (Number(floorInHouse) < 3) {
       setValue("elevator", false);
     }
-    if (floors != "2" || floorInHouse != 2) {
+    if (Number(floors) != floorInHouse) {
       setValue("attic", false);
     }
 
     if (floors && floorInHouse) {
-      trigger("floorsInHouse");
+      trigger("floorsInTheBuilding");
     }
   }, [floors, setValue, trigger, floorInHouse]);
   useEffect(() => {
@@ -143,16 +115,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
   }, [roomsCount, trigger, numberOfIsolatedBedrooms]);
 
   const onSubmit = (data: InferType<typeof generalInformationSchema>) => {
-    dispatch(
-      addObjectStepActions.setForm({
-        data: {
-          ...data,
-          bathroomAmenities,
-        },
-        screen: 2,
-        step: 0,
-      })
-    );
+    onChange(data);
     onNext && onNext();
   };
 
@@ -161,11 +124,11 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
       <Stack spacing={2}>
         <FormCard title="Общие сведения">
           <Stack spacing={2}>
-            <FormControl maxW="220px" isInvalid={!!errors.square?.message}>
+            <FormControl maxW="220px" isInvalid={!!errors.area?.message}>
               <FormLabel>Площадь</FormLabel>
               <InputGroup>
                 <Input
-                  {...register("square")}
+                  {...register("area")}
                   type="number"
                   placeholder="Площадь"
                 />
@@ -175,7 +138,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                   </Text>
                 </InputRightElement>
               </InputGroup>
-              <FormErrorMessage>{errors.square?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.area?.message}</FormErrorMessage>
             </FormControl>
             <HStack alignItems={"flex-start"}>
               <FormControl maxW="50%" isInvalid={!!errors.floor?.message}>
@@ -287,13 +250,13 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
               </FormControl>
               <FormControl
                 maxW="50%"
-                isInvalid={!!errors.floorsInHouse?.message}
+                isInvalid={!!errors.floorsInTheBuilding?.message}
               >
                 <FormLabel>Этажей в доме</FormLabel>
                 <Controller
                   control={control}
                   defaultValue={1}
-                  name="floorsInHouse"
+                  name="floorsInTheBuilding"
                   render={({ field }) => {
                     return (
                       <NumberInput {...field} w="wull" min={1}>
@@ -307,7 +270,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                   }}
                 />
                 <FormErrorMessage>
-                  {errors.floorsInHouse?.message}
+                  {errors.floorsInTheBuilding?.message}
                 </FormErrorMessage>
               </FormControl>
             </HStack>
@@ -328,7 +291,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                             colorScheme="red"
                             ref={ref}
                             isChecked={value}
-                            isDisabled={!(floorInHouse == 2 && floors == "2")}
+                            isDisabled={!(floorInHouse == Number(floors))}
                           >
                             мансарда
                           </Checkbox>
@@ -372,11 +335,11 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
               </HStack>
             )}
 
-            <FormControl isInvalid={!!errors.roomsCount?.message}>
+            <FormControl isInvalid={!!errors.count?.message}>
               <FormLabel>Количество комнат</FormLabel>
               <Controller
                 control={control}
-                name="roomsCount"
+                name="count"
                 defaultValue={1}
                 render={({ field }) => {
                   return (
@@ -390,7 +353,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                   );
                 }}
               />
-              <FormErrorMessage>{errors.roomsCount?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.count?.message}</FormErrorMessage>
               <FormHelperText>
                 Только жилые комнаты — без учёта кухни, кухни-гостиной и других
                 вспомогательных помещений
@@ -462,16 +425,18 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
             <Heading size="sm" fontWeight={"normal"}>
               Сколько гостей вмещает ваше жильё?
             </Heading>
-            <FormControl isInvalid={!!errors.maxAdults?.message}>
+            <FormControl isInvalid={!!errors.maximumGuests?.message}>
               <FormLabel>Максимум гостей</FormLabel>
               <NumberInput size="lg" maxW={"48"} defaultValue={1} min={1}>
-                <NumberInputField {...register("maxAdults")} />
+                <NumberInputField {...register("maximumGuests")} />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
                 </NumberInputStepper>
               </NumberInput>
-              <FormErrorMessage>{errors.maxAdults?.message}</FormErrorMessage>
+              <FormErrorMessage>
+                {errors.maximumGuests?.message}
+              </FormErrorMessage>
               <FormHelperText>
                 Для каждого гостя должно быть комфортное спальное место
               </FormHelperText>
@@ -489,58 +454,20 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                       key={id}
                       spacing={2}
                     >
-                      <Select
-                        {...register(`typeAndCountBeds.${index}.bedType`)}
-                      >
-                        <option
-                          disabled={validOptions?.includes("singleBed")}
-                          value="singleBed"
-                        >
-                          односпальная кровать
-                        </option>
-                        <option
-                          disabled={validOptions?.includes("doubleBed")}
-                          value="doubleBed"
-                        >
-                          двуспальная кровать
-                        </option>
-                        <option
-                          disabled={validOptions?.includes("doubleSofaBed")}
-                          value="doubleSofaBed"
-                        >
-                          двуспальный диван-кровать
-                        </option>
-                        <option
-                          disabled={validOptions?.includes(
-                            "doubleWideKingSize"
-                          )}
-                          value="doubleWideKingSize"
-                        >
-                          двуспальная широкая (king-size)
-                        </option>
-                        <option
-                          disabled={validOptions?.includes(
-                            "extraWideDoubleSuperKingSize"
-                          )}
-                          value="extraWideDoubleSuperKingSize"
-                        >
-                          особо широкая двуспальная (super-king-size)
-                        </option>
-                        <option
-                          disabled={validOptions?.includes("bunkBed")}
-                          value="bunkBed"
-                        >
-                          двухъярусная кровать
-                        </option>
-                        <option
-                          disabled={validOptions?.includes("sofaBed")}
-                          value="sofaBed"
-                        >
-                          диван-кровать
-                        </option>
+                      <Select {...register(`beds.${index}.type`)}>
+                        {bedTypes.map((bedType) => (
+                          <option
+                            disabled={validOptions.includes(
+                              Number(bedType.value)
+                            )}
+                            value={Number(bedType.value)}
+                          >
+                            {bedType.name}
+                          </option>
+                        ))}
                       </Select>
                       <Select
-                        {...register(`typeAndCountBeds.${index}.bedsCount`)}
+                        {...register(`beds.${index}.count`)}
                         maxWidth={"40"}
                       >
                         <option value="1">1</option>
@@ -603,28 +530,17 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
                 <Center>
                   <Button
                     onClick={() => {
-                      const selectedTypes = typeAndCountBeds.map(
-                        (field) => field.bedType
+                      const selectedTypes = typeAndCountBeds.map((field) =>
+                        Number(field.type)
                       );
 
                       const nextOption = availableOptions.filter((option) => {
-                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                        //@ts-ignore
                         return !selectedTypes.includes(option);
                       });
 
                       append({
-                        bedType: nextOption[0] as NonNullable<
-                          | "singleBed"
-                          | "doubleBed"
-                          | "doubleSofaBed"
-                          | "doubleWideKingSize"
-                          | "extraWideDoubleSuperKingSize"
-                          | "bunkBed"
-                          | "sofaBed"
-                          | undefined
-                        >,
-                        bedsCount: "1",
+                        type: Number(nextOption[0]),
+                        count: 1,
                       });
                     }}
                     colorScheme="red"
@@ -659,7 +575,7 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
               <FormLabel>количество ванных комнат без туалета</FormLabel>
               <NumberInput size="lg" maxW={"48"} defaultValue={0} min={0}>
                 <NumberInputField
-                  {...register("numberOfBathroomsWithoutToilet")}
+                  {...register("numberOfBathroomsWithOutToilet")}
                 />
                 <NumberInputStepper>
                   <NumberIncrementStepper />
@@ -684,118 +600,337 @@ const GeneralInformationForm: FC<FormProps> = (props) => {
             <FormControl>
               <FormLabel>Удобства ванных комнат</FormLabel>
               <HStack flexWrap={"wrap"}>
-                <Checkbox
-                  onChange={() => onCheckboxChange("bidet")}
-                  isChecked={bathroomAmenities.includes("bidet")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  биде
-                </Checkbox>
-                <Checkbox
-                  onChange={() => onCheckboxChange("hygienicShower")}
-                  isChecked={bathroomAmenities.includes("hygienicShower")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  гигиенический душ
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("additionalToilet")}
-                  isChecked={bathroomAmenities.includes("additionalToilet")}
-                >
-                  дополнительный туалет
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("sharedBathroom")}
-                  isChecked={bathroomAmenities.includes("sharedBathroom")}
-                >
-                  общая ванная комната
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("towels")}
-                  isChecked={bathroomAmenities.includes("towels")}
-                >
-                  полотенца
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("hairdryer")}
-                  isChecked={bathroomAmenities.includes("hairdryer")}
-                >
-                  фен
-                </Checkbox>
-                <Checkbox
-                  onChange={() => onCheckboxChange("showerRoom")}
-                  isChecked={bathroomAmenities.includes("showerRoom")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  общий душ/душевая
-                </Checkbox>
-                <Checkbox
-                  onChange={() => onCheckboxChange("bath")}
-                  isChecked={bathroomAmenities.includes("bath")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  ванна
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("additionalBathroom")}
-                  isChecked={bathroomAmenities.includes("additionalBathroom")}
-                >
-                  дополнительная ванная
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("shower")}
-                  isChecked={bathroomAmenities.includes("shower")}
-                >
-                  душ
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("sharedToilet")}
-                  isChecked={bathroomAmenities.includes("sharedToilet")}
-                >
-                  общий туалет
-                </Checkbox>
-                <Checkbox
-                  onChange={() => onCheckboxChange("sauna")}
-                  isChecked={bathroomAmenities.includes("sauna")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  сауна
-                </Checkbox>
-                <Checkbox
-                  colorScheme="red"
-                  minW="49%"
-                  onChange={() => onCheckboxChange("toiletries")}
-                  isChecked={bathroomAmenities.includes("toiletries")}
-                >
-                  туалетные принадлежности
-                </Checkbox>
-                <Checkbox
-                  onChange={() => onCheckboxChange("robe")}
-                  isChecked={bathroomAmenities.includes("robe")}
-                  colorScheme="red"
-                  minW="49%"
-                >
-                  халат
-                </Checkbox>
+                <Controller
+                  control={control}
+                  name="bidet"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        биде
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="bath"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        ванна
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="hygienicShower"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        гигиенический душ
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="additionalBathroom"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        дополнительная ванная
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="additionalToilet"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        дополнительный туалет
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="shower"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        душ
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="sharedBathroom"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        общая ванная комната
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="sharedToilet"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        общий туалет
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="towels"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        полотенца
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="sauna"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        сауна
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="slippers"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        тапочки
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="toiletries"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        туалетные принадлежности
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="hairDryer"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        фен
+                      </Checkbox>
+                    );
+                  }}
+                />
+                <Controller
+                  control={control}
+                  name="robe"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        халат
+                      </Checkbox>
+                    );
+                  }}
+                />
+
+                <Controller
+                  control={control}
+                  name="sharedShowerRoom"
+                  render={({
+                    field: { name, onBlur, onChange, ref, value, disabled },
+                  }) => {
+                    return (
+                      <Checkbox
+                        onChange={onChange}
+                        isChecked={!!value}
+                        name={name}
+                        onBlur={onBlur}
+                        ref={ref}
+                        disabled={disabled}
+                        colorScheme="red"
+                        minW="49%"
+                      >
+                        общий душ/душевая
+                      </Checkbox>
+                    );
+                  }}
+                />
               </HStack>
             </FormControl>
           </Stack>

@@ -41,3 +41,39 @@ export interface ObjectStarRating {
   value: number;
   name: string;
 }
+
+export interface Currency {
+  id: number;
+  symbol: string;
+  name: string;
+}
+
+export interface BedType {
+  value: number;
+  name: string;
+}
+
+export interface MealServiceTypes {
+  value: number;
+  name: string;
+}
+
+export interface CleaningFeeTypes {
+  value: number;
+  name: string;
+}
+
+export interface FromBookingToCheckIn {
+  value: number;
+  name: string;
+}
+
+export interface InstantBookingValid {
+  value: number;
+  name: string;
+}
+
+export interface RoomNameTypes {
+  value: number;
+  name: string;
+}

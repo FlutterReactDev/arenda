@@ -29,6 +29,7 @@ import {
   PopoverTrigger,
   Stack,
   Text,
+  Textarea,
   useDisclosure,
 } from "@chakra-ui/react";
 import { CalendarPanel, DefaultConfigs } from "@shared/ui/Calendar";
@@ -39,10 +40,12 @@ import {
   differenceInDays,
   eachDayOfInterval,
   format,
+  getHours,
   getOverlappingDaysInIntervals,
   isWithinInterval,
   max,
   min,
+  setHours,
 } from "date-fns";
 import { ru } from "date-fns/locale";
 import {
@@ -59,10 +62,10 @@ import { RiDragMove2Line } from "react-icons/ri";
 import { calendarActions } from "..";
 import {
   getObjectAvailibility,
-  getObjectAvailibilityById,
   getSeasonPriceByDate,
 } from "../model/selectors";
 import { SidebarType } from "../model/types";
+import { useAvailibility } from "../model/useAvailibility";
 import { useDeleteModal } from "../model/useDeleteModal";
 import { useSidebar } from "../model/useSidebar";
 import { toDay } from "../utils/toDay";
@@ -73,15 +76,22 @@ interface EventPopoverProps {
 export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
   (props) => {
     const { children, objectId, id } = props;
-
+    const {
+      availability: {
+        color,
+        comment,
+        createdDate,
+        minDate,
+        maxDate,
+        clientFullname,
+        phoneNumber,
+      },
+    } = useAvailibility(id, objectId);
     const dispatch = useAppDispatch();
     const { onOpen: onDeleteModalOpen } = useDeleteModal();
 
     const { onOpen: sidebarOnOpen } = useSidebar();
 
-    const { color, comment, createdDate, minDate, maxDate } = useAppSelector(
-      getObjectAvailibilityById(objectId, id)
-    );
     const availability = useAppSelector(getObjectAvailibility(objectId));
 
     const selectedDatesForCost = useAppSelector(
@@ -108,8 +118,11 @@ export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
     } = useDisclosure();
 
     const onSaveDates = () => {
-      const newMinDate = startDate;
-      const newMaxDate = addDays(startDate, differenceInDays(maxDate, minDate));
+      const newMinDate = setHours(startDate, getHours(minDate));
+      const newMaxDate = setHours(
+        addDays(startDate, differenceInDays(maxDate, minDate)),
+        getHours(maxDate)
+      );
       const isCanSelect = availability
         .filter((a) => {
           return (
@@ -178,27 +191,58 @@ export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
     }, [isOpen, maxDate, minDate]);
     return (
       <>
-        <Popover strategy="fixed" isLazy closeOnBlur={false}>
+        <Popover
+          strategy="fixed"
+          computePositionOnMount
+          placement="top"
+          isLazy
+          closeOnBlur={false}
+        >
           <PopoverTrigger>{children}</PopoverTrigger>
           <PopoverContent
             fontWeight={"medium"}
             color="white"
             bg={color}
             borderColor={color}
+            maxW="full"
           >
             <PopoverHeader pt={2} fontWeight="bold" border="0">
-              {comment || "Нет коментария"}
+              {clientFullname || "Нет ФИО"}
             </PopoverHeader>
             <PopoverArrow bg={color} />
             <PopoverCloseButton />
             <PopoverBody>
+              <FormControl>
+                <FormLabel>Комментарий</FormLabel>
+                <Textarea
+                  borderColor={"white"}
+                  _hover={{
+                    borderColor: "white",
+                  }}
+                  p={1}
+                  value={comment}
+                  readOnly
+                />
+              </FormControl>
+              <HStack spacing={1}>
+                <Text>Номер телефона:</Text>
+                <Button
+                  as="a"
+                  color={"white"}
+                  href={`tel:${phoneNumber}`}
+                  variant={"link"}
+                  textDecoration={"underline"}
+                >
+                  {phoneNumber}
+                </Button>
+              </HStack>
               <HStack spacing={1}>
                 <Text>заезд:</Text>
-                <Text>{format(minDate, "y-M-d")}</Text>
+                <Text>{format(minDate, "dd.MM.Y H:mm")}</Text>
               </HStack>
               <HStack spacing={1}>
                 <Text>выезд:</Text>
-                <Text>{format(maxDate, "y-M-d")}</Text>
+                <Text>{format(maxDate, "dd.MM.Y H:mm")}</Text>
               </HStack>
               <HStack spacing={1}>
                 <Text>суток:</Text>

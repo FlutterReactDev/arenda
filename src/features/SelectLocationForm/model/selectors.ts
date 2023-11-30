@@ -1,13 +1,3 @@
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+import { RootState } from "@app/providers/StoreProvider";
 
-export const useSelectLocationData = () => {
-  const { city, country, objectType, objectTypeProperty, region } =
-    useAppSelector((state) => state.addObjectForm);
-  return {
-    city,
-    country,
-    objectType,
-    objectTypeProperty,
-    region,
-  };
-};
+export const getObjectFormData = (state: RootState) => state.addObjectForm;

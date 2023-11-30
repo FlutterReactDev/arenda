@@ -1,7 +1,7 @@
 import * as Yup from "yup";
 
 export const optionalServiceSchema = Yup.object({
-  finalCleaning: Yup.string().required(),
+  cleaningFeeType: Yup.number().required(),
   depositAmount: Yup.number().typeError("Поле обязательно для заполнения"),
   transfer: Yup.boolean(),
   transferDescription: Yup.string().when("transfer", (transfer, schema) => {
@@ -10,7 +10,7 @@ export const optionalServiceSchema = Yup.object({
     }
     return schema;
   }),
-  cleaningCost: Yup.number().when("finalCleaning", (finalCleaning, schema) => {
+  cleaningAmount: Yup.number().when("finalCleaning", (finalCleaning, schema) => {
     if (finalCleaning[0] == "1") {
       return schema
         .moreThan(0, "Значение должно быть больше нуля")
@@ -21,3 +21,5 @@ export const optionalServiceSchema = Yup.object({
     return schema;
   }),
 });
+
+export type OptionalServiceType = Yup.InferType<typeof optionalServiceSchema>;

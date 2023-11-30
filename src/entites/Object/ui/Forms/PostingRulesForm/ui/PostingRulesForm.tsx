@@ -1,55 +1,47 @@
 import {
-  Box,
-  Stack,
   Alert,
   AlertIcon,
+  Box,
   FormControl,
-  HStack,
   FormLabel,
-  Switch,
+  HStack,
   Select,
+  Stack,
+  Switch,
   Text,
 } from "@chakra-ui/react";
-import { FormProps } from "@entites/Object/model/types";
+
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { addObjectStepActions } from "@entites/Object";
 
-import { getForm } from "@entites/Object/model/selectors";
+import {
+  PostingRulesType,
+  postingRulesSchema,
+} from "@entites/Object/model/schemas/postingRulesSchema";
+import { FormProps } from "@entites/Object/model/types/objectTypes";
 import { FormCard } from "@shared/ui/FormCard";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { FC } from "react";
 import { useForm, useWatch } from "react-hook-form";
-import { InferType } from "yup";
-import { postingRulesSchema } from "@entites/Object/model/schemas/postingRulesSchema";
 
-const PostingRulesForm: FC<FormProps> = (props) => {
-  const { navigation, onNext } = props;
-  const postingData = useAppSelector(getForm(0, 1));
-  const dispatch = useAppDispatch();
-  const { control, handleSubmit, register } = useForm<
-    InferType<typeof postingRulesSchema>
-  >({
+interface PostingRulesFormProps {
+  value: PostingRulesType;
+  onChange: (value: PostingRulesType) => void;
+}
+const PostingRulesForm: FC<FormProps & PostingRulesFormProps> = (props) => {
+  const { navigation, onNext, onChange, value } = props;
+
+  const { control, handleSubmit, register } = useForm<PostingRulesType>({
     resolver: yupResolver(postingRulesSchema),
-    defaultValues: { ...postingData } as InferType<typeof postingRulesSchema>,
+    defaultValues: value,
   });
+
   const possibleWithChildren = useWatch({
     control,
     name: "possibleWithChildren",
   });
 
-  const onSubmit = (data: InferType<typeof postingRulesSchema>) => {
-    if (!possibleWithChildren) {
-      delete data.age;
-    }
-    dispatch(
-      addObjectStepActions.setForm({
-        data,
-        screen: 0,
-        step: 1,
-      })
-    );
+  const onSubmit = (data: PostingRulesType) => {
+    onChange(data);
     onNext && onNext();
   };
 
@@ -78,7 +70,7 @@ const PostingRulesForm: FC<FormProps> = (props) => {
               <FormControl>
                 <HStack alignItems={"center"} justifyContent={"space-between"}>
                   <FormLabel>возраст</FormLabel>
-                  <Select {...register("age")}>
+                  <Select {...register("childsAge")}>
                     <option value="0">дети любого возраста</option>
                     <option value="1">с 1 года</option>
                     <option value="2">с 2 лет</option>
@@ -116,7 +108,7 @@ const PostingRulesForm: FC<FormProps> = (props) => {
             <FormControl>
               <HStack justifyContent={"space-between"}>
                 <FormLabel>вечеринки разрешены</FormLabel>
-                <Switch {...register("partiesAreAllowed")} colorScheme="red" />
+                <Switch {...register("partiesAllowed")} colorScheme="red" />
               </HStack>
             </FormControl>
           </Stack>

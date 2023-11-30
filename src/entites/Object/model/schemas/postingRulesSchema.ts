@@ -1,11 +1,11 @@
 import * as Yup from "yup";
 
 export const postingRulesSchema = Yup.object({
-  possibleWithChildren: Yup.boolean(),
-  petsAllowed: Yup.boolean(),
-  smokingAllowed: Yup.boolean(),
-  partiesAreAllowed: Yup.boolean(),
-  age: Yup.string().when(
+  possibleWithChildren: Yup.boolean().required(),
+  petsAllowed: Yup.boolean().required(),
+  smokingAllowed: Yup.boolean().required(),
+  partiesAllowed: Yup.boolean().required(),
+  childsAge: Yup.number().when(
     "possibleWithChildren",
     (possibleWithChildren, schema) => {
       if (possibleWithChildren[0]) {
@@ -15,3 +15,5 @@ export const postingRulesSchema = Yup.object({
     }
   ),
 });
+
+export type PostingRulesType = Yup.InferType<typeof postingRulesSchema>;

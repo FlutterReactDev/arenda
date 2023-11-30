@@ -1,115 +1,86 @@
-import { HStack, Text } from "@chakra-ui/react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import { HStack, IconButton, Text, useMediaQuery } from "@chakra-ui/react";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import {
-  eachDayOfInterval,
-  getOverlappingDaysInIntervals,
-  isAfter,
-  isBefore,
-  isEqual,
-  isWithinInterval,
-} from "date-fns";
+import { addDays, isEqual, isPast, subDays } from "date-fns";
 import { FC, memo } from "react";
-import {
-  getCalendarActions,
-  getColumnDays,
-  getCommonSettings,
-} from "../model/selectors";
+import { calendarActions } from "../model/calendarSlice";
+import { getObjectAvailibility } from "../model/selectors";
 import { CalendarAvailability } from "../model/types";
+import { useAvailibility } from "../model/useAvailibility";
+import { isOverlaping } from "../utils/isOverlaping";
 import { EventPopover } from "./EventPopover";
 export const Availibility: FC<CalendarAvailability> = memo(
   (props) => {
-    const { currentWidth } = useAppSelector(getCommonSettings);
-    const { countDay } = useAppSelector(getCalendarActions);
-    const days = useAppSelector(getColumnDays);
-    const { maxDate, minDate, comment, color, id, objectId } = props;
+    const { color, id, objectId, clientFullname } = props;
+    const [isLessThan968] = useMediaQuery("(max-width: 968px)");
+    const {
+      width,
+      isVisible,
+      isLeftRounded,
+      isRightRounded,
+      leftPadding,
+      availability,
+    } = useAvailibility(id, objectId);
+    const availabilities = useAppSelector(getObjectAvailibility(objectId));
+    const dispatch = useAppDispatch();
 
-    const isVisible =
-      isWithinInterval(
-        new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate()),
-        {
-          start: new Date(
-            days[0].date.getFullYear(),
-            days[0].date.getMonth(),
-            days[0].date.getDate()
-          ),
-          end: new Date(
-            days[days.length - 1].date.getFullYear(),
-            days[days.length - 1].date.getMonth(),
-            days[days.length - 1].date.getDate()
-          ),
-        }
-      ) ||
-      isWithinInterval(
-        new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate()),
-        {
-          start: new Date(
-            days[0].date.getFullYear(),
-            days[0].date.getMonth(),
-            days[0].date.getDate()
-          ),
-          end: new Date(
-            days[days.length - 1].date.getFullYear(),
-            days[days.length - 1].date.getMonth(),
-            days[days.length - 1].date.getDate()
-          ),
-        }
-      );
+    const onLeft = () => {
+      const isCanMove = availabilities
+        .filter((a) => {
+          return isOverlaping(
+            {
+              start: subDays(availability.minDate, 1),
+              end: subDays(availability.maxDate, 1),
+            },
+            {
+              start: a.minDate,
+              end: a.maxDate,
+            }
+          );
+        })
+        .filter((a) => a.id != id);
 
-    const timeOverlaps = getOverlappingDaysInIntervals(
-      {
-        start: new Date(
-          days[0].date.getFullYear(),
-          days[0].date.getMonth(),
-          days[0].date.getDate()
-        ),
-        end: new Date(
-          days[days.length - 1].date.getFullYear(),
-          days[days.length - 1].date.getMonth(),
-          days[days.length - 1].date.getDate()
-        ),
-      },
-      {
-        start: new Date(
-          minDate.getFullYear(),
-          minDate.getMonth(),
-          minDate.getDate()
-        ),
-        end: new Date(
-          maxDate.getFullYear(),
-          maxDate.getMonth(),
-          maxDate.getDate()
-        ),
+      if (isCanMove.length == 0 && !isPast(availability.minDate)) {
+        dispatch(
+          calendarActions.editAvailabilityDates({
+            id,
+            minDate: subDays(availability.minDate, 1),
+            maxDate: subDays(availability.maxDate, 1),
+            objectId,
+          })
+        );
       }
-    );
+    };
 
-    const isLeftRounded =
-      isBefore(days[0].date, minDate) || isEqual(days[0].date, minDate);
-    const isRightRounded =
-      isAfter(days[days.length - 1].date, maxDate) ||
-      isEqual(days[days.length - 1].date, maxDate);
+    const onRight = () => {
+      const isCanMove = availabilities
+        .filter((a) => {
+          return isOverlaping(
+            {
+              start: addDays(availability.minDate, 1),
+              end: addDays(availability.maxDate, 1),
+            },
+            {
+              start: a.minDate,
+              end: a.maxDate,
+            }
+          );
+        })
+        .filter((a) => a.id != id);
+      if (isCanMove.length == 0) {
+        dispatch(
+          calendarActions.editAvailabilityDates({
+            id,
+            minDate: addDays(availability.minDate, 1),
+            maxDate: addDays(availability.maxDate, 1),
+            objectId,
+          })
+        );
+      }
+    };
 
-    const leftDays = isBefore(days[0].date, minDate)
-      ? eachDayOfInterval({
-          start: days[0].date,
-          end: minDate,
-        }).length - 1
-      : 0;
-
-    const rightDays =
-      isVisible || !!timeOverlaps
-        ? Math.min(
-            eachDayOfInterval({
-              start: isBefore(days[0].date, minDate) ? minDate : days[0].date,
-              end: maxDate,
-            }).length,
-            countDay - leftDays + 2
-          )
-        : 0;
-
-    const left = leftDays * currentWidth;
-    const width = rightDays * currentWidth;
-
-    if (width == 0) {
+    if (!isVisible) {
       return <></>;
     }
     return (
@@ -120,18 +91,13 @@ export const Availibility: FC<CalendarAvailability> = memo(
             h={"20px"}
             {...(isLeftRounded && { roundedLeft: "full" })}
             {...(isRightRounded && { roundedRight: "full" })}
-            left={`${left}px`}
+            left={`${leftPadding}px`}
             w={`${width}px`}
             bgColor={color}
             alignItems={"center"}
             p={2}
-            overflow={"hidden"}
             cursor={"pointer"}
-            transition={"0.1s transform"}
-            _hover={{
-              boxShadow: "xl",
-              transform: "scale(1.01)",
-            }}
+            role="group"
           >
             <Text
               fontSize={"sm"}
@@ -141,8 +107,68 @@ export const Availibility: FC<CalendarAvailability> = memo(
               fontWeight={"medium"}
               color={"white"}
             >
-              {comment}
+              {clientFullname}
             </Text>
+            {!isLessThan968 && isLeftRounded && (
+              <IconButton
+                pos="absolute"
+                isRound
+                bgColor={color}
+                aria-label="move left"
+                left={"-32px"}
+                w="20px"
+                minH={"20px"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onLeft();
+                }}
+                zIndex={"9"}
+                color={"white"}
+                transform={"translateX(20px)"}
+                opacity={0}
+                pointerEvents={"none"}
+                _groupHover={{
+                  transform: "translateX(0px)",
+                  opacity: 1,
+                  pointerEvents: "auto",
+                }}
+                _hover={{
+                  bgColor: color,
+                }}
+              >
+                <ChevronLeftIcon w="5" h="5" />
+              </IconButton>
+            )}
+            {!isLessThan968 && isRightRounded && (
+              <IconButton
+                pos="absolute"
+                isRound
+                bgColor={color}
+                aria-label="move left"
+                right={"-32px"}
+                w="20px"
+                minH={"20px"}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRight();
+                }}
+                zIndex={"9"}
+                transform={"translateX(-20px)"}
+                color={"white"}
+                opacity={0}
+                pointerEvents={"none"}
+                _groupHover={{
+                  transform: "translateX(0px)",
+                  opacity: 1,
+                  pointerEvents: "auto",
+                }}
+                _hover={{
+                  bgColor: color,
+                }}
+              >
+                <ChevronRightIcon w="5" h="5" />
+              </IconButton>
+            )}
           </HStack>
         </EventPopover>
       </>

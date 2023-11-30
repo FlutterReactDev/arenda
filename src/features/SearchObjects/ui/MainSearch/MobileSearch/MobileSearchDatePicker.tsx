@@ -10,6 +10,7 @@ import {
   DrawerOverlay,
   HStack,
   Heading,
+  SlideFade,
   Spinner,
   Text,
   useDisclosure,
@@ -137,16 +138,22 @@ export const MobileSearchDatePicker = forwardRef<
           </Box>
         </HStack>
       </Box>
-      <Drawer size="full" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay />
-        <DrawerContent p="0">
+        <DrawerContent
+          p="0"
+          maxH={"95dvh"}
+          roundedTop={"2xl"}
+          position={"relative"}
+        >
           <DrawerCloseButton zIndex={"popover"} />
-          <DrawerHeader p={0}>
+          <DrawerHeader p={0} roundedTop={"2xl"}>
             <Button
               borderRadius={"none"}
               size={"lg"}
               onClick={() => handleSelectDate([])}
               w="full"
+              mt={10}
             >
               Очистить дату
             </Button>
@@ -217,6 +224,32 @@ export const MobileSearchDatePicker = forwardRef<
               />
             </Suspense>
           </DrawerBody>
+          <SlideFade in={calendarDates.length == 2}>
+            <HStack
+              position={"sticky"}
+              p={4}
+              borderTop={"1px solid"}
+              borderColor={"gray.200"}
+              bottom={0}
+              justifyContent={"center"}
+              {...(calendarDates.length != 2 && {
+                minH: 0,
+                overflow: "hidden",
+                h: 0,
+                p: 0,
+              })}
+            >
+              <Button
+                onClick={onClose}
+                colorScheme="red"
+                size={"lg"}
+                w={"full"}
+                rounded={"full"}
+              >
+                Применить
+              </Button>
+            </HStack>
+          </SlideFade>
         </DrawerContent>
       </Drawer>
     </>

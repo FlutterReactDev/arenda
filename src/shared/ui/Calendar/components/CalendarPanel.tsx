@@ -86,7 +86,14 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
     };
 
     return (
-      <Stack direction={adaptive()} position={"relative"} pt={10}>
+      <Stack
+        direction={adaptive()}
+        position={"relative"}
+        alignItems={"center"}
+        justifyContent={"center"}
+        pt={10}
+        w="full"
+      >
         {showNavigationButton && (
           <>
             <IconButton
@@ -124,6 +131,7 @@ export const CalendarPanel: React.FC<CalendarPanelProps> = memo(
               height="100%"
               padding="0.5rem 0.75rem"
               w="full"
+              alignItems={"center"}
             >
               <CalendarHeader
                 key={`${calendar.month}-${calendar.year}-${calendarIdx}`}

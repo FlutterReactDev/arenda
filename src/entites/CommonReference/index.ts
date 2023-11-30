@@ -10,4 +10,11 @@ export {
   useGetRoomCategoriesQuery,
   useGetObjectStarRatingQuery,
   useGetReportingDocumentTypeQuery,
+  useGetBedTypesQuery,
+  useGetCurrenciesQuery,
+  useGetCleaningFeeTypesQuery,
+  useGetMealServiceTypesQuery,
+  useGetFromBookingToCheckInQuery,
+  useGetInstantBookingValidQuery,
+  useGetRoomNameTypesQuery,
 } from "./model/api/commonReferenceApi.ts";

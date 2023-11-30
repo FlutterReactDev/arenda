@@ -29,6 +29,7 @@ import { getObject, getObjectAvailibility } from "../model/selectors";
 import { useSidebar } from "../model/useSidebar";
 import { isInRange } from "../utils/isInRange";
 import { CalendarDetailAvailability } from "./CalendarDetailAvailibiliity";
+import { toDay } from "../utils/toDay";
 
 interface CalendarDetailItemProps {
   calendar: Calendar;
@@ -93,6 +94,8 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
     getObject(objectId)
   );
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
+  const [isSm] = useMediaQuery("(max-width: 600px)");
+
   const availability = useAppSelector(getObjectAvailibility(objectId));
   const dispatch = useAppDispatch();
   const { onOpen } = useSidebar();
@@ -103,29 +106,15 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
 
       if (prevRanges.in != null) {
         isCanSelect = !!availability.filter((a) => {
-          return (
-            isWithinInterval(date, {
-              start: a.minDate,
-              end: a.maxDate,
-            }) ||
-            isWithinInterval(a.minDate, {
-              start: min([prevRanges.in as Date, date]),
-              end: max([prevRanges.in as Date, date]),
-            }) ||
-            isWithinInterval(a.maxDate, {
-              start: min([prevRanges.in as Date, date]),
-              end: max([prevRanges.in as Date, date]),
-            }) ||
-            !!getOverlappingDaysInIntervals(
-              {
-                start: min([prevRanges.in as Date, date]),
-                end: max([prevRanges.in as Date, date]),
-              },
-              {
-                start: a.minDate,
-                end: a.maxDate,
-              }
-            )
+          return !!getOverlappingDaysInIntervals(
+            {
+              start: min([toDay(prevRanges.in as Date), toDay(date)]),
+              end: max([toDay(prevRanges.in as Date), toDay(date)]),
+            },
+            {
+              start: min([toDay(a.minDate), toDay(a.maxDate)]),
+              end: max([toDay(a.minDate), toDay(a.maxDate)]),
+            }
           );
         }).length;
 
@@ -162,7 +151,7 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
         const minDate = min([prevState.in, prevState.out]);
         const maxDate = max([prevState.in, prevState.out]);
         dispatch(calendarActions.setRangeIn(minDate));
-        dispatch(calendarActions.setRangeOut(maxDate));
+        dispatch(calendarActions.setRangeOut(addDays(maxDate, 1)));
         onOpen({
           objectId,
         });
@@ -172,7 +161,7 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
           out: maxDate,
         };
       } else if (prevState.in && !prevState.out) {
-        dispatch(calendarActions.setRangeOut(prevState.in));
+        dispatch(calendarActions.setRangeOut(addDays(prevState.in, 1)));
         onOpen({
           objectId,
         });
@@ -198,18 +187,34 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
     onUpHandler();
   }, []);
 
+  const getCellSize = useCallback(() => {
+    if (isSm) {
+      return {
+        columns: "repeat(7, 47px)",
+        rows: "30px repeat(6, 47px)",
+      };
+    }
+    if (isLessThan968) {
+      return {
+        columns: "repeat(7, 67px)",
+        rows: "30px repeat(6, 67px)",
+      };
+    }
+
+    return {
+      columns: "repeat(7, 96px)",
+      rows: "30px repeat(6, 96px)",
+    };
+  }, [isLessThan968, isSm]);
+
   return (
     <Box id={`calendar${id}`}>
       <Heading size={"lg"} textTransform={"capitalize"}>
         {format(calendar.firstDayOfMonth, "MMMM yyyy", { locale: ru })}
       </Heading>
       <Grid
-        gridTemplateColumns={
-          !isLessThan968 ? "repeat(7, 96px)" : "repeat(7, 67px)"
-        }
-        gridTemplateRows={
-          !isLessThan968 ? "30px repeat(6, 96px)" : "30px repeat(6, 67px)"
-        }
+        gridTemplateColumns={getCellSize().columns}
+        gridTemplateRows={getCellSize().rows}
         gridGap={"1px"}
         pos={"relative"}
         mt={4}
@@ -240,9 +245,13 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
                   }
                   isBlocked={
                     !!availability.filter((a) => {
+                      if (isSameDay(a.maxDate, day.date)) {
+                        return false;
+                      }
+
                       return isWithinInterval(day.date, {
-                        start: a.minDate,
-                        end: a.maxDate,
+                        start: toDay(a.minDate),
+                        end: toDay(a.maxDate),
                       });
                     }).length
                   }

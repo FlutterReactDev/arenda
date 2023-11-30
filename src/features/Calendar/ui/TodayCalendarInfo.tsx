@@ -8,7 +8,6 @@ import {
   PopoverBody,
   PopoverCloseButton,
   PopoverContent,
-  PopoverFooter,
   PopoverHeader,
   PopoverTrigger,
   Stack,
@@ -26,10 +25,10 @@ import {
   getTodayCheckOut,
   getTodayCheckOutAvailibilities,
 } from "../model/selectors";
+import { EventClickProps } from "../model/types";
+import { usePagination } from "../model/usePagination";
 import { CalendarClock } from "./CalendarClock";
 import { EventItem } from "./EventItem";
-import { usePagination } from "../model/usePagination";
-import { EventClickProps } from "../model/types";
 
 export const TodayCalendarInfo = memo(() => {
   const dispatch = useAppDispatch();
@@ -68,7 +67,7 @@ export const TodayCalendarInfo = memo(() => {
               </PopoverHeader>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverBody h={"96"} overflowY={"auto"}>
+              <PopoverBody h={"80"} overflowY={"auto"}>
                 <Stack>
                   {checkInAvailibilities.map(({ id, objectId }) => {
                     return (
@@ -82,19 +81,6 @@ export const TodayCalendarInfo = memo(() => {
                   })}
                 </Stack>
               </PopoverBody>
-              <PopoverFooter
-                border="0"
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                pb={4}
-              >
-                <Box fontSize="sm">Step 2 of 4</Box>
-                <ButtonGroup size="sm">
-                  <Button colorScheme="green">Setup Email</Button>
-                  <Button colorScheme="blue">Next</Button>
-                </ButtonGroup>
-              </PopoverFooter>
             </PopoverContent>
           </Popover>
 
@@ -111,7 +97,7 @@ export const TodayCalendarInfo = memo(() => {
               </PopoverHeader>
               <PopoverArrow />
               <PopoverCloseButton />
-              <PopoverBody h={"96"} overflowY={"auto"}>
+              <PopoverBody h={"80"} overflowY={"auto"}>
                 <Stack>
                   {checkOutAvailibilities.map(
                     ({ comment, color, maxDate, minDate }) => {
@@ -187,19 +173,6 @@ export const TodayCalendarInfo = memo(() => {
                   )}
                 </Stack>
               </PopoverBody>
-              <PopoverFooter
-                border="0"
-                display="flex"
-                alignItems="center"
-                justifyContent="space-between"
-                pb={4}
-              >
-                <Box fontSize="sm">Step 2 of 4</Box>
-                <ButtonGroup size="sm">
-                  <Button colorScheme="green">Setup Email</Button>
-                  <Button colorScheme="blue">Next</Button>
-                </ButtonGroup>
-              </PopoverFooter>
             </PopoverContent>
           </Popover>
           <Text fontWeight={"medium"}>{checkOutCount}</Text>

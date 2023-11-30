@@ -1,0 +1,52 @@
+export const convertToHour = (hour: string) => {
+  switch (hour) {
+    case "0:00":
+      return 0;
+    case "1:00":
+      return 1;
+    case "2:00":
+      return 2;
+    case "3:00":
+      return 3;
+    case "4:00":
+      return 4;
+    case "5:00":
+      return 5;
+    case "6:00":
+      return 6;
+    case "7:00":
+      return 7;
+    case "8:00":
+      return 8;
+    case "9:00":
+      return 9;
+    case "10:00":
+      return 10;
+    case "11:00":
+      return 11;
+    case "12:00":
+      return 12;
+    case "13:00":
+      return 13;
+    case "14:00":
+      return 14;
+    case "15:00":
+      return 15;
+    case "16:00":
+      return 16;
+    case "17:00":
+      return 17;
+    case "18:00":
+      return 18;
+    case "19:00":
+      return 19;
+    case "20:00":
+      return 20;
+    case "21:00":
+      return 21;
+    case "22:00":
+      return 22;
+    case "23:00":
+      return 23;
+  }
+};

@@ -39,9 +39,48 @@ export const Routing = () => {
 
     return element;
   };
+
   return (
     <Routes>
       {routeConfig.map((route) => {
+        if (route?.children && route?.children.length) {
+          return (
+            <Route
+              path={route.path}
+              key={route.path}
+              element={
+                route.private ? (
+                  <PrivateRoute>
+                    {withLayout(routeElement(route.element), route.layout)}
+                  </PrivateRoute>
+                ) : (
+                  withLayout(routeElement(route.element), route.layout)
+                )
+              }
+            >
+              {route.children.map((route) => {
+                return (
+                  <Route
+                    path={route.path}
+                    key={route.path}
+                    element={
+                      route.private ? (
+                        <PrivateRoute>
+                          {withLayout(
+                            routeElement(route.element),
+                            route.layout
+                          )}
+                        </PrivateRoute>
+                      ) : (
+                        withLayout(routeElement(route.element), route.layout)
+                      )
+                    }
+                  />
+                );
+              })}
+            </Route>
+          );
+        }
         return (
           <Route
             path={route.path}

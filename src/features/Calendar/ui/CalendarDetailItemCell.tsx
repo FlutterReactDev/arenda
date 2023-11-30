@@ -1,5 +1,5 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Text, useMediaQuery } from "@chakra-ui/react";
 import { isEqual } from "date-fns";
 import { FC, memo } from "react";
 
@@ -27,6 +27,7 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
       onMouseDown,
       onMouseUp,
     } = props;
+    const [isSm] = useMediaQuery("(max-width: 600px)");
     const onMove = () => {
       onMouseMove(date);
     };
@@ -74,10 +75,14 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
         }}
       >
         <Text
-          fontSize={"md"}
+          fontSize={["sm", "md", "md"]}
           fontWeight={"medium"}
           pos="absolute"
           right={2}
+          {...(isSm && {
+            right: "50%",
+            transform: "translateX(50%)",
+          })}
           bottom={"0"}
           maxW={"55px"}
           whiteSpace={"nowrap"}
@@ -87,7 +92,7 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
           {cost}$
         </Text>
         <Text
-          fontSize={"md"}
+          fontSize={["sm", "md", "md"]}
           fontWeight={"medium"}
           pos="absolute"
           top={2}
@@ -96,6 +101,11 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
           whiteSpace={"nowrap"}
           overflow={"hidden"}
           zIndex={10}
+          {...(isSm && {
+            left: "50%",
+            top: 1,
+            transform: "translateX(-50%)",
+          })}
         >
           {date.getDate()}
         </Text>

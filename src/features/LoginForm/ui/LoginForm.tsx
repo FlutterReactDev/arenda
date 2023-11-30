@@ -36,7 +36,6 @@ const LoginForm = () => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  console.log(location);
 
   const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
     await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") })
