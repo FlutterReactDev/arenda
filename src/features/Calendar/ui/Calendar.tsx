@@ -37,6 +37,7 @@ import { SearchAvailibilityRoomsModal } from "./SearchAvailibilityRoomsModal";
 import { SearchObject } from "./SearchObject";
 import { Sidebar } from "./Sidebar";
 import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
+import { CalendarCollapseGroup } from "./calendarCollapseGroup";
 
 export const Calendar = memo(() => {
   const dispatch = useAppDispatch();
@@ -108,7 +109,7 @@ export const Calendar = memo(() => {
   }, []);
 
   return (
-    <Box >
+    <Box>
       <Box>
         <Grid
           gridTemplateColumns={isLessThan968 ? "1fr" : "270px 1fr"}
@@ -167,6 +168,9 @@ export const Calendar = memo(() => {
                 pos={"relative"}
                 {...bind()}
                 onWheel={onScroll}
+                onScroll={(e) => {
+                  e.preventDefault();
+                }}
                 style={{
                   touchAction: "none",
                 }}
@@ -212,16 +216,42 @@ export const Calendar = memo(() => {
         </Grid>
       </Box>
       <Box h="calc(100dvh - 204px - 48px)" position={"relative"}>
-        {objects.map((object) => {
-          return (
-            <ObjectItem
-              setRangeObjectId={onRangeObjectId}
-              rangeObjectId={rangeObjectId}
-              {...object}
-              key={object.id}
-            />
-          );
-        })}
+        <CalendarCollapseGroup title="Эконом">
+          {objects.map((object) => {
+            return (
+              <ObjectItem
+                setRangeObjectId={onRangeObjectId}
+                rangeObjectId={rangeObjectId}
+                {...object}
+                key={object.id}
+              />
+            );
+          })}
+        </CalendarCollapseGroup>
+        <CalendarCollapseGroup title="Трипл">
+          {objects.map((object) => {
+            return (
+              <ObjectItem
+                setRangeObjectId={onRangeObjectId}
+                rangeObjectId={rangeObjectId}
+                {...object}
+                key={object.id}
+              />
+            );
+          })}
+        </CalendarCollapseGroup>
+        <CalendarCollapseGroup title="Люкс">
+          {objects.map((object) => {
+            return (
+              <ObjectItem
+                setRangeObjectId={onRangeObjectId}
+                rangeObjectId={rangeObjectId}
+                {...object}
+                key={object.id}
+              />
+            );
+          })}
+        </CalendarCollapseGroup>
         <CalendarScroller />
         <Show breakpoint="(max-width: 968px)">
           <Box maxW={"64"} mt={4}>
