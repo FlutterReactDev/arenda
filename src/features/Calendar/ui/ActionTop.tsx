@@ -42,7 +42,7 @@ export const ActionTop = memo(() => {
     dispatch(calendarActions.increaseStep());
   };
   return (
-    <GridItem area={"actionsTop"}>
+    <GridItem area={"actionsTop"} >
       <Grid gridTemplateColumns={isLessThan968 ? "1fr" : "1fr 300px"}>
         <GridItem>
           <HStack p={isLessThan968 ? 2 : 4}>

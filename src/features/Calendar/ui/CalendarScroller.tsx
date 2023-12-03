@@ -145,6 +145,8 @@ export const CalendarScroller = memo(() => {
       style={{
         touchAction: "pan-x",
       }}
+      position={"sticky"}
+      bottom={0}
     >
       <a.div
         style={{

@@ -37,7 +37,7 @@ import { SearchAvailibilityRoomsModal } from "./SearchAvailibilityRoomsModal";
 import { SearchObject } from "./SearchObject";
 import { Sidebar } from "./Sidebar";
 import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
-import { CalendarCollapseGroup } from "./calendarCollapseGroup";
+import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 
 export const Calendar = memo(() => {
   const dispatch = useAppDispatch();
@@ -110,112 +110,115 @@ export const Calendar = memo(() => {
 
   return (
     <Box>
-      <Box>
-        <Grid
-          gridTemplateColumns={isLessThan968 ? "1fr" : "270px 1fr"}
-          gridTemplateRows={isLessThan968 ? "auto auto" : "124px 80px"}
-          gridTemplateAreas={
-            isLessThan968
-              ? ` "filter filter"
+      <Grid
+        gridTemplateColumns={isLessThan968 ? "1fr" : "270px 1fr"}
+        gridTemplateRows={isLessThan968 ? "auto auto" : "124px 80px"}
+        gridTemplateAreas={
+          isLessThan968
+            ? ` "filter filter"
               "actionsTop actionsTop"
               "actionsBottom actionsBottom"
               `
-              : `
+            : `
               "filter actionsTop"
               " filter actionsBottom"`
-          }
-        >
-          <GridItem area={"filter"}>
-            <Stack alignItems={"center"} h="full" spacing={3}>
-              <Select bgColor={"white"}>
-                <option>Дом, коттедж</option>
-              </Select>
+        }
+        position={"sticky"}
+        top={0}
+        zIndex={"docked"}
+        bgColor={"#f5f5f5"}
+      >
+        <GridItem area={"filter"}>
+          <Stack alignItems={"center"} h="full" spacing={3}>
+            <Select bgColor={"white"}>
+              <option>Дом, коттедж</option>
+            </Select>
+            <Hide breakpoint="(max-width: 968px)">
+              <SearchAvailibilityRoomsBtn />
+              <SearchObject />
+            </Hide>
+            <Box w="full">
               <Hide breakpoint="(max-width: 968px)">
-                <SearchAvailibilityRoomsBtn />
-                <SearchObject />
+                <ObjectPagination />
               </Hide>
-              <Box w="full">
-                <Hide breakpoint="(max-width: 968px)">
-                  <ObjectPagination />
-                </Hide>
-              </Box>
-            </Stack>
-          </GridItem>
+            </Box>
+          </Stack>
+        </GridItem>
 
-          <ActionTop />
+        <ActionTop />
 
-          <GridItem area={"actionsBottom"} overflow={"hidden"} w="full">
-            <Grid
-              gridTemplateColumns={
-                isLessThan968 ? `${sidebarWidth}px 1fr` : "1fr"
-              }
-              alignItems={"flex-end"}
+        <GridItem area={"actionsBottom"} overflow={"hidden"} w="full">
+          <Grid
+            gridTemplateColumns={
+              isLessThan968 ? `${sidebarWidth}px 1fr` : "1fr"
+            }
+            alignItems={"flex-end"}
+          >
+            {isLessThan968 && (
+              <Flex alignItems={"center"} justifyContent={"center"} pb={1}>
+                <SmallGoToDateBtn />
+              </Flex>
+            )}
+
+            <HStack
+              cursor={"ew-resize"}
+              borderBottom={"1px solid"}
+              borderColor={"#d8d8d8"}
+              overflow={"hidden"}
+              spacing={0}
+              h="full"
+              userSelect={"none"}
+              pos={"relative"}
+              {...bind()}
+              onWheel={onScroll}
+              onScroll={(e) => {
+                e.preventDefault();
+              }}
+              style={{
+                touchAction: "none",
+              }}
             >
-              {isLessThan968 && (
-                <Flex alignItems={"center"} justifyContent={"center"} pb={1}>
-                  <SmallGoToDateBtn />
-                </Flex>
+              {!isLessThan968 && (
+                <IconButton
+                  aria-label="left arrow"
+                  onClick={onPrev}
+                  isRound
+                  bgColor={"white"}
+                  mt={4}
+                  position={"absolute"}
+                  left={"15px"}
+                  top={"15px"}
+                  fontSize={"xl"}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
               )}
 
-              <HStack
-                cursor={"ew-resize"}
-                borderBottom={"1px solid"}
-                borderColor={"#d8d8d8"}
-                overflow={"hidden"}
-                spacing={0}
-                h="full"
-                userSelect={"none"}
-                pos={"relative"}
-                {...bind()}
-                onWheel={onScroll}
-                onScroll={(e) => {
-                  e.preventDefault();
-                }}
-                style={{
-                  touchAction: "none",
-                }}
-              >
-                {!isLessThan968 && (
-                  <IconButton
-                    aria-label="left arrow"
-                    onClick={onPrev}
-                    isRound
-                    bgColor={"white"}
-                    mt={4}
-                    position={"absolute"}
-                    left={"15px"}
-                    top={"15px"}
-                    fontSize={"xl"}
-                  >
-                    <ChevronLeftIcon />
-                  </IconButton>
-                )}
+              {days.map((day, index) => {
+                return <Day key={index} {...day} />;
+              })}
 
-                {days.map((day, index) => {
-                  return <Day key={index} {...day} />;
-                })}
+              {!isLessThan968 && (
+                <IconButton
+                  aria-label="right arrow"
+                  onClick={onNext}
+                  isRound
+                  bgColor={"white"}
+                  mt={4}
+                  right={"15px"}
+                  top={"15px"}
+                  position={"absolute"}
+                  fontSize={"xl"}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
+              )}
+            </HStack>
+          </Grid>
+        </GridItem>
+      </Grid>
 
-                {!isLessThan968 && (
-                  <IconButton
-                    aria-label="right arrow"
-                    onClick={onNext}
-                    isRound
-                    bgColor={"white"}
-                    mt={4}
-                    right={"15px"}
-                    top={"15px"}
-                    position={"absolute"}
-                    fontSize={"xl"}
-                  >
-                    <ChevronRightIcon />
-                  </IconButton>
-                )}
-              </HStack>
-            </Grid>
-          </GridItem>
-        </Grid>
-      </Box>
-      <Box h="calc(100dvh - 204px - 48px)" position={"relative"}>
+      <Box position={"relative"}>
         <CalendarCollapseGroup title="Эконом">
           {objects.map((object) => {
             return (
