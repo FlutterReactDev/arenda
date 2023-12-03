@@ -1,18 +1,18 @@
-import { SearchIcon } from "@chakra-ui/icons";
 import {
-  useDisclosure,
-  InputGroup,
-  Input,
-  InputLeftElement,
-  ScaleFade,
-  List,
   Box,
-  ListIcon,
-  Text,
   Flex,
-  Link,
+  Input,
+  InputGroup,
+  InputLeftElement,
+  List,
+  ListIcon,
+  ScaleFade,
+  Stack,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
 import { LegacyRef, MutableRefObject, forwardRef, useState } from "react";
+import { MdApartment } from "react-icons/md";
 
 interface DesktopSearchInputProps {
   value: string;
@@ -60,6 +60,7 @@ export const DesktopSearchInput = forwardRef<
           }}
           value={value}
           onChange={(e) => onChange(e.target.value)}
+          fontWeight={"medium"}
         />
 
         <InputLeftElement
@@ -104,17 +105,35 @@ export const DesktopSearchInput = forwardRef<
             rounded={"lg"}
           >
             <Text>Популярные направления </Text>
-            <List color="blackAlpha.800" fontSize="xs" spacing={3} mt={2}>
+            <List color="blackAlpha.800" spacing={3} mt={2}>
               <Flex
-                alignItems="center"
+                alignItems="flex-start"
                 onClick={() => {
-                  onChange("Кыргызстан, Ыссык-кол, Бостери");
+                  onChange("Балыкчы");
                   trigger();
                   onClose();
                 }}
+                cursor={"pointer"}
               >
-                <ListIcon as={SearchIcon} color="blackAlpha.800" />
-                <Link>Кыргызстан, Ыссык-кол, Бостери</Link>
+                <ListIcon
+                  as={MdApartment}
+                  fontSize={"3xl"}
+                  color="blackAlpha.800"
+                />
+                <Stack
+                  spacing={0}
+                  borderBottom={"1px solid"}
+                  borderColor={"gray.300"}
+                  w="full"
+                  pb={2}
+                >
+                  <Text fontWeight={"medium"} fontSize={"sm"}>
+                    Балыкчы
+                  </Text>
+                  <Text color="gray.500" fontSize={"small"}>
+                    Ыссык-кол
+                  </Text>
+                </Stack>
               </Flex>
             </List>
           </Box>

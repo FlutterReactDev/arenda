@@ -44,6 +44,7 @@ export const MobileSearch = () => {
       <VStack
         w={"full"}
         gap={"2"}
+        px={2}
         as="form"
         onSubmit={methods.handleSubmit(onSubmit)}
       >

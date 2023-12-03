@@ -1,35 +1,33 @@
-import { Button, Divider, HStack, StackProps } from "@chakra-ui/react";
-import { ResultSearchInput } from "./ResultSearchInput";
-import { ResultSearchDatepicker } from "./ResultSearchDatepicker";
-import { ResultSearchGuest } from "./ResultSearchGuest";
-import { useRef, FC, MutableRefObject } from "react";
 import { SearchIcon } from "@chakra-ui/icons";
-import { Controller, useForm, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { Button, Divider, HStack, StackProps } from "@chakra-ui/react";
+import { useSearchObjects } from "@features/SearchObjects";
 import {
   SearchSchema,
   SearchSchemaType,
 } from "@features/SearchObjects/model/schema";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import {
-  searchObjectAction,
-  useSearchObjectData,
-} from "@features/SearchObjects";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { FC, MutableRefObject, useRef } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { ResultSearchDatepicker } from "./ResultSearchDatepicker";
+import { ResultSearchGuest } from "./ResultSearchGuest";
+import { ResultSearchInput } from "./ResultSearchInput";
 
 interface ResultSearch extends StackProps {}
 export const ResultSearch: FC<ResultSearch> = (props) => {
   const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
-  const dispatch = useAppDispatch();
-  const searchData = useSearchObjectData();
+
+  const { dates, guests, term, setSearchData } = useSearchObjects();
   const methods = useForm<SearchSchemaType>({
     resolver: yupResolver(SearchSchema),
     defaultValues: {
-      ...searchData,
+      dates,
+      guests,
+      term,
     },
   });
 
   const onSubmit = (data: SearchSchemaType) => {
-    dispatch(searchObjectAction.setSearchData(data));
+    setSearchData(data);
   };
 
   return (

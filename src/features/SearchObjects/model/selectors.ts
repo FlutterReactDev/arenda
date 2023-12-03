@@ -1,6 +1,10 @@
+import { RootState } from "@app/providers/StoreProvider";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 
 export const useSearchObjectData = () => {
-  const { serachData } = useAppSelector((state) => state.searchObject);
-  return serachData;
+  const { searchData } = useAppSelector((state) => state.searchObject);
+  return searchData;
 };
+
+export const getSearchObjectData = (state: RootState) =>
+  state.searchObject.searchData;

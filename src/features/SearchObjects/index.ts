@@ -5,3 +5,4 @@ export {
   searchObjectReducer,
 } from "./model/searchObjectSlice";
 export { useSearchObjectData } from "./model/selectors";
+export { useSearchObjects } from "./model/useSearchObjects";

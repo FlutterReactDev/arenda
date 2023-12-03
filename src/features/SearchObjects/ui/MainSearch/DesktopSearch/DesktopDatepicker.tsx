@@ -43,6 +43,7 @@ export const DesktopDatepicker = forwardRef<
       checkOut: dates[1],
     });
   }, [dates, onChange]);
+
   return (
     <Box
       onFocus={() => {

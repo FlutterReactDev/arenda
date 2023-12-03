@@ -1,29 +1,36 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 import { SearchResultState } from "./types";
+import { addDays } from "date-fns";
+import { toDay } from "@features/Calendar/utils/toDay";
 
 const initialState = {
-  serachData: {
+  searchData: {
+    dates: {
+      checkIn: toDay(new Date()),
+      checkOut: toDay(addDays(new Date(), 1)),
+    },
     guests: {
-      adultsCount: 1,
+      adultsCount: 2,
       childrenAges: [],
     },
+    term: "",
   },
-} as unknown as SearchResultState;
+} as SearchResultState;
 
 const searchObjectSlice = createSlice({
   name: "searchResultSlice",
   initialState,
   reducers: {
     setSearchData(state, action) {
-      state.serachData = action.payload;
+      state.searchData = action.payload;
     },
 
     setGuestData(state, action) {
-      state.serachData.guests = action.payload;
+      state.searchData.guests = action.payload;
     },
 
     setTerm(state, action) {
-      state.serachData.term = action.payload;
+      state.searchData.term = action.payload;
     },
     setDates(
       state,
@@ -32,7 +39,14 @@ const searchObjectSlice = createSlice({
         checkOut: Date;
       }>
     ) {
-      state.serachData.dates = action.payload;
+      state.searchData.dates = action.payload;
+    },
+
+    setCheckIn(state, action) {
+      state.searchData.dates.checkIn = action.payload;
+    },
+    setCheckOut(state, action) {
+      state.searchData.dates.checkOut = action.payload;
     },
   },
 });

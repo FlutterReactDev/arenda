@@ -1,22 +1,24 @@
+import { SearchIcon } from "@chakra-ui/icons";
 import {
   Box,
-  useDisclosure,
-  Text,
-  DrawerOverlay,
   Drawer,
+  DrawerBody,
   DrawerCloseButton,
   DrawerContent,
   DrawerHeader,
-  DrawerBody,
+  DrawerOverlay,
+  Flex,
   Input,
   InputGroup,
   InputLeftElement,
-  Flex,
-  Center,
-  VStack,
+  List,
+  ListIcon,
+  Stack,
+  Text,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { SearchIcon } from "@chakra-ui/icons";
 import { LegacyRef, MutableRefObject, forwardRef, useEffect } from "react";
+import { MdApartment } from "react-icons/md";
 interface MobileSearchInputProps {
   value: string;
   onChange: (value: string) => void;
@@ -82,35 +84,37 @@ export const MobileSearchInput = forwardRef<
                 </InputLeftElement>
               </InputGroup>
 
-              <Box
-                mt={"4"}
-                border="1px solid"
-                borderColor="gray.400"
-                borderRadius="lg"
-                p="4"
-              >
-                <VStack alignItems={"start"}>
+              <Box mt={"4"} p="4">
+                <List color="blackAlpha.800" spacing={3} mt={2}>
                   <Flex
-                    alignItems="center"
-                    gap="2"
-                    cursor="pointer"
+                    alignItems="flex-start"
                     onClick={() => {
-                      onChange("Кыргызстан, Ыссык-кол, Бостери");
+                      onChange("Балыкчы");
+                      onClose();
                     }}
+                    cursor={"pointer"}
                   >
-                    <Center
-                      w="8"
-                      h="8"
-                      rounded="full"
-                      bgColor={"gray.600"}
-                      color="white"
+                    <ListIcon
+                      as={MdApartment}
+                      fontSize={"3xl"}
+                      color="blackAlpha.800"
+                    />
+                    <Stack
+                      spacing={0}
+                      borderBottom={"1px solid"}
+                      borderColor={"gray.300"}
+                      w="full"
+                      pb={2}
                     >
-                      <SearchIcon />
-                    </Center>
-
-                    <Text>Кыргызстан, Ыссык-кол, Бостери</Text>
+                      <Text fontWeight={"medium"} fontSize={"sm"}>
+                        Балыкчы
+                      </Text>
+                      <Text color="gray.500" fontSize={"small"}>
+                        Ыссык-кол
+                      </Text>
+                    </Stack>
                   </Flex>
-                </VStack>
+                </List>
               </Box>
             </DrawerBody>
           </DrawerBody>

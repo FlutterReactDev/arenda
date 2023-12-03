@@ -13,6 +13,7 @@ import {
   Divider,
   IconButton,
   Stack,
+  Button,
 } from "@chakra-ui/react";
 import { GuestsType } from "@entites/Object";
 import { SearchSchemaType } from "@features/SearchObjects/model/schema";
@@ -325,6 +326,14 @@ export const MobileSearchGuests = forwardRef<
               </Box>
             </Stack>
           </DrawerBody>
+          <HStack p={4}>
+            <Button w="40%" onClick={onClose} variant={"outline"}>
+              Закрыть
+            </Button>
+            <Button colorScheme="red" w="60%" onClick={onClose}>
+              Применить
+            </Button>
+          </HStack>
         </DrawerContent>
       </Drawer>
     </Box>

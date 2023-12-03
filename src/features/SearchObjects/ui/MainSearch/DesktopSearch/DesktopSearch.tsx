@@ -1,43 +1,38 @@
 import {
-  Text,
-  Stack,
-  HStack,
-  Tag,
   Box,
+  Button,
   Center,
+  HStack,
+  Stack,
+  Tag,
+  Text,
   useDisclosure,
   useMergeRefs,
-  Button,
 } from "@chakra-ui/react";
 
-import { DesktopSearchInput } from "./DesktopSearchInput";
-import { DesktopGuests } from "./DesktopGuests";
-import { DesktopDatepicker } from "./DesktopDatepicker";
-import { RefObject, useRef, LegacyRef } from "react";
-import { useInView } from "react-intersection-observer";
-import { useForm, Controller, FormProvider } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { SearchIcon } from "@chakra-ui/icons";
+import { useSearchObjects } from "@features/SearchObjects";
 import {
   SearchSchema,
   SearchSchemaType,
 } from "@features/SearchObjects/model/schema";
-import {
-  searchObjectAction,
-  useSearchObjectData,
-} from "@features/SearchObjects";
-import { SearchIcon } from "@chakra-ui/icons";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { LegacyRef, RefObject, useRef } from "react";
+import { Controller, FormProvider, useForm } from "react-hook-form";
+import { useInView } from "react-intersection-observer";
 import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import { DesktopDatepicker } from "./DesktopDatepicker";
+import { DesktopGuests } from "./DesktopGuests";
+import { DesktopSearchInput } from "./DesktopSearchInput";
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 
 export const DesktopSearch = () => {
-  const setSearchCookies = useCookies(["calendar_dates"])[1];
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const searchData = useSearchObjectData();
+  const { dates, guests, term, setSearchData } = useSearchObjects();
+
   const methods = useForm<SearchSchemaType>({
     resolver: yupResolver(SearchSchema),
-    defaultValues: { ...searchData },
+    defaultValues: { dates, guests, term },
   });
 
   const containerRef = useRef() as LegacyRef<HTMLDivElement>;
@@ -48,16 +43,8 @@ export const DesktopSearch = () => {
   });
 
   const onSubmit = (data: SearchSchemaType) => {
-    dispatch(searchObjectAction.setSearchData(data));
-    setSearchCookies("calendar_dates", {
-      ...data,
-      dates: {
-        checkIn: JSON.stringify(data.dates.checkIn),
-        checkOut: JSON.stringify(data.dates.checkOut),
-      },
-    });
-
-    navigate("/search-result");
+    setSearchData(data);
+    navigate(RouteName.SEARCH_PAGE);
   };
 
   const refs = useMergeRefs(scrollRef, ref);
