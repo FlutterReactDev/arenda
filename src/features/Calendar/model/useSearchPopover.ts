@@ -1,7 +1,7 @@
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { getSaerchPopover } from "./selectors";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { calendarActions } from "..";
+import { getSaerchPopover } from "./selectors";
 
 export const useSearchPopover = () => {
   const dispatch = useAppDispatch();
@@ -14,5 +14,6 @@ export const useSearchPopover = () => {
   const onClose = () => {
     dispatch(calendarActions.setCloseSearchPopover());
   };
+
   return { isOpen, onOpen, onClose };
 };

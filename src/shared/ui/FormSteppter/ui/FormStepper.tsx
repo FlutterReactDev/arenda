@@ -57,7 +57,11 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
       top: 0,
       behavior: "instant",
     });
-    // setSearchParams(searchParams);
+
+    setSearchParams(searchParams, {
+      replace: true,
+      preventScrollReset: true,
+    });
   }, [searchParams, setSearchParams]);
 
   const onNext = () => {
@@ -106,7 +110,9 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
 
       if (nextScreen != undefined) {
         searchParams.set("screen", `${Number(searchParams.get("screen")) - 1}`);
-        setSearchParams(searchParams);
+        setSearchParams(searchParams, {
+          replace: true,
+        });
       }
 
       if (
@@ -118,7 +124,9 @@ export const FormStepper: FC<PropsWithChildren<FormStepperProps>> = (props) => {
           `${forms[queryStep - 1].stepScreens.length - 1}`
         );
         searchParams.set("step", `${queryStep - 1}`);
-        setSearchParams(searchParams);
+        setSearchParams(searchParams, {
+          replace: true,
+        });
       }
     }
   };

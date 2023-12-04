@@ -16,10 +16,7 @@ import {
 } from "date-fns";
 import { MutableRefObject, memo, useEffect, useRef, useState } from "react";
 import { calendarActions } from "..";
-import {
-  getCalendarActions,
-  getCurrentObjectsAvailibility,
-} from "../model/selectors";
+import { getAvailibilities, getCalendarActions } from "../model/selectors";
 import { toDay } from "../utils/toDay";
 
 export const CalendarScroller = memo(() => {
@@ -29,7 +26,7 @@ export const CalendarScroller = memo(() => {
   const [cursorDragging, setCursorDragging] = useState(false);
   const { beginDate, countDay } = useAppSelector(getCalendarActions);
 
-  const availabilities = useAppSelector(getCurrentObjectsAvailibility);
+  const availabilities = useAppSelector(getAvailibilities);
   const scrollerRef = useRef() as MutableRefObject<HTMLDivElement>;
   const daysInView = eachDayOfInterval({
     start: subDays(beginDate, 1),
@@ -175,16 +172,17 @@ export const CalendarScroller = memo(() => {
           const left =
             (allDays.slice(0, beginDateIndex + 1).length / allDays.length) *
             100;
+
           return (
             <Box
               key={`${idx}-${aIdx}`}
               pos={"absolute"}
-              top={`calc(${idx * (100 / 6)}% )`}
+              top={`calc(${idx * (100 / availabilities.flat().length)}% )`}
               bgColor={color}
               w={width + "%"}
               left={left + "%"}
               rounded={"lg"}
-              h={1}
+              h={'2px'}
               zIndex={"9"}
             />
           );

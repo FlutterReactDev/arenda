@@ -17,17 +17,16 @@ import { calendarActions } from "..";
 
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { memo, useCallback, useEffect, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import {
   getColumnDays,
   getCommonSettings,
-  getCurrentObjects,
+  getObjects,
 } from "../model/selectors";
 import { Day } from "./Day";
 
-import { useDrag } from "@use-gesture/react";
-
 import { ActionTop } from "./ActionTop";
+import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 import { CalendarScroller } from "./CalendarScroller";
 import { ModalDeleteAvailibility } from "./ModalDeleteAvailibility";
 import { ObjectItem } from "./ObjectItem";
@@ -37,17 +36,16 @@ import { SearchAvailibilityRoomsModal } from "./SearchAvailibilityRoomsModal";
 import { SearchObject } from "./SearchObject";
 import { Sidebar } from "./Sidebar";
 import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
-import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 
 export const Calendar = memo(() => {
   const dispatch = useAppDispatch();
 
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const days = useAppSelector(getColumnDays);
-  const objects = useAppSelector(getCurrentObjects);
+  const objects = useAppSelector(getObjects);
   const [rangeObjectId, setRangeObjectId] = useState<null | number>(null);
-  const touchX = useRef(0);
-  const { currentWidth, sidebarWidth } = useAppSelector(getCommonSettings);
+
+  const { sidebarWidth } = useAppSelector(getCommonSettings);
 
   const onResize = () => {
     dispatch(calendarActions.initWidthWindow());
@@ -62,40 +60,6 @@ export const Calendar = memo(() => {
       window.removeEventListener("resize", onResize);
     };
   }, []);
-
-  const bind = useDrag(
-    ({ offset: [ox], first }) => {
-      if (first) {
-        touchX.current = ox;
-      }
-      const diffX = ox - touchX.current;
-
-      if (Math.abs(diffX) >= currentWidth) {
-        touchX.current = ox;
-        if (diffX < 0) {
-          dispatch(calendarActions.increaseDay());
-        } else {
-          dispatch(calendarActions.decreaseDay());
-        }
-      }
-    },
-    {
-      axis: "x",
-    }
-  );
-
-  const onScroll = useCallback(
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    (event) => {
-      if (event.deltaY > 1) {
-        dispatch(calendarActions.increaseDay());
-      } else {
-        dispatch(calendarActions.decreaseDay());
-      }
-    },
-    [dispatch]
-  );
 
   const onPrev = () => {
     dispatch(calendarActions.decreaseStep());
@@ -169,11 +133,6 @@ export const Calendar = memo(() => {
               h="full"
               userSelect={"none"}
               pos={"relative"}
-              {...bind()}
-              onWheel={onScroll}
-              onScroll={(e) => {
-                e.preventDefault();
-              }}
               style={{
                 touchAction: "none",
               }}

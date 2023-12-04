@@ -140,11 +140,30 @@ const createObjectSlice = createSlice({
     setInternetAccessSumm(state, action) {
       state.internetAccessSumm = action.payload;
     },
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
+
     clearForm(state) {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      state = initialState;
+      state.addressData = initialState.addressData;
+      state.anObjectAdditionalComfort = initialState.anObjectAdditionalComfort;
+      state.anObjectTypeId = initialState.anObjectTypeId;
+      state.countryId = initialState.countryId;
+      state.cityId = initialState.cityId;
+      state.regionId = initialState.regionId;
+      state.building = initialState.building;
+      state.fullAddress = initialState.fullAddress;
+      state.longitude = initialState.longitude;
+      state.latitude = initialState.latitude;
+      state.name = initialState.name;
+      state.addressData = initialState.addressData;
+      state.internetAccess = initialState.internetAccess;
+      state.internetAccessSumm = initialState.internetAccessSumm;
+      state.parking = initialState.parking;
+      state.parkingSumm = initialState.parkingSumm;
+      state.rating = initialState.rating;
+      state.anObjectAdditionalComfort = initialState.anObjectAdditionalComfort;
+      state.anObjectDetail = initialState.anObjectDetail;
+      state.anObjectFeeAdditionalService =
+        initialState.anObjectFeeAdditionalService;
+      state.anObjectMeal = initialState.anObjectMeal;
     },
   },
 });

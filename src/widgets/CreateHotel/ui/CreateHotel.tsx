@@ -1,4 +1,10 @@
-import { Box, Center, CircularProgress } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  CircularProgress,
+  HStack,
+} from "@chakra-ui/react";
 import {
   AddressForm,
   HotelGeneralInformationForm,
@@ -36,7 +42,12 @@ export const CreateHotel = () => {
     setRegionId,
     setInternetAccessSumm,
     setParkingSumm,
+    clearForm,
   } = useCreateObject();
+
+  useEffect(() => {
+    return () => clearForm();
+  }, []);
 
   const {
     addressData,
@@ -66,8 +77,6 @@ export const CreateHotel = () => {
   const [createObject, { isLoading }] = useCreateObjectMutation();
 
   const onSave = (data: HotelGeneralInformationType) => {
-    console.log("dsadas");
-
     createObject({ ...formData, ...data });
   };
 
@@ -87,6 +96,15 @@ export const CreateHotel = () => {
                         defaultValues={addressData}
                         changeState={setAddressData}
                         {...props}
+                        navigation={
+                          <>
+                            <HStack bgColor={"white"} rounded={"lg"} p={3}>
+                              <Button w="full" type="submit" colorScheme="red">
+                                Продолжить
+                              </Button>
+                            </HStack>
+                          </>
+                        }
                       />
                     </Suspense>
                   );

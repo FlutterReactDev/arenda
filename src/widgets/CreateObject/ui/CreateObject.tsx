@@ -1,5 +1,5 @@
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
-import { Box, Center } from "@chakra-ui/react";
+import { Box, Button, Center, HStack } from "@chakra-ui/react";
 import {
   useGetBedTypesQuery,
   useGetCleaningFeeTypesQuery,
@@ -138,6 +138,13 @@ export const CreateObject = () => {
     clearForm: clearRoomForm,
   } = useCreateRoom();
 
+  useEffect(() => {
+    return () => {
+      clearRoomForm();
+      clearObjectForm();
+    };
+  }, []);
+
   const generalInformationData: GeneralInformationSchemaType = {
     area,
     count,
@@ -169,6 +176,15 @@ export const CreateObject = () => {
                         defaultValues={addressData}
                         changeState={setAddressData}
                         {...props}
+                        navigation={
+                          <>
+                            <HStack bgColor={"white"} rounded={"lg"} p={3}>
+                              <Button w="full" type="submit" colorScheme="red">
+                                Продолжить
+                              </Button>
+                            </HStack>
+                          </>
+                        }
                       />
                     </Suspense>
                   );

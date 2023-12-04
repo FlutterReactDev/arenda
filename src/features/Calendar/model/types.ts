@@ -10,6 +10,7 @@ export interface EmploymentCalendarState {
   search: string;
   searchPopover: SearchPopover;
   searchAvailibilityRoomsModal: SearchAvailibilityRoomsModal;
+  searchClientFullname: string;
 }
 
 export interface DeleteModal {

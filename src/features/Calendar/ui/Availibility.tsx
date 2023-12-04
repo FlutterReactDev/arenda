@@ -1,5 +1,11 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
-import { HStack, IconButton, Text, useMediaQuery } from "@chakra-ui/react";
+import {
+  HStack,
+  Highlight,
+  IconButton,
+  Text,
+  useMediaQuery,
+} from "@chakra-ui/react";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { addDays, isEqual, isPast, subDays } from "date-fns";
@@ -10,6 +16,8 @@ import { CalendarAvailability } from "../model/types";
 import { useAvailibility } from "../model/useAvailibility";
 import { isOverlaping } from "../utils/isOverlaping";
 import { EventPopover } from "./EventPopover";
+
+import { useSearchFullname } from "../model/useSearchFullname";
 export const Availibility: FC<CalendarAvailability> = memo(
   (props) => {
     const { color, id, objectId, clientFullname } = props;
@@ -23,6 +31,8 @@ export const Availibility: FC<CalendarAvailability> = memo(
       availability,
     } = useAvailibility(id, objectId);
     const availabilities = useAppSelector(getObjectAvailibility(objectId));
+    const { query } = useSearchFullname();
+
     const dispatch = useAppDispatch();
 
     const onLeft = () => {
@@ -107,7 +117,12 @@ export const Availibility: FC<CalendarAvailability> = memo(
               fontWeight={"medium"}
               color={"white"}
             >
-              {clientFullname}
+              <Highlight
+                styles={{ bg: "red.600", color: "white" }}
+                query={query}
+              >
+                {clientFullname}
+              </Highlight>
             </Text>
             {!isLessThan968 && isLeftRounded && (
               <IconButton

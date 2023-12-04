@@ -13,8 +13,16 @@ export const useAddObject = () => {
     dispatch(addObjectActions.setLocationData(data));
   };
 
+  const isFilled =
+    objectFormData.city != undefined ||
+    objectFormData.country != undefined ||
+    objectFormData.objectType != undefined ||
+    objectFormData.objectTypeProperty != undefined ||
+    objectFormData.region != undefined;
+
   return {
     objectFormData,
     setAddObjectData,
+    isFilled,
   };
 };

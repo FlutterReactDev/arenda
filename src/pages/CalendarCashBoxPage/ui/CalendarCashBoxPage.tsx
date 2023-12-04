@@ -1,7 +1,11 @@
-import { Box } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 
 const CalendarCashBoxPage = () => {
-  return <Box></Box>;
+  return (
+    <Box>
+      <Heading>Касса</Heading>
+    </Box>
+  );
 };
 
 export default CalendarCashBoxPage;

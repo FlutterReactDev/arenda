@@ -147,7 +147,6 @@ export const CreateRoom = () => {
                             {...props}
                             onChange={(data) => {
                               const { categoryType, count } = data;
-                              console.log(count);
 
                               setCategoryType(categoryType);
                               setCategoryCount(count);

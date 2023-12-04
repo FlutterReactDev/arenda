@@ -269,6 +269,25 @@ const initialState = {
       checkIn: "12:00",
       checkOut: "14:00",
     },
+    {
+      availability: [],
+      objectDefaultPerDayCost: 1000,
+      seasonsPrice: [
+        {
+          date: new Date(2023, 10, 29),
+          cost: 2000,
+        },
+        {
+          date: new Date(2023, 11, 29),
+          cost: 3000,
+        },
+      ],
+      id: 12,
+      address: "Бостери,Казак-тукуму, 30/1",
+      name: "Star Hotel",
+      checkIn: "12:00",
+      checkOut: "14:00",
+    },
   ],
   currentVisbleId: 0,
   pagination: {
@@ -286,6 +305,7 @@ const initialState = {
     minDate: null,
     maxDate: null,
   },
+  searchClientFullname: "",
 } as EmploymentCalendarState;
 
 const correctDate = (date: Date, isHotel: boolean): Date => {
@@ -644,6 +664,9 @@ const calendarSlice = createSlice({
       state.searchAvailibilityRoomsModal.checkOut = null;
       state.searchAvailibilityRoomsModal.minDate = null;
       state.searchAvailibilityRoomsModal.maxDate = null;
+    },
+    setSearchClientFullnameQuery(state, action) {
+      state.searchClientFullname = action.payload;
     },
   },
 });

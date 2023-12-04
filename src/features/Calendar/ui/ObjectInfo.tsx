@@ -1,6 +1,7 @@
 import { CalendarIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   GridItem,
   HStack,
@@ -11,6 +12,7 @@ import {
 } from "@chakra-ui/react";
 import { FC, memo, useState } from "react";
 import { Link } from "react-router-dom";
+import { ObjectSettingPopover } from "./ObjectSettingPopover";
 interface ObjectInfoProps {
   name: string;
   objectId: number;
@@ -75,7 +77,12 @@ export const ObjectInfo: FC<ObjectInfoProps> = memo((props) => {
         {!isLessThan968 && (
           <Stack spacing={0} lineHeight={"18px"}>
             <Text fontSize={"sm"}>ID {objectId}</Text>
-            <Text fontSize={"sm"}>{name}</Text>
+            <ObjectSettingPopover>
+              <Button colorScheme="teal" fontSize={"sm"} variant={"link"} textAlign={"left"} justifyContent={"flex-start"} w="max-content">
+                {name}
+              </Button>
+            </ObjectSettingPopover>
+
             <Text
               fontSize={"sm"}
               overflow={"hidden"}

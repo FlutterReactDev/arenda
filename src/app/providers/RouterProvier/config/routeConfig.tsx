@@ -16,6 +16,7 @@ import { SearchResultPage } from "@pages/SearchResultPage";
 import { SelectionPage } from "@pages/SelectionPage";
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import { ObjectSecureRoute } from "../ui/ObjectSecureRoute";
 
 export enum RouteName {
   MAIN_PAGE = "/",
@@ -72,13 +73,21 @@ export const routeConfig: Route[] = [
   },
   {
     path: RouteName.CREATE_OBJECT,
-    element: <CreateObjectPage />,
+    element: (
+      <ObjectSecureRoute>
+        <CreateObjectPage />
+      </ObjectSecureRoute>
+    ),
     private: false,
     layout: true,
   },
   {
     path: RouteName.CREATE_HOTEL,
-    element: <CreateHotelPage />,
+    element: (
+      <ObjectSecureRoute>
+        <CreateHotelPage />
+      </ObjectSecureRoute>
+    ),
     private: false,
     layout: true,
   },

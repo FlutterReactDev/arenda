@@ -16,7 +16,7 @@ export const hotelGeneralInformationSchema = Yup.object({
   internetAccess: Yup.number()
     .typeError("Выберите один из предложенных вариантов")
     .required("Выберите один из предложенных вариантов"),
-  internetAccessSumm: Yup.number().when("parking", (internetAccess, schema) => {
+  internetAccessSumm: Yup.number().when("internetAccess", (internetAccess, schema) => {
     if (internetAccess[0] == InternetAccess.PAID) {
       return schema
         .moreThan(0, "Стоимость услуги должна быть больше 0")

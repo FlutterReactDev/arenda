@@ -14,8 +14,9 @@ import {
   useOutsideClick,
 } from "@chakra-ui/react";
 import { search } from "@shared/ui/SelectSearch/lib/fuzzySearch";
-import { FC, RefObject, memo, useRef, useState } from "react";
+import { FC, RefObject, memo, useRef } from "react";
 import { CalendarAvailability, EventClickProps } from "../model/types";
+import { useSearchFullname } from "../model/useSearchFullname";
 import { EventItem } from "./EventItem";
 interface SearchCommentProps extends InputProps {
   includesAvailabilities: CalendarAvailability[];
@@ -28,7 +29,7 @@ interface SearchCommentProps extends InputProps {
 }
 export const SearchComment: FC<SearchCommentProps> = memo((props) => {
   const { includesAvailabilities, onEventClick, ...otherProps } = props;
-  const [query, setQuery] = useState<string>("");
+  const { query, setQuery } = useSearchFullname();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const searchRef = useRef() as RefObject<HTMLDivElement>;
   const availabilities = includesAvailabilities;
