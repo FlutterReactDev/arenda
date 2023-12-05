@@ -1,6 +1,6 @@
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# TurakKG Service frontend
+  Turakg this is service for find object ro traveling in Kyrgyzystan
+  ![Search Page Image](https://github.com/aeshevdaniyar/arenda/blob/master/public/search-results-image.example.png)
 
 Currently, two official plugins are available:
 
