@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 
-import { SearchMap } from "@entites/Map";
+import { SearchMap, useSearchMap } from "@entites/Map";
 
 import {
   CalendarIcon,
@@ -72,7 +72,7 @@ import "swiper/css/pagination";
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
-
+  const { addMarkers } = useSearchMap();
   const {
     isOpen: mapIsOpen,
     onToggle: mapOnToggle,
@@ -124,7 +124,38 @@ export const ObjectSearchLayout = () => {
       );
     }
   }, [calendarDates, dispatch]);
+  useEffect(() => {
+    addMarkers([
+      {
+        longitude: 77.1757361557851,
+        latitude: 42.64472838750217,
+        price: 1000,
+      },
+      {
+        latitude: 42.645238409366385,
+        longitude: 77.17437800783786,
+        price: 2000,
+      },
+      {
+        latitude: 42.645017610523716,
+        longitude: 77.17292784537554,
+        price: 1450,
+      },
 
+      {
+        latitude: 42.658896258910474,
+        longitude: 77.1981040743652,
+        price: 1850,
+      },
+      {
+        latitude: 42.872791,
+        longitude: 74.597399,
+        price: 17080,
+      },
+      { latitude: 42.880191, longitude: 74.621265, price: 1200 },
+      { latitude: 42.880218, longitude: 74.620338, price: 1900 },
+    ]);
+  }, []);
   return (
     <>
       <Show breakpoint="(min-width: 901px)">
@@ -719,26 +750,7 @@ export const ObjectSearchLayout = () => {
                 }
               />
 
-              <SearchMap
-                onMove={mapOnOpen}
-                inputHtmlMarkers={[
-                  {
-                    coordinates: [77.1757361557851, 42.64472838750217],
-                  },
-                  {
-                    coordinates: [77.17437800783786, 42.645238409366385],
-                  },
-                  {
-                    coordinates: [77.17292784537554, 42.645017610523716],
-                  },
-                  {
-                    coordinates: [77.15253297654283, 42.63014881066871],
-                  },
-                  {
-                    coordinates: [77.1981040743652, 42.658896258910474],
-                  },
-                ]}
-              />
+              <SearchMap onMove={mapOnOpen} />
             </Box>
           </GridItem>
         </Grid>
@@ -1224,25 +1236,7 @@ export const ObjectSearchLayout = () => {
       </Show>
       <Show breakpoint="(max-width: 900px)">
         <Box h="calc(100dvh - 48px)">
-          <SearchMap
-            inputHtmlMarkers={[
-              {
-                coordinates: [77.1757361557851, 42.64472838750217],
-              },
-              {
-                coordinates: [77.17437800783786, 42.645238409366385],
-              },
-              {
-                coordinates: [77.17292784537554, 42.645017610523716],
-              },
-              {
-                coordinates: [77.15253297654283, 42.63014881066871],
-              },
-              {
-                coordinates: [77.1981040743652, 42.658896258910474],
-              },
-            ]}
-          />
+          <SearchMap />
           <DraggbleDrawer
             header={
               <>

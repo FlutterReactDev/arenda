@@ -157,6 +157,7 @@ export const MobileSearchGuests = forwardRef<
         justifyContent="center"
         cursor="pointer"
         ref={ref as LegacyRef<HTMLDivElement>}
+        bgColor={"white"}
       >
         <Text
           fontWeight="medium"

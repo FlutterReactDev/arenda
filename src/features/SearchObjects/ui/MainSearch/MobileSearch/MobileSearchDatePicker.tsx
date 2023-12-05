@@ -89,6 +89,7 @@ export const MobileSearchDatePicker = forwardRef<
             flexDirection="column"
             justifyContent="center"
             cursor="pointer"
+            bgColor={"white"}
           >
             <Text
               fontWeight="medium"
@@ -118,6 +119,7 @@ export const MobileSearchDatePicker = forwardRef<
             flexDirection="column"
             justifyContent="center"
             cursor="pointer"
+            bgColor={"white"}
           >
             <Text
               fontWeight="medium"

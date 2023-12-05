@@ -40,6 +40,10 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
     document.addEventListener("touchmove", preventBehavior, {
       passive: false,
     });
+
+    return () => {
+      document.removeEventListener("touchmove", preventBehavior);
+    };
   }, []);
 
   const [currentHeight, setCurrentHeight] = useState(CLOSE_DRAWER);

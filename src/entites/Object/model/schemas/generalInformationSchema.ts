@@ -54,7 +54,7 @@ export const generalInformationSchema = Yup.object({
     .required("Поле обязательно для заполнения"),
   beds: Yup.array(
     Yup.object({
-      type: Yup.number().required("Выберите один из предложенных вариантов"),
+      bedType: Yup.number().required("Выберите один из предложенных вариантов"),
       count: Yup.number().required(),
     })
   ).required(),

@@ -78,16 +78,15 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
   const floors = useWatch({ control, name: "floor" });
   const floorInHouse = useWatch({ control, name: "floorsInTheBuilding" });
   const roomsCount = useWatch({ control, name: "count" });
+
   const numberOfIsolatedBedrooms = useWatch({
     control,
     name: "numberOfIsolatedBedrooms",
   });
 
   useEffect(() => {
-    console.log(typeAndCountBeds.map((field) => Number(field.type)));
-
     setValidOptions([
-      ...new Set(typeAndCountBeds.map((field) => Number(field.type))),
+      ...new Set(typeAndCountBeds.map((field) => Number(field.bedType))),
     ]);
   }, [typeAndCountBeds]);
 
@@ -108,6 +107,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
       trigger("floorsInTheBuilding");
     }
   }, [floors, setValue, trigger, floorInHouse]);
+
   useEffect(() => {
     if (roomsCount && numberOfIsolatedBedrooms != undefined) {
       trigger("numberOfIsolatedBedrooms");
@@ -454,7 +454,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                       key={id}
                       spacing={2}
                     >
-                      <Select {...register(`beds.${index}.type`)}>
+                      <Select {...register(`beds.${index}.bedType`)}>
                         {bedTypes.map((bedType) => (
                           <option
                             disabled={validOptions.includes(
@@ -531,7 +531,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                   <Button
                     onClick={() => {
                       const selectedTypes = typeAndCountBeds.map((field) =>
-                        Number(field.type)
+                        Number(field.bedType)
                       );
 
                       const nextOption = availableOptions.filter((option) => {
@@ -539,7 +539,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                       });
 
                       append({
-                        type: Number(nextOption[0]),
+                        bedType: Number(nextOption[0]),
                         count: 1,
                       });
                     }}

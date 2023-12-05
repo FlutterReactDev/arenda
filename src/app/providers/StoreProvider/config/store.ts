@@ -9,6 +9,7 @@ import { userReducer } from "@entites/User";
 import { searchObjectReducer } from "@features/SearchObjects";
 import { calendarReducer } from "@features/Calendar";
 import { dragObjectReducer } from "@features/DragObject";
+import { searchMapReducer } from "@entites/Map";
 
 export const store = configureStore({
   reducer: {
@@ -21,6 +22,7 @@ export const store = configureStore({
     calendar: calendarReducer,
     dragObject: dragObjectReducer,
     createRoom: createRoomReducer,
+    searchMap: searchMapReducer,
     user: userReducer,
   },
 

@@ -21,7 +21,8 @@ export const CalendarCollapseGroup: FC<
           {!isOpen && <FaPlusSquare />}
         </HStack>
       </HStack>
-      <Collapse in={isOpen}>{children}</Collapse>
+
+      <Collapse in={isOpen}>{isOpen && <>{children}</>}</Collapse>
     </>
   );
 };

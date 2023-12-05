@@ -29,8 +29,6 @@ export const useInvalidateSize = <T extends HTMLElement = HTMLElement>(
 
     const resizeObserver = new window.ResizeObserver(
       (entries: ResizeObserverEntry[]) => {
-        console.log("resize");
-
         requestAnimationFrame(() => {
           if (!Array.isArray(entries) || !entries.length) {
             return;

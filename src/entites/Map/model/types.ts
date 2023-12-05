@@ -28,3 +28,33 @@ export interface SearchObjectData {
     longitude: number;
   };
 }
+
+export interface Marker {
+  latitude: number;
+  longitude: number;
+  price: number;
+}
+
+export interface SearchMapState {
+  markers: Marker[];
+  hoverMarker: LatLong | null;
+  center: number[];
+  zoom: number;
+  bounds: null | {
+    northEast: NorthEast;
+    SouthWest: SouthWest;
+  };
+  isMove: boolean;
+  fitBounds: null | {
+    northEast: NorthEast;
+    SouthWest: SouthWest;
+  };
+}
+
+export interface LatLong {
+  latitude: number;
+  longitude: number;
+}
+
+export type NorthEast = number[];
+export type SouthWest = number[];

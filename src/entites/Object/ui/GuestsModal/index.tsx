@@ -107,6 +107,7 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
     ],
     []
   );
+
   const { control, handleSubmit, watch, getValues } = useForm<
     InferType<typeof guestsSchema>
   >({
@@ -116,6 +117,7 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
     },
   });
   const adultsCount = watch("adultsCount");
+
   const { fields, append, remove } = useFieldArray({
     control,
     name: "childrenAges",
@@ -123,7 +125,6 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
 
   const onSubmit = (data: InferType<typeof guestsSchema>) => {
     onGuestsChange(data);
-
     onClose();
   };
 
@@ -138,6 +139,7 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
         onTouchStart={(e) => e.stopPropagation()}
         onTouchMove={(e) => e.stopPropagation()}
         onTouchEnd={(e) => e.stopPropagation()}
+        onClick={(e) => e.stopPropagation()}
       >
         <ModalHeader>Выбор гостей</ModalHeader>
         <ModalCloseButton />
@@ -162,6 +164,8 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
                       return (
                         <IconButton
                           onClick={() => {
+                            console.log("dsadsa");
+
                             onChange(value - 1);
                           }}
                           aria-label="decrease"

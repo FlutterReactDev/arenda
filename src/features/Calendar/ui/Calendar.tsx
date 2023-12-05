@@ -190,30 +190,7 @@ export const Calendar = memo(() => {
             );
           })}
         </CalendarCollapseGroup>
-        <CalendarCollapseGroup title="Трипл">
-          {objects.map((object) => {
-            return (
-              <ObjectItem
-                setRangeObjectId={onRangeObjectId}
-                rangeObjectId={rangeObjectId}
-                {...object}
-                key={object.id}
-              />
-            );
-          })}
-        </CalendarCollapseGroup>
-        <CalendarCollapseGroup title="Люкс">
-          {objects.map((object) => {
-            return (
-              <ObjectItem
-                setRangeObjectId={onRangeObjectId}
-                rangeObjectId={rangeObjectId}
-                {...object}
-                key={object.id}
-              />
-            );
-          })}
-        </CalendarCollapseGroup>
+
         <CalendarScroller />
         <Show breakpoint="(max-width: 968px)">
           <Box maxW={"64"} mt={4}>

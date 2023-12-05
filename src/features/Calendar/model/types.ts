@@ -89,7 +89,6 @@ export interface CalendarAvailability {
   color: string;
   objectId: number;
   createdDate: Date;
-  totalSum: number;
   clientFullname: string;
   phoneNumber: string;
 }
