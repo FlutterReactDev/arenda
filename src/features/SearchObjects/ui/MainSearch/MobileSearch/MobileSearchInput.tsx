@@ -90,7 +90,8 @@ export const MobileSearchInput = forwardRef<
                   <Flex
                     alignItems="flex-start"
                     onClick={() => {
-                      onChange("Балыкчы");
+                      onChange("Бостери");
+
                       onClose();
                     }}
                     cursor={"pointer"}
@@ -108,7 +109,7 @@ export const MobileSearchInput = forwardRef<
                       pb={2}
                     >
                       <Text fontWeight={"medium"} fontSize={"sm"}>
-                        Балыкчы
+                        Бостери
                       </Text>
                       <Text color="gray.500" fontSize={"small"}>
                         Ыссык-кол

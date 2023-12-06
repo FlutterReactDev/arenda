@@ -104,7 +104,7 @@ export const ResultSearchInput = forwardRef<
               <Flex
                 alignItems="flex-start"
                 onClick={() => {
-                  onChange("Балыкчы");
+                  onChange("Бостери");
                   trigger();
                   onClose();
                 }}
@@ -123,7 +123,7 @@ export const ResultSearchInput = forwardRef<
                   pb={2}
                 >
                   <Text fontWeight={"medium"} fontSize={"sm"}>
-                    Балыкчы
+                    Бостери
                   </Text>
                   <Text color="gray.500" fontSize={"small"}>
                     Ыссык-кол

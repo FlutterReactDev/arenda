@@ -109,7 +109,7 @@ export const DesktopSearchInput = forwardRef<
               <Flex
                 alignItems="flex-start"
                 onClick={() => {
-                  onChange("Балыкчы");
+                  onChange("Бостери");
                   trigger();
                   onClose();
                 }}
@@ -128,7 +128,7 @@ export const DesktopSearchInput = forwardRef<
                   pb={2}
                 >
                   <Text fontWeight={"medium"} fontSize={"sm"}>
-                    Балыкчы
+                    Бостери
                   </Text>
                   <Text color="gray.500" fontSize={"small"}>
                     Ыссык-кол
