@@ -14,7 +14,7 @@ export const ObjectsMapCluster: FC<ObjectsMapCluster> = memo((props) => {
   const { inputHtmlMarkers } = props;
   const { mapInstance } = useMapContext();
   console.log(mapInstance?.setMaxBounds);
-  
+
   return (
     <Clusterer2GIS
       clusterStyle={(pointsCount: number, target: ClusterTarget) => {
@@ -35,7 +35,7 @@ export const ObjectsMapCluster: FC<ObjectsMapCluster> = memo((props) => {
       }}
       inputHtmlMarkers={[...inputHtmlMarkers]}
       renderHtmlMarker={(coordinates) => (
-        <ObjectMarker coordinates={coordinates} text={"$1000"} />
+        <ObjectMarker coordinates={coordinates} text={1000} />
       )}
       disableClusteringAtZoom={ZoomView.CLUSTER}
     />
