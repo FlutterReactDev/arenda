@@ -10,6 +10,7 @@ export const SelectMapFitBounds: FC = () => {
   useEffect(() => {
     if (selectedObject) {
       const { latitude, longitude } = selectedObject;
+
       mapInstance?.fitBounds(
         {
           northEast: [longitude, latitude],
@@ -19,7 +20,11 @@ export const SelectMapFitBounds: FC = () => {
           padding: { top: 40, left: 60, bottom: 40, right: 60 },
         }
       );
-    } else if (markers.length) {
+
+      return;
+    }
+
+    if (markers.length) {
       const coords = markers
         .map((item) => {
           return item.point;
@@ -45,6 +50,7 @@ export const SelectMapFitBounds: FC = () => {
           padding: { top: 40, left: 60, bottom: 40, right: 60 },
         }
       );
+      return;
     }
   }, [mapInstance, markers, selectedObject]);
   return <></>;

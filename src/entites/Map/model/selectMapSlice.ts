@@ -25,10 +25,12 @@ const selectMapSlice = createSlice({
 
     setSelectedObject(state, action) {
       state.selectedObject = action.payload;
+      state.markerClear = true;
     },
 
     clearSelectObject(state) {
       state.selectedObject = null;
+      state.markerClear = false;
     },
   },
 });

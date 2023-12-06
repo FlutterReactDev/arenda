@@ -47,6 +47,7 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
     viewpoint1,
     viewpoint2,
   } = props;
+  console.log(stateValue);
 
   const { data, isFetching, isSuccess } = useGetObjectByCoordinatesQuery(
     stateValue.coordinates,
@@ -56,11 +57,10 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
   );
 
   const onSubmit = () => {
-    changeState &&
-      changeState({
-        coordinates: stateValue?.coordinates,
-        fullAddress: data?.result?.items[0].full_name,
-      });
+    changeState({
+      coordinates: stateValue.coordinates,
+      fullAddress: data?.result?.items[0].full_name,
+    });
 
     onNext && onNext();
   };
@@ -68,12 +68,13 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
   const onPrevHandler = () => {
     onPrev && onPrev();
 
-    changeState &&
-      changeState({
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        //@ts-ignore
-        coordinates: undefined,
-      });
+    changeState({
+      coordinates: {
+        latitude: 0,
+        longitude: 0,
+      },
+      fullAddress: "",
+    });
   };
 
   return (
@@ -92,13 +93,13 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
               region={region}
               streetName={streetName}
               house={house}
-              value={stateValue?.coordinates}
+              value={stateValue.coordinates}
               onChange={(coordinates: LatLong) => {
-                changeState &&
-                  changeState({
-                    coordinates,
-                    fullAddress: data?.result?.items[0].full_name,
-                  });
+                console.log(data);
+                changeState({
+                  coordinates,
+                  fullAddress: data?.result?.items[0].full_name || "",
+                });
               }}
               viewpoint1={viewpoint1}
               viewpoint2={viewpoint2}

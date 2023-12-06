@@ -44,11 +44,12 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
 
   const {
     addMarkers,
-    hideMarkers,
+
     markers,
     selectObject,
     selectedObject,
     markerClear,
+    clearSelectedObject,
   } = useSelectMap();
 
   const { data, isFetching, isSuccess } = useGetCoordinateByAddressQuery(
@@ -67,35 +68,39 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
       addMarkers(data.result.items);
     }
   }, [addMarkers, data, isSuccess]);
+
   useEffect(() => {
     if (value.latitude && value.longitude) {
       selectObject(value);
+    } else {
+      clearSelectedObject();
     }
-  }, [selectObject, value]);
+  }, []);
+
+  useEffect(() => {
+    if (selectedObject) {
+      onChange(selectedObject);
+    } else {
+      onChange({
+        latitude: 0,
+        longitude: 0,
+      });
+    }
+  }, [onChange, selectedObject]);
+
   const onMapClick = (data: MapPointerEvent) => {
     const { lngLat } = data;
-    onChange({
-      latitude: lngLat[1],
-      longitude: lngLat[0],
-    });
     selectObject({
       latitude: lngLat[1],
       longitude: lngLat[0],
     });
-    hideMarkers();
   };
 
   const onMarkerClick = ({ latitude, longitude }: LatLong) => {
-    onChange({
-      latitude,
-      longitude,
-    });
-
     selectObject({
       latitude,
       longitude,
     });
-    hideMarkers();
   };
 
   if (isSuccess) {
@@ -112,6 +117,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
           <SelectMapFitBounds />
 
           {!markerClear &&
+            !selectedObject &&
             markers.map(({ point: { lat, lon } }) => {
               return (
                 <Marker2GIS

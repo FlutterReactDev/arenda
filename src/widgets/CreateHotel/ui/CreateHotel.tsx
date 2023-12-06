@@ -57,8 +57,8 @@ export const CreateHotel = () => {
     anObjectMeal,
     fullAddress,
     internetAccess,
-    latitude,
     longitude,
+    latitude,
     name,
     parking,
     rating,
@@ -123,12 +123,17 @@ export const CreateHotel = () => {
                         region={region.name}
                         stateValue={{
                           coordinates: {
-                            latitude,
-                            longitude,
+                            longitude: longitude || 0,
+                            latitude: latitude || 0,
                           },
-                          fullAddress,
+                          fullAddress: fullAddress || "",
                         }}
-                        changeState={setLocationMap}
+                        changeState={({ coordinates, fullAddress }) => {
+                          setLocationMap({
+                            coordinates,
+                            fullAddress,
+                          });
+                        }}
                         viewpoint1={country.viewPoint1}
                         viewpoint2={country.viewPoint2}
                         {...props}

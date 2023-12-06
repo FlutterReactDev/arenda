@@ -35,7 +35,7 @@ export const DragObjectMap: FC<DragObjectMapProps> = (props) => {
         <HtmlMarker2GIS coordinates={[77.1757361559851, 42.64472838750217]}>
           <ObjectMarker
             coordinates={[77.1757361557851, 42.64472838750217]}
-            text={"1000$"}
+            text={1000}
           />
         </HtmlMarker2GIS>
       </Map2GIS>

@@ -7,8 +7,6 @@ const geocodeApi = base2GISApi.injectEndpoints({
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       getCoordinateByAddress: build.query<any, SearchObjectData>({
         query: ({ address, viewpoint1, viewpoint2 }) => {
-          console.log(address, viewpoint1, viewpoint2);
-
           return {
             url: `/items?q=${address}&fields=items.point,items.address&type=building&viewpoint1=${viewpoint1.longitude},${viewpoint1.latitude}&viewpoint2=${viewpoint2.longitude},${viewpoint2.latitude}&key=demo`,
           };
