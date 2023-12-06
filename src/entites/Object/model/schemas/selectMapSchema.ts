@@ -1,7 +1,10 @@
 import * as Yup from "yup";
 
 export const selectMapSchema = Yup.object({
-  coordinates: Yup.array().of(Yup.number().required()).min(2).required(),
+  coordinates: Yup.object({
+    latitude: Yup.number().required(),
+    longitude: Yup.number().required(),
+  }),
   fullAddress: Yup.string().required(),
 });
 

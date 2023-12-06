@@ -49,7 +49,7 @@ export interface SearchMapState {
   zoom: number;
   bounds: null | {
     northEast: NorthEast;
-    SouthWest: SouthWest;
+    southWest: SouthWest;
   };
   isMove: boolean;
   fitBounds: null | {

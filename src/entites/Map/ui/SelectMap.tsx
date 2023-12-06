@@ -12,7 +12,7 @@ import { LatLong } from "../model/types";
 import { SelectMapToolbar } from "./SelectMapToolbar";
 
 interface SelectMapProps {
-  onChange: (value: number[]) => void;
+  onChange: (value: LatLong) => void;
   value: LatLong;
   city?: string;
   country?: string;
@@ -74,7 +74,10 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   }, [selectObject, value]);
   const onMapClick = (data: MapPointerEvent) => {
     const { lngLat } = data;
-    onChange(lngLat);
+    onChange({
+      latitude: lngLat[1],
+      longitude: lngLat[0],
+    });
     selectObject({
       latitude: lngLat[1],
       longitude: lngLat[0],
@@ -83,7 +86,11 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   };
 
   const onMarkerClick = ({ latitude, longitude }: LatLong) => {
-    onChange([longitude, latitude]);
+    onChange({
+      latitude,
+      longitude,
+    });
+
     selectObject({
       latitude,
       longitude,

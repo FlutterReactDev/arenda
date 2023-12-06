@@ -203,7 +203,10 @@ export const CreateObject = () => {
                         region={region.name}
                         stateValue={{
                           fullAddress,
-                          coordinates: [longitude, latitude],
+                          coordinates: {
+                            latitude,
+                            longitude,
+                          },
                         }}
                         changeState={setLocationMap}
                         viewpoint1={country.viewPoint1}

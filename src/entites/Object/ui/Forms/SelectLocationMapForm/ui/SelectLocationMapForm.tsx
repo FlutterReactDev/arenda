@@ -1,24 +1,23 @@
 import { Box, Button, Center, HStack, Stack, Text } from "@chakra-ui/react";
 
-import { FC } from "react";
 import { SelectMap } from "@entites/Map";
-
-import { InferType } from "yup";
+import { FC } from "react";
 
 import { useGetObjectByCoordinatesQuery } from "@entites/Map/model/api";
 import { FormCard } from "@shared/ui/FormCard";
 
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 
-import { selectMapSchema } from "@entites/Object/model/schemas/selectMapSchema";
 import { FormProps } from "@entites/Object/model/types/objectTypes";
+import { SelectMapType } from "@entites/Object/model/schemas/selectMapSchema";
+import { LatLong } from "@entites/Map/model/types";
 
 interface SelectLocationMapFormProps {
-  stateValue?: InferType<typeof selectMapSchema>;
-  changeState?: (data: InferType<typeof selectMapSchema>) => void;
-  city?: string;
-  country?: string;
-  region?: string;
+  stateValue: SelectMapType;
+  changeState: (data: SelectMapType) => void;
+  city: string;
+  country: string;
+  region: string;
   streetName: string;
   house: string;
   viewpoint1: {
@@ -48,10 +47,9 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
     viewpoint1,
     viewpoint2,
   } = props;
-  console.log(viewpoint1, viewpoint2);
 
   const { data, isFetching, isSuccess } = useGetObjectByCoordinatesQuery(
-    stateValue?.coordinates as number[],
+    stateValue.coordinates,
     {
       refetchOnMountOrArgChange: true,
     }
@@ -60,7 +58,7 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
   const onSubmit = () => {
     changeState &&
       changeState({
-        coordinates: stateValue?.coordinates as number[],
+        coordinates: stateValue?.coordinates,
         fullAddress: data?.result?.items[0].full_name,
       });
 
@@ -94,8 +92,8 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
               region={region}
               streetName={streetName}
               house={house}
-              value={stateValue?.coordinates as number[]}
-              onChange={(coordinates: number[]) => {
+              value={stateValue?.coordinates}
+              onChange={(coordinates: LatLong) => {
                 changeState &&
                   changeState({
                     coordinates,

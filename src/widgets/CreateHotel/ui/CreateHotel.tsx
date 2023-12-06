@@ -122,7 +122,10 @@ export const CreateHotel = () => {
                         country={country.name}
                         region={region.name}
                         stateValue={{
-                          coordinates: [longitude, latitude],
+                          coordinates: {
+                            latitude,
+                            longitude,
+                          },
                           fullAddress,
                         }}
                         changeState={setLocationMap}
