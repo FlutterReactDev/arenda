@@ -1,11 +1,10 @@
-# React + TypeScript + Vite
+# TurakKG Search frontend
+  Turak Kg is a service for finding temporary housing
+  ![Search Page Image](https://github.com/aeshevdaniyar/arenda/blob/master/public/search-results-image.example.png)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# TurakKG Calendar
+  Turak Calendar is an online management system for a hotel, hostel, apartment or any other property that can be rented out.
+  ![TurakKg Calendar](https://github.com/aeshevdaniyar/arenda/blob/master/public/calendar-image.example.png)
 
 ## Expanding the ESLint configuration
 
