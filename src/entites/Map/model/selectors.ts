@@ -11,11 +11,8 @@ export const isHoveredMarker = (data: LatLong) =>
       data.longitude == hoveredMarker?.longitude
     );
   });
-
 export const getCenter = (state: RootState) => state.searchMap.center;
 export const getZoom = (state: RootState) => state.searchMap.zoom;
 export const getBounds = (state: RootState) => state.searchMap.bounds;
-
 export const getIsMoving = (state: RootState) => state.searchMap.isMove;
-
 export const getFitBounds = (state: RootState) => state.searchMap.fitBounds;

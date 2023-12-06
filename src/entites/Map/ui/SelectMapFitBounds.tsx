@@ -1,39 +1,26 @@
-import { FC, PropsWithChildren, useEffect } from "react";
-import { getBoundsOfCoords } from "../model/utils";
 import { useMapContext } from "@shared/ui/2GIS/Map2GIS";
-import { Marker2GIS } from "@shared/ui/2GIS/Marker2GIS";
-import { Item } from "../model/types";
+import { FC, useEffect } from "react";
+import { useSelectMap } from "..";
+import { getBoundsOfCoords } from "../model/utils";
 
-interface SelectMapFitBoundsProps {
-  result: {
-    items: Item[];
-    total: number;
-  };
-  clearMarker: boolean;
-  onChange: (value: number[]) => void;
-  setClearMarker: (value: boolean) => void;
-  value: number[];
-}
-export const SelectMapFitBounds: FC<
-  PropsWithChildren<SelectMapFitBoundsProps>
-> = (props) => {
-  const { children, result, clearMarker, onChange, setClearMarker, value } =
-    props;
-
+export const SelectMapFitBounds: FC = () => {
+  const { markers, selectedObject } = useSelectMap();
   const { mapInstance } = useMapContext();
+
   useEffect(() => {
-    if (value) {
+    if (selectedObject) {
+      const { latitude, longitude } = selectedObject;
       mapInstance?.fitBounds(
         {
-          northEast: [...value],
-          southWest: [...value],
+          northEast: [longitude, latitude],
+          southWest: [longitude, latitude],
         },
         {
           padding: { top: 40, left: 60, bottom: 40, right: 60 },
         }
       );
-    } else if (result) {
-      const coords = result.items
+    } else if (markers.length) {
+      const coords = markers
         .map((item) => {
           return item.point;
         })
@@ -46,12 +33,12 @@ export const SelectMapFitBounds: FC<
       mapInstance?.fitBounds(
         {
           northEast: [
-            result.items[northEast[1]].point.lon,
-            result.items[northEast[0]].point.lat,
+            markers[northEast[1]].point.lon,
+            markers[northEast[0]].point.lat,
           ],
           southWest: [
-            result.items[southWest[1]].point.lon,
-            result.items[southWest[0]].point.lat,
+            markers[southWest[1]].point.lon,
+            markers[southWest[0]].point.lat,
           ],
         },
         {
@@ -59,24 +46,6 @@ export const SelectMapFitBounds: FC<
         }
       );
     }
-  }, [mapInstance, result, value, clearMarker]);
-  return (
-    <>
-      {children}
-      {!clearMarker &&
-        result?.items?.map((item) => {
-          return (
-            <Marker2GIS
-              key={`${(item.point.lon, item.point.lat)}`}
-              coordinates={[item.point.lon, item.point.lat]}
-              interactive
-              onClick={() => {
-                onChange([item.point.lon, item.point.lat]);
-                setClearMarker(true);
-              }}
-            />
-          );
-        })}
-    </>
-  );
+  }, [mapInstance, markers, selectedObject]);
+  return <></>;
 };

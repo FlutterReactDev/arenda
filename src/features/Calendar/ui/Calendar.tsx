@@ -8,7 +8,6 @@ import {
   Hide,
   IconButton,
   Select,
-  Show,
   Stack,
   useMediaQuery,
 } from "@chakra-ui/react";
@@ -87,9 +86,11 @@ export const Calendar = memo(() => {
               "filter actionsTop"
               " filter actionsBottom"`
         }
-        position={"sticky"}
-        top={0}
-        zIndex={"docked"}
+        {...(!isLessThan968 && {
+          position: "sticky",
+          top: 0,
+          zIndex: "docked",
+        })}
         bgColor={"#f5f5f5"}
       >
         <GridItem area={"filter"}>
@@ -192,11 +193,6 @@ export const Calendar = memo(() => {
         </CalendarCollapseGroup>
 
         <CalendarScroller />
-        <Show breakpoint="(max-width: 968px)">
-          <Box maxW={"64"} mt={4}>
-            <ObjectPagination />
-          </Box>
-        </Show>
       </Box>
       <ModalDeleteAvailibility />
       <SearchAvailibilityRoomsModal />

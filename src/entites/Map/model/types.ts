@@ -34,6 +34,13 @@ export interface Marker {
   longitude: number;
   price: number;
 }
+export interface LatLong {
+  latitude: number;
+  longitude: number;
+}
+
+export type NorthEast = number[];
+export type SouthWest = number[];
 
 export interface SearchMapState {
   markers: Marker[];
@@ -47,14 +54,12 @@ export interface SearchMapState {
   isMove: boolean;
   fitBounds: null | {
     northEast: NorthEast;
-    SouthWest: SouthWest;
+    southWest: SouthWest;
   };
 }
 
-export interface LatLong {
-  latitude: number;
-  longitude: number;
+export interface SelectMapState {
+  markerClear: boolean;
+  markers: Item[];
+  selectedObject: LatLong | null;
 }
-
-export type NorthEast = number[];
-export type SouthWest = number[];

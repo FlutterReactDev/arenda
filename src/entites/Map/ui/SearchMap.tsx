@@ -5,7 +5,6 @@ import { FC, memo } from "react";
 import { useSearchMap } from "../model/useSearchMap";
 import { ObjectMarker } from "./ObjectMarker";
 import { SearchMapInstance } from "./SearchMapInstance";
-// import { ObjectsMapCluster } from "./ObjectsMapCluster";
 
 interface SearchMapProps {
   onMove?: () => void;

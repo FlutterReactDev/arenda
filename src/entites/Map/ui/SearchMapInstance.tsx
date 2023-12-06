@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useSearchMap } from "..";
 
 export const SearchMapInstance = () => {
-  const { zoom, center, isMoving, setBounds } = useSearchMap();
+  const { zoom, center, isMoving, setBounds, fitBounds } = useSearchMap();
   const { mapInstance } = useMapContext();
   useEffect(() => {
     mapInstance?.setLanguage("ru");
@@ -22,6 +22,12 @@ export const SearchMapInstance = () => {
       setBounds(mapInstance?.getBounds());
     }
   }, [isMoving]);
+
+  useEffect(() => {
+    if (fitBounds) {
+      mapInstance?.fitBounds({ ...fitBounds });
+    }
+  }, [fitBounds, mapInstance]);
 
   return <></>;
 };

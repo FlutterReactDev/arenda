@@ -1,5 +1,5 @@
 import { base2GISApi } from "@shared/api/2GiSApi";
-import { SearchObjectData } from "./types";
+import { LatLong, SearchObjectData } from "./types";
 
 const geocodeApi = base2GISApi.injectEndpoints({
   endpoints(build) {
@@ -15,9 +15,9 @@ const geocodeApi = base2GISApi.injectEndpoints({
         },
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      getObjectByCoordinates: build.query<any, number[]>({
-        query: (coordinates) => ({
-          url: `/items/geocode?lon=${coordinates[0]}&lat=${coordinates[1]}&fields=items.point,items.address&key=demo`,
+      getObjectByCoordinates: build.query<any, LatLong>({
+        query: ({ latitude, longitude }) => ({
+          url: `/items/geocode?lon=${longitude}&lat=${latitude}&fields=items.point,items.address&key=demo`,
         }),
       }),
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

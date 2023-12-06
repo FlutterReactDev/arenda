@@ -1,19 +1,19 @@
-import { Map2GIS } from "@shared/ui/2GIS";
-import { CenteredMarker } from "./CenteredMarker";
-import { FC, useEffect, useState } from "react";
-import {
-  useGetCoordinateByAddressQuery,
-  useGetRegionByAddressQuery,
-} from "../model/api";
 import { Box, Center, Spinner } from "@chakra-ui/react";
+import { Map2GIS } from "@shared/ui/2GIS";
+import { FC, useEffect } from "react";
+import { useGetCoordinateByAddressQuery } from "../model/api";
 import { SelectMapFitBounds } from "./SelectMapFitBounds";
 
+import { useSelectMap } from "..";
+
+import { MapPointerEvent } from "@2gis/mapgl/types";
+import { Marker2GIS } from "@shared/ui/2GIS/Marker2GIS";
+import { LatLong } from "../model/types";
 import { SelectMapToolbar } from "./SelectMapToolbar";
-import { RegionCenter } from "./RegionCenter";
 
 interface SelectMapProps {
   onChange: (value: number[]) => void;
-  value: number[];
+  value: LatLong;
   city?: string;
   country?: string;
   region?: string;
@@ -37,13 +37,20 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
     house,
     streetName,
     city,
-    country,
     region,
     viewpoint1,
     viewpoint2,
   } = props;
 
-  const [clearMarker, setClearMarker] = useState(value ? true : false);
+  const {
+    addMarkers,
+    hideMarkers,
+    markers,
+    selectObject,
+    selectedObject,
+    markerClear,
+  } = useSelectMap();
+
   const { data, isFetching, isSuccess } = useGetCoordinateByAddressQuery(
     {
       address: `${region} ${city} ${streetName} ${house}`,
@@ -54,42 +61,36 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
       refetchOnMountOrArgChange: true,
     }
   );
-  const { data: notFoundData, isSuccess: notFoundDataIsSuccess } =
-    useGetRegionByAddressQuery(
-      {
-        address: `${country}, ${region}, ${city}`,
-        viewpoint1,
-        viewpoint2,
-      },
-      {
-        refetchOnMountOrArgChange: true,
-      }
-    );
-
-  const [center, setCenter] = useState<number[]>();
 
   useEffect(() => {
-    if (isSuccess && data.result && data.result.items.length == 1) {
-      onChange([
-        data.result.items[0].point.lon,
-        data.result.items[0].point.lat,
-      ]);
+    if (isSuccess) {
+      addMarkers(data.result.items);
     }
-  }, [isSuccess]);
-
+  }, [addMarkers, data, isSuccess]);
   useEffect(() => {
-    if (isSuccess && notFoundDataIsSuccess && data.meta.code == 404) {
-      setCenter([
-        notFoundData?.result?.items[0].point.lon,
-        notFoundData?.result?.items[0].point.lat,
-      ]);
+    if (value.latitude && value.longitude) {
+      selectObject(value);
     }
-  }, [
-    data?.meta.code,
-    isSuccess,
-    notFoundData?.result?.items,
-    notFoundDataIsSuccess,
-  ]);
+  }, [selectObject, value]);
+  const onMapClick = (data: MapPointerEvent) => {
+    const { lngLat } = data;
+    onChange(lngLat);
+    selectObject({
+      latitude: lngLat[1],
+      longitude: lngLat[0],
+    });
+    hideMarkers();
+  };
+
+  const onMarkerClick = ({ latitude, longitude }: LatLong) => {
+    onChange([longitude, latitude]);
+    selectObject({
+      latitude,
+      longitude,
+    });
+    hideMarkers();
+  };
+
   if (isSuccess) {
     return (
       <Box position={"relative"} h={"full"}>
@@ -99,32 +100,31 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
             keepCenterWhileUserZoomRotate: false,
             scaleControl: false,
           }}
-          onClick={(data) => {
-            onChange(data.lngLat);
-            setClearMarker(true);
-          }}
+          onClick={onMapClick}
         >
-          {isSuccess && data.meta.code == 404 && center && center.length && (
-            <RegionCenter center={center} />
+          <SelectMapFitBounds />
+
+          {!markerClear &&
+            markers.map(({ point: { lat, lon } }) => {
+              return (
+                <Marker2GIS
+                  key={`${lon}-${lat}`}
+                  coordinates={[lon, lat]}
+                  interactive
+                  onClick={() =>
+                    onMarkerClick({ latitude: lat, longitude: lon })
+                  }
+                />
+              );
+            })}
+          {selectedObject && (
+            <Marker2GIS
+              key={`${selectedObject.longitude}-${selectedObject.latitude}`}
+              coordinates={[selectedObject.longitude, selectedObject.latitude]}
+            />
           )}
-          <SelectMapFitBounds
-            clearMarker={clearMarker}
-            setClearMarker={setClearMarker}
-            result={data.result}
-            onChange={onChange}
-            value={value}
-          >
-            <CenteredMarker coordinates={value} />
-          </SelectMapFitBounds>
         </Map2GIS>
-        {value && (
-          <SelectMapToolbar
-            coordinates={value}
-            onChange={onChange}
-            items={data?.result?.items}
-            setClearMarker={setClearMarker}
-          />
-        )}
+        {selectedObject && <SelectMapToolbar />}
       </Box>
     );
   }

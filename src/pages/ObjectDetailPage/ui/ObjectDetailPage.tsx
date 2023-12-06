@@ -1,14 +1,10 @@
 import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { ObjectDetailCard } from "@entites/Object";
 import { BookingForm } from "@features/BookingForm";
-import { Footer } from "@widgets/Footer";
-import { Header } from "@widgets/Header";
 
 const ObjectDetailPage = () => {
   return (
     <Box bgColor={"blackAlpha.50"} w={"full"}>
-      <Header />
-
       <Grid
         templateAreas={`"leftSpace content aside rightSpace"`}
         gridTemplateColumns={"1fr minmax(600px,830px) 360px 1fr"}
@@ -32,8 +28,6 @@ const ObjectDetailPage = () => {
         </GridItem>
         <GridItem area={"rightSpace"}></GridItem>
       </Grid>
-
-      <Footer />
     </Box>
   );
 };

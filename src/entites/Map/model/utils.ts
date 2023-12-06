@@ -1,4 +1,4 @@
-import { Item } from "./types";
+import { Item, LatLong } from "./types";
 
 export function getBoundsOfCoords(coordinates: number[][]) {
   const maxX = coordinates.findIndex(
@@ -22,12 +22,12 @@ export function getBoundsOfCoords(coordinates: number[][]) {
   };
 }
 
-export function getItemByCoords(coordinates: number[], items: Item[]) {
+export function getItemByCoords(coordinates: LatLong, items: Item[]) {
+  const { latitude, longitude } = coordinates;
+
   if (coordinates && items?.length != 0) {
     return items?.filter((item) => {
-      return (
-        item.point.lat == coordinates[1] && item.point.lon == coordinates[0]
-      );
+      return item.point.lat == latitude && item.point.lon == longitude;
     })[0];
   }
 
