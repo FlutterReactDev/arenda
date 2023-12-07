@@ -3,18 +3,21 @@ import { Box, Button, Center, HStack, Stack, Text } from "@chakra-ui/react";
 import { SelectMap } from "@entites/Map";
 import { FC } from "react";
 
-import { useGetObjectByCoordinatesQuery } from "@entites/Map/model/api";
 import { FormCard } from "@shared/ui/FormCard";
 
 import { FormContainer } from "@entites/Object/ui/FormContainer";
 
+import {
+  SelectMapType,
+  selectMapSchema,
+} from "@entites/Object/model/schemas/selectMapSchema";
 import { FormProps } from "@entites/Object/model/types/objectTypes";
-import { SelectMapType } from "@entites/Object/model/schemas/selectMapSchema";
-import { LatLong } from "@entites/Map/model/types";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Controller, useForm } from "react-hook-form";
 
 interface SelectLocationMapFormProps {
-  stateValue: SelectMapType;
-  changeState: (data: SelectMapType) => void;
+  value: SelectMapType;
+  onChange: (data: SelectMapType) => void;
   city: string;
   country: string;
   region: string;
@@ -37,8 +40,8 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
   const {
     onNext,
     onPrev,
-    stateValue,
-    changeState,
+    onChange,
+    value,
     city,
     country,
     house,
@@ -47,38 +50,30 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
     viewpoint1,
     viewpoint2,
   } = props;
-  console.log(stateValue);
 
-  const { data, isFetching, isSuccess } = useGetObjectByCoordinatesQuery(
-    stateValue.coordinates,
-    {
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const {
+    control,
+    formState: { isValid },
 
-  const onSubmit = () => {
-    changeState({
-      coordinates: stateValue.coordinates,
-      fullAddress: data?.result?.items[0].full_name,
-    });
+    reset,
+    handleSubmit,
+  } = useForm<SelectMapType>({
+    resolver: yupResolver(selectMapSchema),
+    defaultValues: value,
+  });
+  const onSubmit = (data: SelectMapType) => {
+    onChange(data);
 
     onNext && onNext();
   };
 
   const onPrevHandler = () => {
+    reset();
     onPrev && onPrev();
-
-    changeState({
-      coordinates: {
-        latitude: 0,
-        longitude: 0,
-      },
-      fullAddress: "",
-    });
   };
 
   return (
-    <Stack spacing={4}>
+    <Stack as="form" spacing={4} onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
         <FormCard title="Карта">
           <Text>
@@ -87,22 +82,31 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
           </Text>
 
           <Box h={"350px"} mt={5}>
-            <SelectMap
-              country={country}
-              city={city}
-              region={region}
-              streetName={streetName}
-              house={house}
-              value={stateValue.coordinates}
-              onChange={(coordinates: LatLong) => {
-                console.log(data);
-                changeState({
-                  coordinates,
-                  fullAddress: data?.result?.items[0].full_name || "",
-                });
+            <Controller
+              control={control}
+              name="selectMap"
+              render={({ field: { onChange, value } }) => {
+                return (
+                  <SelectMap
+                    country={country}
+                    city={city}
+                    region={region}
+                    streetName={streetName}
+                    house={house}
+                    value={{
+                      selectMap: value,
+                    }}
+                    onChange={({ selectMap: { coordinates, fullAddress } }) => {
+                      onChange({
+                        coordinates,
+                        fullAddress,
+                      });
+                    }}
+                    viewpoint1={viewpoint1}
+                    viewpoint2={viewpoint2}
+                  />
+                );
               }}
-              viewpoint1={viewpoint1}
-              viewpoint2={viewpoint2}
             />
           </Box>
         </FormCard>
@@ -116,11 +120,7 @@ const SelectLocationMapForm: FC<FormProps & SelectLocationMapFormProps> = (
               >
                 Назад
               </Button>
-              <Button
-                colorScheme="red"
-                isDisabled={!stateValue || isFetching || !isSuccess}
-                onClick={onSubmit}
-              >
+              <Button colorScheme="red" isDisabled={!isValid} type="submit">
                 Продолжить
               </Button>
             </HStack>

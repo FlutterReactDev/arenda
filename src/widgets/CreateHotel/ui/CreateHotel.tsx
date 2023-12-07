@@ -121,18 +121,15 @@ export const CreateHotel = () => {
                         streetName={addressData.streetName}
                         country={country.name}
                         region={region.name}
-                        stateValue={{
-                          coordinates: {
-                            longitude: longitude || 0,
-                            latitude: latitude || 0,
-                          },
-                          fullAddress: fullAddress || "",
-                        }}
-                        changeState={({ coordinates, fullAddress }) => {
-                          setLocationMap({
-                            coordinates,
+                        onChange={setLocationMap}
+                        value={{
+                          selectMap: {
                             fullAddress,
-                          });
+                            coordinates: {
+                              latitude,
+                              longitude,
+                            },
+                          },
                         }}
                         viewpoint1={country.viewPoint1}
                         viewpoint2={country.viewPoint2}

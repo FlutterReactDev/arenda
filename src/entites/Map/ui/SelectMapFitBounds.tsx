@@ -1,15 +1,24 @@
 import { useMapContext } from "@shared/ui/2GIS/Map2GIS";
 import { FC, useEffect } from "react";
-import { useSelectMap } from "..";
 import { getBoundsOfCoords } from "../model/utils";
-
-export const SelectMapFitBounds: FC = () => {
-  const { markers, selectedObject } = useSelectMap();
+import { Item } from "../model/types";
+import { SelectMapType } from "@entites/Object/model/schemas/selectMapSchema";
+interface SelectMapFitBoundsProps {
+  markers: Item[];
+  value: SelectMapType | undefined;
+}
+export const SelectMapFitBounds: FC<SelectMapFitBoundsProps> = (props) => {
+  const { markers, value } = props;
   const { mapInstance } = useMapContext();
 
   useEffect(() => {
-    if (selectedObject) {
-      const { latitude, longitude } = selectedObject;
+    console.log(value);
+
+    if (
+      value?.selectMap.coordinates.latitude &&
+      value?.selectMap.coordinates.longitude
+    ) {
+      const { latitude, longitude } = value.selectMap.coordinates;
 
       mapInstance?.fitBounds(
         {
@@ -52,6 +61,6 @@ export const SelectMapFitBounds: FC = () => {
       );
       return;
     }
-  }, [mapInstance, markers, selectedObject]);
+  }, [mapInstance, markers, value]);
   return <></>;
 };

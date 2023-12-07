@@ -1,19 +1,22 @@
 import { Box, Center, Spinner } from "@chakra-ui/react";
 import { Map2GIS } from "@shared/ui/2GIS";
 import { FC, useEffect } from "react";
-import { useGetCoordinateByAddressQuery } from "../model/api";
+import {
+  useGetCoordinateByAddressQuery,
+  useGetObjectByCoordinatesQuery,
+} from "../model/api";
 import { SelectMapFitBounds } from "./SelectMapFitBounds";
 
-import { useSelectMap } from "..";
-
 import { MapPointerEvent } from "@2gis/mapgl/types";
+import { SelectMapType } from "@entites/Object/model/schemas/selectMapSchema";
 import { Marker2GIS } from "@shared/ui/2GIS/Marker2GIS";
 import { LatLong } from "../model/types";
 import { SelectMapToolbar } from "./SelectMapToolbar";
+import { getItemByCoords } from "../model/utils";
 
 interface SelectMapProps {
-  onChange: (value: LatLong) => void;
-  value: LatLong;
+  onChange: (value: SelectMapType) => void;
+  value: SelectMapType;
   city?: string;
   country?: string;
   region?: string;
@@ -43,16 +46,10 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
   } = props;
 
   const {
-    addMarkers,
-
-    markers,
-    selectObject,
-    selectedObject,
-    markerClear,
-    clearSelectedObject,
-  } = useSelectMap();
-
-  const { data, isFetching, isSuccess } = useGetCoordinateByAddressQuery(
+    data: markers,
+    isFetching: markersIsFetching,
+    isSuccess: markersIsSuccess,
+  } = useGetCoordinateByAddressQuery(
     {
       address: `${region} ${city} ${streetName} ${house}`,
       viewpoint1,
@@ -63,47 +60,119 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
     }
   );
 
-  useEffect(() => {
-    if (isSuccess) {
-      addMarkers(data.result.items);
+  const {
+    data: objectInfo,
+    isFetching: objectInfoIsFetching,
+    isSuccess: objectInfoIsSuccess,
+  } = useGetObjectByCoordinatesQuery(
+    {
+      latitude: value.selectMap.coordinates.latitude,
+      longitude: value.selectMap.coordinates.longitude,
+    },
+    {
+      refetchOnMountOrArgChange: true,
     }
-  }, [addMarkers, data, isSuccess]);
+  );
 
   useEffect(() => {
-    if (value.latitude && value.longitude) {
-      selectObject(value);
-    } else {
-      clearSelectedObject();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (selectedObject) {
-      onChange(selectedObject);
-    } else {
+    if (markersIsSuccess && markers.result.items.length == 1) {
       onChange({
-        latitude: 0,
-        longitude: 0,
+        selectMap: {
+          coordinates: {
+            latitude: markers.result.items[0].point.lat,
+            longitude: markers.result.items[0].point.lon,
+          },
+          fullAddress: markers.result.items[0].address_name,
+        },
       });
     }
-  }, [onChange, selectedObject]);
+  }, [markers?.result, markersIsSuccess]);
+  useEffect(() => {
+    const address = getItemByCoords(
+      {
+        latitude: value.selectMap.coordinates.latitude,
+        longitude: value.selectMap.coordinates.longitude,
+      },
+      markers?.result?.items || []
+    );
 
-  const onMapClick = (data: MapPointerEvent) => {
-    const { lngLat } = data;
-    selectObject({
-      latitude: lngLat[1],
-      longitude: lngLat[0],
+    if (objectInfo?.result?.items.length && !address) {
+      onChange({
+        selectMap: {
+          coordinates: { ...value.selectMap.coordinates },
+          fullAddress: objectInfo?.result.items[0]?.address_name as string,
+        },
+      });
+    }
+  }, [objectInfo?.result, objectInfoIsSuccess]);
+  const addressInfo =
+    (value.selectMap.coordinates.latitude &&
+      value.selectMap.coordinates.longitude &&
+      markersIsSuccess &&
+      getItemByCoords(
+        {
+          latitude: value.selectMap.coordinates.latitude,
+          longitude: value.selectMap.coordinates.longitude,
+        },
+        markers.result.items
+      )?.address_name) ||
+    "";
+
+  const onMapClick = ({ lngLat }: MapPointerEvent) => {
+    onChange({
+      selectMap: {
+        coordinates: {
+          latitude: lngLat[1],
+          longitude: lngLat[0],
+        },
+        fullAddress:
+          addressInfo || objectInfo?.result?.items[0].address_name || "",
+      },
     });
   };
 
   const onMarkerClick = ({ latitude, longitude }: LatLong) => {
-    selectObject({
-      latitude,
-      longitude,
+    const addressName = getItemByCoords(
+      {
+        latitude,
+        longitude,
+      },
+      markers?.result?.items || []
+    )?.address_name;
+
+    onChange({
+      selectMap: {
+        coordinates: {
+          latitude,
+          longitude,
+        },
+        fullAddress:
+          addressName || objectInfo?.result?.items[0].address_name || "",
+      },
     });
   };
 
-  if (isSuccess) {
+  const onBack = () => {
+    onChange({
+      selectMap: {
+        coordinates: {
+          latitude: 0,
+          longitude: 0,
+        },
+        fullAddress: "",
+      },
+    });
+  };
+
+  const haveValue =
+    value.selectMap.coordinates.latitude != 0 &&
+    value.selectMap.coordinates.latitude != undefined &&
+    value.selectMap.coordinates.longitude != 0 &&
+    value.selectMap.coordinates.longitude != undefined &&
+    value.selectMap.fullAddress != undefined &&
+    value.selectMap.fullAddress.length != 0;
+
+  if (markersIsSuccess) {
     return (
       <Box position={"relative"} h={"full"}>
         <Map2GIS
@@ -114,11 +183,10 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
           }}
           onClick={onMapClick}
         >
-          <SelectMapFitBounds />
+          <SelectMapFitBounds markers={markers?.result?.items} value={value} />
 
-          {!markerClear &&
-            !selectedObject &&
-            markers.map(({ point: { lat, lon } }) => {
+          {!haveValue &&
+            markers?.result?.items.map(({ point: { lat, lon } }) => {
               return (
                 <Marker2GIS
                   key={`${lon}-${lat}`}
@@ -130,21 +198,31 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
                 />
               );
             })}
-          {selectedObject && (
+
+          {haveValue && (
             <Marker2GIS
-              key={`${selectedObject.longitude}-${selectedObject.latitude}`}
-              coordinates={[selectedObject.longitude, selectedObject.latitude]}
+              key={`${value.selectMap.coordinates.longitude}-${value.selectMap.coordinates.latitude}`}
+              coordinates={[
+                value.selectMap.coordinates.longitude,
+                value.selectMap.coordinates.latitude,
+              ]}
             />
           )}
         </Map2GIS>
-        {selectedObject && <SelectMapToolbar />}
+        {haveValue && (
+          <SelectMapToolbar
+            address={objectInfo?.result?.items[0].address_name}
+            onBack={onBack}
+            isLoading={objectInfoIsFetching}
+          />
+        )}
       </Box>
     );
   }
 
   return (
     <>
-      {isFetching && (
+      {markersIsFetching && (
         <Center>
           <Spinner size="xl"></Spinner>
         </Center>

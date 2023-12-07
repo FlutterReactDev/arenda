@@ -15,6 +15,12 @@ export interface Item {
   purpose_name: string;
 }
 
+export interface GISResponse {
+  result: {
+    items: Item[];
+  };
+}
+
 export interface SearchObjectData {
   address: string;
   viewpoint1: {

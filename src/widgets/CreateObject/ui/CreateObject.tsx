@@ -201,14 +201,16 @@ export const CreateObject = () => {
                         streetName={addressData.streetName}
                         country={country.name}
                         region={region.name}
-                        stateValue={{
-                          fullAddress,
-                          coordinates: {
-                            latitude,
-                            longitude,
+                        onChange={setLocationMap}
+                        value={{
+                          selectMap: {
+                            fullAddress,
+                            coordinates: {
+                              latitude,
+                              longitude,
+                            },
                           },
                         }}
-                        changeState={setLocationMap}
                         viewpoint1={country.viewPoint1}
                         viewpoint2={country.viewPoint2}
                         {...props}

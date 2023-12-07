@@ -1,36 +1,13 @@
 import { CloseIcon } from "@chakra-ui/icons";
-import {
-  Center,
-  CircularProgress,
-  HStack,
-  IconButton,
-  Text,
-} from "@chakra-ui/react";
-import { useSelectMap } from "..";
-import { useGetObjectByCoordinatesQuery } from "../model/api";
-import { LatLong } from "../model/types";
-import { getItemByCoords } from "../model/utils";
-
-export const SelectMapToolbar = () => {
-  const { markers, selectedObject, clearSelectedObject, showMarkers } =
-    useSelectMap();
-
-  const addressInfo =
-    (selectedObject && getItemByCoords(selectedObject, markers)?.full_name) ||
-    undefined;
-
-  const { data, isFetching } = useGetObjectByCoordinatesQuery(
-    selectedObject as LatLong,
-    {
-      refetchOnMountOrArgChange: true,
-      skip: addressInfo !== undefined && !selectedObject,
-    }
-  );
-
-  const onClose = () => {
-    clearSelectedObject();
-    showMarkers();
-  };
+import { CircularProgress, HStack, IconButton, Text } from "@chakra-ui/react";
+import { FC } from "react";
+interface SelectMapToolbarProps {
+  address: string;
+  onBack: () => void;
+  isLoading: boolean;
+}
+export const SelectMapToolbar: FC<SelectMapToolbarProps> = (props) => {
+  const { address, onBack, isLoading } = props;
 
   return (
     <HStack
@@ -43,30 +20,16 @@ export const SelectMapToolbar = () => {
       top={"2"}
       left={"2"}
     >
-      {isFetching && !addressInfo && (
-        <Center>
-          <CircularProgress isIndeterminate color="blue.600" />
-        </Center>
-      )}
-
-      {addressInfo && (
+      {address && !isLoading && (
         <>
-          <Text>{addressInfo}</Text>
-          <IconButton aria-label="Close Button" size={"xs"} onClick={onClose}>
+          <Text>{address}</Text>
+          <IconButton aria-label="Close Button" size={"xs"} onClick={onBack}>
             <CloseIcon />
           </IconButton>
         </>
       )}
 
-      {!isFetching && !addressInfo && (
-        <>
-          <Text>{data?.result?.items[0].address_name}</Text>
-
-          <IconButton aria-label="Close Button" size={"xs"} onClick={onClose}>
-            <CloseIcon />
-          </IconButton>
-        </>
-      )}
+      {isLoading && <CircularProgress isIndeterminate color="red.600" />}
     </HStack>
   );
 };
