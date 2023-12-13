@@ -21,7 +21,15 @@ const userApi = baseApiWithReAuth?.injectEndpoints({
         method: "POST",
       }),
     }),
+
+    logout: build.mutation<void, void>({
+      query: () => ({
+        url: "/Logout",
+        method: "POST",
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useRegisterMutation } = userApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } =
+  userApi;

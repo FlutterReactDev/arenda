@@ -135,8 +135,6 @@ export const DesktopGuests = forwardRef<
     enabled: isOpen,
   });
 
-  console.log(getValues("guests"));
-
   return (
     <Box
       position="relative"

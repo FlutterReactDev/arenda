@@ -9,4 +9,3 @@ export { useAuthModal } from "./model/useAuthModal";
 export { useAuthToken } from "./model/useAuthToken";
 export { AuthButton } from "./ui/AuthButton";
 export { useAuth } from "./model/useAuth";
-export { UserAccount } from "./ui/UserAccount";

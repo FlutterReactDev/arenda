@@ -26,4 +26,5 @@ export interface UserModalState {
 export interface UserState {
   userAuthData: UserLoginData | undefined;
   userAuthModal: UserModalState;
+  isLoggin: boolean;
 }

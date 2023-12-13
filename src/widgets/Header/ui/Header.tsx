@@ -24,24 +24,17 @@ import { MdFavoriteBorder } from "react-icons/md";
 import { ModalType } from "../model/types/HeaderTypes";
 
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
-import {
-  AuthButton,
-  UserAccount,
-  getAuthData,
-  useAuthModal,
-  useAuthToken,
-} from "@entites/User";
+import { AuthButton, useAuth, useAuthModal } from "@entites/User";
 import { LoginButton } from "@features/LoginButton";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { Link } from "react-router-dom";
 import { HeaderLinkItem } from "./HeaderLinkItem";
+import { UserAccount } from "@entites/User/ui/UserAccount";
 
 export const Header = memo(() => {
-  const { accessToken } = useAuthToken();
-  const userData = useAppSelector(getAuthData);
-  const isLoggin = accessToken != undefined && userData != undefined;
-  const { isOpen, onClose } = useAuthModal();
+  const { isLoggin } = useAuth();
+  console.log(isLoggin);
 
+  const { isOpen, onClose } = useAuthModal();
   const [modalType, setModalType] = useState<ModalType>(ModalType.LOGIN);
 
   const changeLoginModalType = () => {

@@ -1,6 +1,7 @@
 import { eachDayOfInterval, isSameDay, isSameMonth } from "date-fns";
 import { Calendar } from "dayzed";
 import { getWeekIndex } from "./getWeekIndex";
+import { toDay } from "./toDay";
 
 export const getCoords = (
   minDate: Date,
@@ -10,8 +11,8 @@ export const getCoords = (
   const MAX_DAY = 7;
 
   const width = eachDayOfInterval({
-    start: minDate,
-    end: maxDate,
+    start: toDay(minDate),
+    end: toDay(maxDate),
   }).length;
 
   const left = MAX_DAY - (MAX_DAY - getWeekIndex(minDate));

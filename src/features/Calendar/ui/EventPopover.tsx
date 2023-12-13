@@ -6,8 +6,16 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
+  Box,
   Button,
   ButtonGroup,
+  Drawer,
+  DrawerBody,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
   Flex,
   FormControl,
   FormLabel,
@@ -31,6 +39,7 @@ import {
   Text,
   Textarea,
   useDisclosure,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import { CalendarPanel, DefaultConfigs } from "@shared/ui/Calendar";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
@@ -75,6 +84,11 @@ interface EventPopoverProps {
 }
 export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
   (props) => {
+    const [isLessThan968] = useMediaQuery("(max-width: 968px)");
+    const currencyFormat = new Intl.NumberFormat("ru-RU", {
+      style: "currency",
+      currency: "KGS",
+    });
     const { children, objectId, id } = props;
     const {
       availability: {
@@ -91,6 +105,11 @@ export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
     const { onOpen: onDeleteModalOpen } = useDeleteModal();
 
     const { onOpen: sidebarOnOpen } = useSidebar();
+    const {
+      isOpen: availabilityIsOpen,
+      onOpen: availabilityOnOpen,
+      onClose: availabilityOnClose,
+    } = useDisclosure();
 
     const availability = useAppSelector(getObjectAvailibility(objectId));
 
@@ -189,154 +208,162 @@ export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
         setStartDate(minDate);
       }
     }, [isOpen, maxDate, minDate]);
+
     return (
       <>
-        <Popover
-          strategy="fixed"
-          computePositionOnMount
-          placement="top"
-          isLazy
-          closeOnBlur={false}
-        >
-          <PopoverTrigger>{children}</PopoverTrigger>
-          <PopoverContent
-            fontWeight={"medium"}
-            color="white"
-            bg={color}
-            borderColor={color}
-            maxW="full"
+        {!isLessThan968 && (
+          <Popover
+            strategy="fixed"
+            computePositionOnMount
+            placement="top"
+            isLazy
+            closeOnBlur={false}
           >
-            <PopoverHeader pt={2} fontWeight="bold" border="0">
-              {clientFullname || "Нет ФИО"}
-            </PopoverHeader>
-            <PopoverArrow bg={color} />
-            <PopoverCloseButton />
-            <PopoverBody>
-              <FormControl>
-                <FormLabel>Комментарий</FormLabel>
-                <Textarea
-                  borderColor={"white"}
-                  _hover={{
-                    borderColor: "white",
-                  }}
-                  p={1}
-                  value={comment}
-                  readOnly
-                />
-              </FormControl>
-              <HStack spacing={1}>
-                <Text>Номер телефона:</Text>
-                <Button
-                  as="a"
-                  color={"white"}
-                  href={`tel:${phoneNumber}`}
-                  variant={"link"}
-                  textDecoration={"underline"}
-                >
-                  {phoneNumber}
-                </Button>
-              </HStack>
-              <HStack spacing={1}>
-                <Text>заезд:</Text>
-                <Text>{format(minDate, "dd.MM.Y H:mm")}</Text>
-              </HStack>
-              <HStack spacing={1}>
-                <Text>выезд:</Text>
-                <Text>{format(maxDate, "dd.MM.Y H:mm")}</Text>
-              </HStack>
-              <HStack spacing={1}>
-                <Text>суток:</Text>
-                <Text>{differenceInDays(maxDate, minDate) + 1}</Text>
-              </HStack>
-              <HStack spacing={1}>
-                <Text>дата создания:</Text>
-                <Text>{format(createdDate, "y-M-d H:mm:ss")}</Text>
-              </HStack>
-              <HStack>
-                <Text>к оплате:</Text>
-                <Text>
-                  {selectedDatesForCost.reduce((acc, cur) => acc + cur.cost, 0)}
-                </Text>
-              </HStack>
-            </PopoverBody>
-            <PopoverFooter
-              border="0"
-              display="flex"
-              alignItems="center"
-              justifyContent="space-between"
-              pb={4}
+            <PopoverTrigger>{children}</PopoverTrigger>
+            <PopoverContent
+              fontWeight={"medium"}
+              color="white"
+              bg={color}
+              borderColor={color}
+              maxW="full"
             >
-              <HStack mt={2} flexWrap={"wrap"}>
-                <Button
-                  leftIcon={<EditIcon />}
-                  colorScheme="yellow"
-                  color={"white"}
-                  size="sm"
-                  onClick={onEdit}
-                >
-                  Редактировать
-                </Button>
-                <Button
-                  onClick={onDelete}
-                  size="sm"
-                  leftIcon={<DeleteIcon />}
-                  colorScheme="red"
-                >
-                  Удалить
-                </Button>
-                <Popover
-                  isLazy
-                  isOpen={isOpen}
-                  onOpen={onOpen}
-                  onClose={onClose}
-                  placement="top"
-                  closeOnBlur={false}
-                >
-                  <PopoverTrigger>
-                    <Button
-                      size="sm"
-                      colorScheme="green"
-                      leftIcon={<RiDragMove2Line />}
-                    >
-                      Переместить
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent h="full" p={5} color="black">
-                    <PopoverArrow />
-                    <PopoverCloseButton colorScheme="blue" />
-                    <Stack spacing={4}>
-                      <FormControl>
-                        <FormLabel>
-                          Выберите дату на которую хотите перенести
-                        </FormLabel>
+              <PopoverHeader pt={2} fontWeight="bold" border="0">
+                {clientFullname || "Нет ФИО"}
+              </PopoverHeader>
+              <PopoverArrow bg={color} />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <FormControl>
+                  <FormLabel>Комментарий</FormLabel>
+                  <Textarea
+                    borderColor={"white"}
+                    _hover={{
+                      borderColor: "white",
+                    }}
+                    p={1}
+                    value={comment}
+                    readOnly
+                  />
+                </FormControl>
+                <HStack spacing={1}>
+                  <Text>Номер телефона:</Text>
+                  <Button
+                    as="a"
+                    color={"white"}
+                    href={`tel:${phoneNumber}`}
+                    variant={"link"}
+                    textDecoration={"underline"}
+                  >
+                    {phoneNumber}
+                  </Button>
+                </HStack>
+                <HStack spacing={1}>
+                  <Text>заезд:</Text>
+                  <Text>{format(minDate, "dd.MM.Y H:mm")}</Text>
+                </HStack>
+                <HStack spacing={1}>
+                  <Text>выезд:</Text>
+                  <Text>{format(maxDate, "dd.MM.Y H:mm")}</Text>
+                </HStack>
+                <HStack spacing={1}>
+                  <Text>суток:</Text>
+                  <Text>{differenceInDays(maxDate, minDate) + 1}</Text>
+                </HStack>
+                <HStack spacing={1}>
+                  <Text>дата создания:</Text>
+                  <Text>{format(createdDate, "y-M-d H:mm:ss")}</Text>
+                </HStack>
+                <HStack>
+                  <Text>к оплате:</Text>
+                  <Text>
+                    {selectedDatesForCost.reduce(
+                      (acc, cur) => acc + cur.cost,
+                      0
+                    )}
+                  </Text>
+                </HStack>
+              </PopoverBody>
+              <PopoverFooter
+                border="0"
+                display="flex"
+                alignItems="center"
+                justifyContent="space-between"
+                pb={4}
+              >
+                <HStack mt={2} flexWrap={"wrap"}>
+                  <Button
+                    leftIcon={<EditIcon />}
+                    colorScheme="yellow"
+                    color={"white"}
+                    size="sm"
+                    onClick={onEdit}
+                  >
+                    Редактировать
+                  </Button>
+                  <Button
+                    onClick={onDelete}
+                    size="sm"
+                    leftIcon={<DeleteIcon />}
+                    colorScheme="red"
+                  >
+                    Удалить
+                  </Button>
+                  <Popover
+                    isLazy
+                    isOpen={isOpen}
+                    onOpen={onOpen}
+                    onClose={onClose}
+                    placement="top"
+                    closeOnBlur={false}
+                  >
+                    <PopoverTrigger>
+                      <Button
+                        size="sm"
+                        colorScheme="green"
+                        leftIcon={<RiDragMove2Line />}
+                      >
+                        Переместить
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent h="full" p={5} color="black">
+                      <PopoverArrow />
+                      <PopoverCloseButton colorScheme="blue" />
+                      <Stack spacing={4}>
+                        <FormControl>
+                          <FormLabel>
+                            Выберите дату на которую хотите перенести
+                          </FormLabel>
 
-                        <Button
-                          onClick={startOnOpen}
-                          w="full"
-                          variant={"outline"}
-                          h={12}
-                        >
-                          {format(startDate, "d LLLL yyyy", {
-                            locale: ru,
-                          })}
-                        </Button>
-                      </FormControl>
+                          <Button
+                            onClick={startOnOpen}
+                            w="full"
+                            variant={"outline"}
+                            h={12}
+                          >
+                            {format(startDate, "d LLLL yyyy", {
+                              locale: ru,
+                            })}
+                          </Button>
+                        </FormControl>
 
-                      <ButtonGroup display="flex" justifyContent="flex-end">
-                        <Button variant="outline" onClick={onClose}>
-                          Отмена
-                        </Button>
-                        <Button colorScheme="teal" onClick={onSaveDates}>
-                          Сохранить
-                        </Button>
-                      </ButtonGroup>
-                    </Stack>
-                  </PopoverContent>
-                </Popover>
-              </HStack>
-            </PopoverFooter>
-          </PopoverContent>
-        </Popover>
+                        <ButtonGroup display="flex" justifyContent="flex-end">
+                          <Button variant="outline" onClick={onClose}>
+                            Отмена
+                          </Button>
+                          <Button colorScheme="teal" onClick={onSaveDates}>
+                            Сохранить
+                          </Button>
+                        </ButtonGroup>
+                      </Stack>
+                    </PopoverContent>
+                  </Popover>
+                </HStack>
+              </PopoverFooter>
+            </PopoverContent>
+          </Popover>
+        )}
+        {isLessThan968 && <Box onClick={availabilityOnOpen}>{children}</Box>}
+
         <Modal isOpen={startIsOpen} onClose={startOnClose}>
           <ModalOverlay />
           <ModalContent>
@@ -405,6 +432,139 @@ export const EventPopover: FC<PropsWithChildren<EventPopoverProps>> = memo(
             </AlertDialogContent>
           </AlertDialogOverlay>
         </AlertDialog>
+
+        <Drawer
+          isOpen={availabilityIsOpen}
+          placement="bottom"
+          onClose={availabilityOnClose}
+          size={"full"}
+        >
+          <DrawerOverlay />
+          <DrawerContent bgColor={"none"} h={"95dvh"} roundedTop={"2xl"}>
+            <DrawerHeader p={6}>
+              <HStack alignItems={"center"}>
+                <Text>{clientFullname}</Text>
+                <Box
+                  maxW="24"
+                  w="full"
+                  h={"3"}
+                  rounded={"full"}
+                  bgColor={color}
+                />
+              </HStack>
+            </DrawerHeader>
+            <DrawerCloseButton />
+            <DrawerBody h={"100dvh"}>
+              <FormControl>
+                <FormLabel>Комментарий</FormLabel>
+                <Textarea p={1} value={comment} readOnly />
+              </FormControl>
+              <HStack spacing={1}>
+                <Text>Номер телефона:</Text>
+                <Button
+                  as="a"
+                  href={`tel:${phoneNumber}`}
+                  variant={"link"}
+                  textDecoration={"underline"}
+                >
+                  {phoneNumber}
+                </Button>
+              </HStack>
+              <HStack spacing={1}>
+                <Text>заезд:</Text>
+                <Text>{format(minDate, "dd.MM.Y H:mm")}</Text>
+              </HStack>
+              <HStack spacing={1}>
+                <Text>выезд:</Text>
+                <Text>{format(maxDate, "dd.MM.Y H:mm")}</Text>
+              </HStack>
+              <HStack spacing={1}>
+                <Text>суток:</Text>
+                <Text>{differenceInDays(maxDate, minDate) + 1}</Text>
+              </HStack>
+              <HStack spacing={1}>
+                <Text>дата создания:</Text>
+                <Text>{format(createdDate, "y-M-d H:mm:ss")}</Text>
+              </HStack>
+              <HStack>
+                <Text>к оплате:</Text>
+                <Text>
+                  {currencyFormat.format(
+                    selectedDatesForCost.reduce((acc, cur) => acc + cur.cost, 0)
+                  )}
+                </Text>
+              </HStack>
+            </DrawerBody>
+            <DrawerFooter>
+              <HStack flexWrap={"wrap"}>
+                <Button
+                  leftIcon={<EditIcon />}
+                  colorScheme="yellow"
+                  color={"white"}
+                  size="sm"
+                  onClick={onEdit}
+                >
+                  Редактировать
+                </Button>
+                <Button
+                  onClick={onDelete}
+                  size="sm"
+                  leftIcon={<DeleteIcon />}
+                  colorScheme="red"
+                >
+                  Удалить
+                </Button>
+                <Popover
+                  isLazy
+                  isOpen={isOpen}
+                  onOpen={onOpen}
+                  onClose={onClose}
+                  placement="top"
+                  closeOnBlur={false}
+                >
+                  <PopoverTrigger>
+                    <Button
+                      size="sm"
+                      colorScheme="green"
+                      leftIcon={<RiDragMove2Line />}
+                    >
+                      Переместить
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent h="full" p={5} color="black">
+                    <PopoverArrow />
+                    <PopoverCloseButton colorScheme="blue" />
+                    <Stack spacing={4}>
+                      <FormControl>
+                        <FormLabel>
+                          Выберите дату на которую хотите перенести
+                        </FormLabel>
+
+                        <Button
+                          onClick={startOnOpen}
+                          w="full"
+                          variant={"outline"}
+                          h={12}
+                        >
+                          {format(startDate, "d LLLL yyyy", {
+                            locale: ru,
+                          })}
+                        </Button>
+                      </FormControl>
+
+                      <Button variant="outline" onClick={onClose}>
+                        Отмена
+                      </Button>
+                      <Button colorScheme="teal" onClick={onSaveDates}>
+                        Сохранить
+                      </Button>
+                    </Stack>
+                  </PopoverContent>
+                </Popover>
+              </HStack>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </>
     );
   }

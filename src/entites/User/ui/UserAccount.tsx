@@ -1,28 +1,33 @@
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import {
-  Popover,
-  PopoverTrigger,
-  Button,
-  Box,
-  PopoverContent,
-  PopoverBody,
   Avatar,
-  Text,
-  Stack,
+  Box,
+  Button,
   Divider,
+  Popover,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { userAction } from "..";
+import { useAuth } from "..";
+import { useLogoutMutation } from "../model/api/userApi";
 
 export const UserAccount = () => {
   const [isHover, setHover] = useState(false);
-  const dispatch = useAppDispatch();
-  const onLogout = () => {
-    dispatch(userAction.logout());
+  const { logout } = useAuth();
+  const [logoutApi, { isLoading }] = useLogoutMutation();
+
+  const onLogout = async () => {
+    await logoutApi().then(() => {
+      logout();
+    });
   };
+
   return (
     <Popover
       trigger="hover"
@@ -99,6 +104,7 @@ export const UserAccount = () => {
               color={"white"}
               borderColor={"red.600"}
               onClick={onLogout}
+              isLoading={isLoading}
             >
               Выйти из аккаунта
             </Button>

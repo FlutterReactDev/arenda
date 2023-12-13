@@ -1,6 +1,9 @@
 import {
   Box,
+  Button,
+  HStack,
   Heading,
+  Icon,
   Table,
   TableContainer,
   Tbody,
@@ -10,12 +13,45 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { LegacyRef, useRef } from "react";
+import { FcPrint } from "react-icons/fc";
+import { FaRegFileExcel } from "react-icons/fa";
+import { useReactToPrint } from "react-to-print";
+// import XLSX from "sheetjs-style";
+// import * as FileSaver from "file-saver";
 
 const CalendarStatPage = () => {
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current || null,
+    documentTitle: "Статистика",
+  });
+
   return (
     <Box p={4}>
       <Heading>Общая статистика</Heading>
-      <TableContainer mt={4}>
+      <HStack mt={3}>
+        <Button
+          leftIcon={<Icon as={FcPrint} />}
+          variant={"outline"}
+          colorScheme="blue"
+          onClick={handlePrint}
+        >
+          Печать
+        </Button>
+        <Button
+          leftIcon={<Icon as={FaRegFileExcel} />}
+          variant={"outline"}
+          colorScheme="green"
+          onClick={handlePrint}
+        >
+          экспорт в excel
+        </Button>
+      </HStack>
+      <TableContainer
+        ref={componentRef as unknown as LegacyRef<HTMLDivElement>}
+        mt={4}
+      >
         <Table size={"lg"} variant="simple">
           <Thead>
             <Tr>

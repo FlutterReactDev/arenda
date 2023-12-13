@@ -1,25 +1,24 @@
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
+import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
-  FormControl,
   Box,
-  FormLabel,
   Button,
+  FormControl,
+  FormErrorMessage,
+  FormLabel,
   Input,
   InputGroup,
   InputRightElement,
-  FormErrorMessage,
   Stack,
 } from "@chakra-ui/react";
-import { LoginSchema, useAuthModal, userAction } from "@entites/User";
+import { LoginSchema, useAuth, useAuthModal } from "@entites/User";
+import { useLoginMutation } from "@entites/User/model/api/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { PhoneInput } from "@shared/ui/PhoneInput";
-import { useForm, Controller } from "react-hook-form";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import * as Yup from "yup";
 import { useState } from "react";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { useLoginMutation } from "@entites/User/model/api/userApi";
+import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
+import * as Yup from "yup";
 const LoginForm = () => {
   const {
     handleSubmit,
@@ -29,9 +28,10 @@ const LoginForm = () => {
   } = useForm<Yup.InferType<typeof LoginSchema>>({
     resolver: yupResolver(LoginSchema),
   });
+  const userAuth = useAuth();
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
-  const dispatch = useAppDispatch();
+
   const { onClose } = useAuthModal();
 
   const navigate = useNavigate();
@@ -41,7 +41,7 @@ const LoginForm = () => {
     await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") })
       .unwrap()
       .then((data) => {
-        dispatch(userAction.setAuthData(data));
+        userAuth.login(data);
         onClose();
         if (location.state?.from) {
           return navigate(location.state?.from, {

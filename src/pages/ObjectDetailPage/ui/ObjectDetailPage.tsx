@@ -1,6 +1,6 @@
 import { Box, Grid, GridItem } from "@chakra-ui/react";
 import { ObjectDetailCard } from "@entites/Object";
-import { BookingForm } from "@features/BookingForm";
+import { BookingForm } from "@widgets/BookingForm";
 
 const ObjectDetailPage = () => {
   return (
@@ -8,23 +8,22 @@ const ObjectDetailPage = () => {
       <Grid
         templateAreas={`"leftSpace content aside rightSpace"`}
         gridTemplateColumns={"1fr minmax(600px,830px) 360px 1fr"}
+        alignItems={"start"}
         gap={6}
-        overflow={"hidden"}
       >
+        <GridItem
+          position={"sticky"}
+          top={0}
+          area={"aside"}
+          bgColor={"white"}
+          rounded={"lg"}
+          p={3}
+        >
+          <BookingForm />
+        </GridItem>
         <GridItem area={"leftSpace"}></GridItem>
         <GridItem area={"content"}>
           <ObjectDetailCard />
-        </GridItem>
-        <GridItem
-          area={"aside"}
-          position={"sticky"}
-          top={0}
-          h={"100px"}
-          zIndex={"dropdown"}
-        >
-          <Box bgColor={"white"} rounded={"xl"} p={4}>
-            <BookingForm />
-          </Box>
         </GridItem>
         <GridItem area={"rightSpace"}></GridItem>
       </Grid>

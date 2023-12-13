@@ -6,6 +6,7 @@ const initialState = {
   userAuthModal: {
     isOpen: false,
   },
+  isLoggin: false,
 } as UserState;
 const userSlice = createSlice({
   name: "userSlice",
@@ -31,6 +32,10 @@ const userSlice = createSlice({
 
     setOnClose(state) {
       state.userAuthModal.isOpen = false;
+    },
+
+    setIsLoggin(state, action) {
+      state.isLoggin = action.payload;
     },
   },
 });

@@ -29,7 +29,6 @@ import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 import { CalendarScroller } from "./CalendarScroller";
 import { ModalDeleteAvailibility } from "./ModalDeleteAvailibility";
 import { ObjectItem } from "./ObjectItem";
-import { ObjectPagination } from "./ObjectsPagination";
 import { SearchAvailibilityRoomsBtn } from "./SearchAvailibilityRoomsBtn";
 import { SearchAvailibilityRoomsModal } from "./SearchAvailibilityRoomsModal";
 import { SearchObject } from "./SearchObject";
@@ -102,11 +101,6 @@ export const Calendar = memo(() => {
               <SearchAvailibilityRoomsBtn />
               <SearchObject />
             </Hide>
-            <Box w="full">
-              <Hide breakpoint="(max-width: 968px)">
-                <ObjectPagination />
-              </Hide>
-            </Box>
           </Stack>
         </GridItem>
 

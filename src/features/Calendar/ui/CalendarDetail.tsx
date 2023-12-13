@@ -174,8 +174,8 @@ export const CalendarDetail = () => {
       item: CalendarAvailability
     ): CalendarDetailAvailability[] => {
       const getIntervalDays = eachDayOfInterval({
-        start: item.minDate,
-        end: item.maxDate,
+        start: toDay(item.minDate),
+        end: toDay(item.maxDate),
       });
 
       if (
@@ -185,8 +185,8 @@ export const CalendarDetail = () => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         //@ts-ignore
         return createCoordsOnSpittedDate(
-          item.minDate,
-          item.maxDate,
+          toDay(item.minDate),
+          toDay(item.maxDate),
           getIntervalDays,
           item
         );

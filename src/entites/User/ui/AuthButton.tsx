@@ -1,21 +1,21 @@
 import { Button, ButtonProps } from "@chakra-ui/react";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { getAuthData, useAuthModal, useAuthToken } from "..";
-import { Link } from "react-router-dom";
 import { FC } from "react";
+import { Link } from "react-router-dom";
+import { useAuth, useAuthModal } from "..";
 interface AuthButtonProps extends ButtonProps {
   to: string;
   isAuth?: boolean;
 }
 export const AuthButton: FC<AuthButtonProps> = (props) => {
   const { to, isAuth = false, ...otherProps } = props;
-  const authData = useAppSelector(getAuthData);
+  const { isLoggin } = useAuth();
   const { onOpen } = useAuthModal();
-  const { accessToken, refreshToken } = useAuthToken();
+  
   if (!isAuth) {
     return <Button {...otherProps} />;
   }
-  if (!authData || !accessToken || !refreshToken) {
+
+  if (isLoggin) {
     return <Button onClick={onOpen} {...otherProps} />;
   }
 
