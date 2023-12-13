@@ -85,9 +85,9 @@ const createObjectSlice = createSlice({
     },
 
     setLocationMap(state, action) {
-      state.latitude = action.payload.coordinates[1];
-      state.longitude = action.payload.coordinates[0];
-      state.fullAddress = action.payload.fullAddress;
+      state.latitude = action.payload.selectMap.coordinates.latitude;
+      state.longitude = action.payload.selectMap.coordinates.longitude;
+      state.fullAddress = action.payload.selectMap.fullAddress;
     },
     setAnObjectPropertyTypeId(state, action) {
       state.anObjectPropertyTypeId = action.payload;
