@@ -12,15 +12,14 @@ export const SelectMapFitBounds: FC<SelectMapFitBoundsProps> = (props) => {
   const { mapInstance } = useMapContext();
 
   useEffect(() => {
-    console.log(value);
-
     if (
       value?.selectMap.coordinates.latitude &&
-      value?.selectMap.coordinates.longitude
+      value?.selectMap.coordinates.longitude &&
+      mapInstance
     ) {
       const { latitude, longitude } = value.selectMap.coordinates;
 
-      mapInstance?.fitBounds(
+      mapInstance.fitBounds(
         {
           northEast: [longitude, latitude],
           southWest: [longitude, latitude],
@@ -33,7 +32,7 @@ export const SelectMapFitBounds: FC<SelectMapFitBoundsProps> = (props) => {
       return;
     }
 
-    if (markers.length) {
+    if (markers.length && mapInstance) {
       const coords = markers
         .map((item) => {
           return item.point;

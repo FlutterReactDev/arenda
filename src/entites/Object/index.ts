@@ -19,6 +19,7 @@ export { HotelGeneralInformationForm } from "./ui/Forms/HotelGeneralInformationF
 export { RoomTypeForm } from "./ui/Forms/RoomTypeForm";
 export { GeneralRoomInformationForm } from "./ui/Forms/GeneralRoomInformationForm";
 export { RoomOptionalServiceForm } from "./ui/Forms/RoomOptionalServiceForm";
+export { EditSelectFormMap } from "./ui/Forms/EditSelectFormMap";
 export {
   createObjectAction,
   createObjectReducer,
@@ -31,6 +32,9 @@ export {
   useCreateObjectMutation,
   useCreateRoomMutation,
   useCreateRoomsMutation,
+  useGetAllObjectsQuery,
+  useGetObjectByIdQuery,
+  useEditObjectMutation,
 } from "./model/api/objectApi";
 export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";
 export { useCreateObject } from "./model/useCreateObject";
@@ -64,3 +68,11 @@ export type {
 } from "./model/types/createRoomTypes";
 
 export type { FormProps } from "./model/types/objectTypes";
+
+export type {
+  AnObjectAdditionalComfortResponse,
+  AnObjectDetailResponse,
+  AnObjectFeeAdditionalServiceResponse,
+  AnObjectMealResponse,
+  ObjectResponse,
+} from "./model/types/object";

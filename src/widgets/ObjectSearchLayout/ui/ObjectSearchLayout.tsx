@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 
-import { SearchMap, useSearchMap } from "@entites/Map";
+import { SearchMap, getBoundsOfCoords, useSearchMap } from "@entites/Map";
 
 import {
   CalendarIcon,
@@ -72,7 +72,59 @@ import "swiper/css/pagination";
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
-  const { addMarkers } = useSearchMap();
+  const { addMarkers, setFitBounds, bounds } = useSearchMap();
+  const markers = [
+    {
+      longitude: 77.1757361557851,
+      latitude: 42.64472838750217,
+      price: 1000,
+    },
+    {
+      latitude: 42.645238409366385,
+      longitude: 77.17437800783786,
+      price: 2000,
+    },
+    {
+      latitude: 42.645017610523716,
+      longitude: 77.17292784537554,
+      price: 1450,
+    },
+
+    {
+      latitude: 42.658896258910474,
+      longitude: 77.1981040743652,
+      price: 1850,
+    },
+    {
+      latitude: 42.872791,
+      longitude: 74.597399,
+      price: 17080,
+    },
+    { latitude: 42.880191, longitude: 74.621265, price: 1200 },
+    { latitude: 42.880218, longitude: 74.620338, price: 1900 },
+    {
+      latitude: 41.413604,
+      longitude: 75.054927,
+      price: 1700,
+    },
+
+    { latitude: 42.517291, longitude: 72.239297, price: 6900 },
+    { latitude: 40.265527, longitude: 72.616967, price: 8150 },
+    { latitude: 39.466743, longitude: 75.984931, price: 7900 },
+    {
+      latitude: 42.117053,
+      longitude: 76.995835,
+      price: 2670,
+    },
+    {
+      latitude: 42.489932,
+      longitude: 78.392196,
+      price: 5600,
+    },
+  ];
+
+  console.log(bounds);
+
   const {
     isOpen: mapIsOpen,
     onToggle: mapOnToggle,
@@ -124,38 +176,31 @@ export const ObjectSearchLayout = () => {
       );
     }
   }, [calendarDates, dispatch]);
-  useEffect(() => {
-    addMarkers([
-      {
-        longitude: 77.1757361557851,
-        latitude: 42.64472838750217,
-        price: 1000,
-      },
-      {
-        latitude: 42.645238409366385,
-        longitude: 77.17437800783786,
-        price: 2000,
-      },
-      {
-        latitude: 42.645017610523716,
-        longitude: 77.17292784537554,
-        price: 1450,
-      },
 
-      {
-        latitude: 42.658896258910474,
-        longitude: 77.1981040743652,
-        price: 1850,
-      },
-      {
-        latitude: 42.872791,
-        longitude: 74.597399,
-        price: 17080,
-      },
-      { latitude: 42.880191, longitude: 74.621265, price: 1200 },
-      { latitude: 42.880218, longitude: 74.620338, price: 1900 },
-    ]);
+  useEffect(() => {
+    addMarkers(markers);
   }, []);
+
+  const onSetFitBounds = () => {
+    const bounds = getBoundsOfCoords(
+      markers.map((marker) => [marker.latitude, marker.longitude])
+    );
+
+    const northEast = [
+      markers[bounds.northEast[1]].longitude,
+      markers[bounds.northEast[0]].latitude,
+    ];
+
+    const southWest = [
+      markers[bounds.southWest[1]].longitude,
+      markers[bounds.southWest[0]].latitude,
+    ];
+
+    setFitBounds({
+      northEast,
+      southWest,
+    });
+  };
   return (
     <>
       <Show breakpoint="(min-width: 901px)">
@@ -729,7 +774,7 @@ export const ObjectSearchLayout = () => {
             overflow={"hidden"}
             top={24}
             area={"map"}
-            h={"100vh"}
+            h={"calc(100vh - 160px)"}
           >
             <Box w="full" h="full" position={"relative"}>
               <IconButton
@@ -749,6 +794,15 @@ export const ObjectSearchLayout = () => {
                   </>
                 }
               />
+              <Button
+                position={"absolute"}
+                top={4}
+                right={4}
+                onClick={onSetFitBounds}
+                zIndex={"popover"}
+              >
+                Заполнить
+              </Button>
 
               <SearchMap onMove={mapOnOpen} />
             </Box>

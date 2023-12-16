@@ -182,8 +182,6 @@ const HotelGeneralInformationForm: FC<
     onNext && onNext();
   };
 
-  console.log(errors);
-
   return (
     <Box as="form" onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>

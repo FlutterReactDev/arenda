@@ -32,7 +32,6 @@ import { UserAccount } from "@entites/User/ui/UserAccount";
 
 export const Header = memo(() => {
   const { isLoggin } = useAuth();
-  console.log(isLoggin);
 
   const { isOpen, onClose } = useAuthModal();
   const [modalType, setModalType] = useState<ModalType>(ModalType.LOGIN);

@@ -15,5 +15,6 @@ export const PrivateRoute: FC<PropsWithChildren> = (props) => {
 
     return <Navigate to={RouteName.LOGIN_PAGE} state={routeState} />;
   }
+
   return <>{children}</>;
 };

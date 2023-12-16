@@ -25,7 +25,12 @@ export const SearchMapInstance = () => {
 
   useEffect(() => {
     if (fitBounds) {
-      mapInstance?.fitBounds({ ...fitBounds });
+      mapInstance?.fitBounds(
+        { ...fitBounds },
+        {
+          padding: { top: 60, left: 60, bottom: 60, right: 60 },
+        }
+      );
     }
   }, [fitBounds, mapInstance]);
 

@@ -140,7 +140,14 @@ export const ImageUploader: FC<ImageUploaderProps> = memo((props) => {
               </SimpleGrid>
             )}
             {files?.length == 0 && (
-              <Center w={"full"} h="full">
+              <Center
+                onClick={() => {
+                  inputRef.current.click();
+                }}
+                w={"full"}
+                h="full"
+                cursor={"pointer"}
+              >
                 <Icon as={BsFillImageFill} w={40} h={40} color={"red.600"} />
               </Center>
             )}

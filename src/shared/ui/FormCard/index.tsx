@@ -5,17 +5,10 @@ interface FormCardProps {
   title?: ReactNode;
   w?: "full";
   disableBg?: boolean;
-  disableShadow?: boolean;
 }
 
 export const FormCard: FC<PropsWithChildren<FormCardProps>> = (props) => {
-  const {
-    title,
-    children,
-    w,
-    disableBg = false,
-    disableShadow = false,
-  } = props;
+  const { title, children, w, disableBg = false } = props;
   return (
     <Stack
       {...(!disableBg && {
@@ -23,9 +16,6 @@ export const FormCard: FC<PropsWithChildren<FormCardProps>> = (props) => {
       })}
       {...(disableBg && {
         bgColor: "none",
-      })}
-      {...(!disableShadow && {
-        boxShadow: "lg",
       })}
       p="4"
       borderRadius="xl"
