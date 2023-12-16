@@ -49,7 +49,8 @@ const RoomOptionalServiceForm: FC<FormProps & RoomOptionalServiceFormProps> = (
     currencies,
     currentCurrencyId,
   } = props;
-
+  console.log(currencies);
+  
   const {
     handleSubmit,
     watch,

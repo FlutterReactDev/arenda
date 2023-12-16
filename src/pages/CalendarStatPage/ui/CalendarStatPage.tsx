@@ -17,8 +17,8 @@ import { LegacyRef, useRef } from "react";
 import { FcPrint } from "react-icons/fc";
 import { FaRegFileExcel } from "react-icons/fa";
 import { useReactToPrint } from "react-to-print";
-// import XLSX from "sheetjs-style";
-// import * as FileSaver from "file-saver";
+import { saveAs } from "file-saver";
+import { utils, write } from "xlsx";
 
 const CalendarStatPage = () => {
   const componentRef = useRef();
@@ -26,6 +26,20 @@ const CalendarStatPage = () => {
     content: () => componentRef.current || null,
     documentTitle: "Статистика",
   });
+
+  const exporertToExcel = () => {
+    const data = [
+      ["Name", "Name"],
+      ["Хуй", "12 см"],
+    ];
+
+    const wb = utils.book_new();
+    const ws = utils.aoa_to_sheet(data);
+    utils.book_append_sheet(wb, ws, "Sheet1");
+
+    const blob = write(wb, { bookType: "xlsx", type: "binary" });
+    saveAs(blob, "Adasdsa.xlsx");
+  };
 
   return (
     <Box p={4}>
@@ -43,7 +57,7 @@ const CalendarStatPage = () => {
           leftIcon={<Icon as={FaRegFileExcel} />}
           variant={"outline"}
           colorScheme="green"
-          onClick={handlePrint}
+          onClick={exporertToExcel}
         >
           экспорт в excel
         </Button>

@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LatLong, Marker, SearchMapState } from "./types";
+import { LatLong, Marker, SearchMapState, UserGeolocation } from "./types";
 
 const initialState = {
   markers: [],
@@ -9,6 +9,7 @@ const initialState = {
   bounds: null,
   isMove: false,
   fitBounds: null,
+  userGeolocation: null,
 } as SearchMapState;
 
 const searchMapSlice = createSlice({
@@ -19,6 +20,9 @@ const searchMapSlice = createSlice({
       state.markers.push(action.payload);
     },
 
+    setUserGeolocation(state, action: PayloadAction<UserGeolocation>) {
+      state.userGeolocation = action.payload;
+    },
     removeMarker(state, action: PayloadAction<LatLong>) {
       state.markers = state.markers.filter(
         (marker) =>

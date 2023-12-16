@@ -62,10 +62,16 @@ export interface SearchMapState {
     northEast: NorthEast;
     southWest: SouthWest;
   };
+  userGeolocation: UserGeolocation | null;
 }
 
 export interface SelectMapState {
   markerClear: boolean;
   markers: Item[];
   selectedObject: LatLong | null;
+}
+
+export interface UserGeolocation {
+  latitude: number;
+  longitude: number;
 }

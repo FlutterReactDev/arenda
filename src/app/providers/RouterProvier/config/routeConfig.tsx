@@ -19,6 +19,7 @@ import { Navigate } from "react-router-dom";
 import { ObjectSecureRoute } from "../ui/ObjectSecureRoute";
 import { MyObjectsPage } from "@pages/MyObjectsPage";
 import { EditHotelPage } from "@pages/EditHotelPage";
+import { EditRoomPage } from "@pages/EditRoomPage";
 
 export enum RouteName {
   MAIN_PAGE = "/",
@@ -34,7 +35,9 @@ export enum RouteName {
 
   CREATE_HOTEL = "/hotel/create-hotel",
   EDIT_HOTEL = "/hotel/:hotelId/edit-hotel",
+
   CREATE_ROOM = "/hotel/:hotelId/create-room",
+  EDIT_ROOM = "/hotel/edit-room",
 
   CREATE_OBJECT = "/object/create",
   EDIT_OBJECT = "/object/:objectId/edit-object",
@@ -104,6 +107,12 @@ export const routeConfig: Route[] = [
     element: <CreateRoomPage />,
     private: false,
     layout: true,
+  },
+  {
+    path: RouteName.EDIT_ROOM,
+    element: <EditRoomPage />,
+    layout: true,
+    private: true,
   },
   {
     path: RouteName.CALENDAR_PAGE,

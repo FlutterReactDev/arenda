@@ -77,7 +77,7 @@ const GeneralRoomInformationForm: FC<
 
   useEffect(() => {
     setValidOptions([
-      ...new Set(typeAndCountBeds.map((field) => Number(field.bedType))),
+      ...new Set(typeAndCountBeds?.map((field) => Number(field.bedType))),
     ]);
   }, [typeAndCountBeds]);
 

@@ -38,10 +38,7 @@ export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
   return (
     <Stack as="form" spacing={4} onSubmit={handleSubmit(onSubmit)}>
       <FormContainer>
-        <Text>
-          Это местоположение гости увидят на нашем сайте. Если у вас появилось
-          несколько маркеров, выберите тот который точно указывает ваш адресс
-        </Text>
+        <Text>Это местоположение гости увидят на нашем сайте.</Text>
 
         <Box h={"350px"} mt={5}>
           <Controller
@@ -62,8 +59,8 @@ export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
                   city="Бостери"
                   country="Кыргызстан"
                   region="Ыссык-Кол"
-                  streetName={"Мамытова"}
-                  house={"22а"}
+                  streetName={""}
+                  house={""}
                   viewpoint1={{
                     id: 1,
                     latitude: 42.646977948,

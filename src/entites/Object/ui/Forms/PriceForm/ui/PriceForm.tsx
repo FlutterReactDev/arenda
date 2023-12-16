@@ -51,7 +51,7 @@ const PriceForm: FC<FormProps & PriceFormProps> = (props) => {
     defaultValues: {
       ...value,
 
-      ...(!value.currencyId && {
+      ...(!value?.currencyId && {
         currencyId: currencies[0].id,
       }),
     },

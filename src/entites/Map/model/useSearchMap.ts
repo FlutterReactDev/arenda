@@ -6,9 +6,16 @@ import {
   getHover,
   getIsMoving,
   getMakers,
+  getUserGeolocation,
   getZoom,
 } from "./selectors";
-import { LatLong, Marker, NorthEast, SouthWest } from "./types";
+import {
+  LatLong,
+  Marker,
+  NorthEast,
+  SouthWest,
+  UserGeolocation,
+} from "./types";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { searchMapActions } from "..";
 
@@ -20,6 +27,7 @@ export const useSearchMap = () => {
   const bounds = useAppSelector(getBounds);
   const isMoving = useAppSelector(getIsMoving);
   const fitBounds = useAppSelector(getFitBounds);
+  const userGeolocation = useAppSelector(getUserGeolocation);
 
   const dispatch = useAppDispatch();
 
@@ -91,6 +99,10 @@ export const useSearchMap = () => {
     dispatch(searchMapActions.clearFitBounds());
   };
 
+  const setUserGeolocation = (data: UserGeolocation) => {
+    dispatch(searchMapActions.setUserGeolocation(data));
+  };
+
   return {
     markers,
     hoverMarker,
@@ -115,5 +127,7 @@ export const useSearchMap = () => {
     fitBounds,
     setFitBounds,
     clearFitBounds,
+    setUserGeolocation,
+    userGeolocation,
   };
 };
