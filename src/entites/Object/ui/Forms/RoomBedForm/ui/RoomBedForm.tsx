@@ -34,7 +34,7 @@ interface RoomBedFormProps {
   roomCount: number;
 }
 
-const RoomBedForm: FC<RoomBedFormProps & FormProps> = (props) => {
+export const RoomBedForm: FC<RoomBedFormProps & FormProps> = (props) => {
   const { onChange, roomCount, value } = props;
   const {
     handleSubmit,
@@ -312,5 +312,3 @@ const RoomBedForm: FC<RoomBedFormProps & FormProps> = (props) => {
     </form>
   );
 };
-
-export default RoomBedForm;
