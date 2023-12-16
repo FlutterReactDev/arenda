@@ -8,9 +8,7 @@ const MyObjectsPage = () => {
   return (
     <Box p={4}>
       <Container maxW="container.xl">
-        
           <ObjectTable />
-        
       </Container>
     </Box>
   );

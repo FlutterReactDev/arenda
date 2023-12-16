@@ -12,6 +12,7 @@ import {
 
 export type DataTableProps<Data extends object> = {
   data: Data[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   columns: ColumnDef<Data, any>[];
 };
 
@@ -37,6 +38,7 @@ export function ReactTable<Data extends object>({
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
             {headerGroup.headers.map((header) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const meta: any = header.column.columnDef.meta;
               return (
                 <Th
@@ -68,6 +70,7 @@ export function ReactTable<Data extends object>({
         {table.getRowModel().rows.map((row) => (
           <Tr key={row.id}>
             {row.getVisibleCells().map((cell) => {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const meta: any = cell.column.columnDef.meta;
               return (
                 <Td key={cell.id} isNumeric={meta?.isNumeric}>
