@@ -287,7 +287,7 @@ export const ObjectSearchLayout = () => {
                   bgColor={"white"}
                   rounded={"lg"}
                 >
-                  <FormCard disableBg disableShadow title="Выбирайте лучшее">
+                  <FormCard disableBg title="Выбирайте лучшее">
                     <HStack
                       justifyContent={"space-between"}
                       alignItems={"center"}
@@ -323,7 +323,7 @@ export const ObjectSearchLayout = () => {
                       <Switch colorScheme="red" />
                     </HStack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Варианты размещения">
+                  <FormCard disableBg title="Варианты размещения">
                     <Stack>
                       <Checkbox colorScheme="red">
                         Квартиры, апартаменты
@@ -340,7 +340,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Хостелы</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Отдельные спальни">
+                  <FormCard disableBg title="Отдельные спальни">
                     <Select>
                       <option>любое</option>
                       <option value="is_studio">студия</option>
@@ -367,7 +367,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <FormControl>
@@ -394,7 +393,7 @@ export const ObjectSearchLayout = () => {
                       </FormControl>
                     </Stack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Площадь">
+                  <FormCard disableBg title="Площадь">
                     <HStack>
                       <InputGroup>
                         <Input placeholder="от" type="number" />
@@ -413,7 +412,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -457,7 +455,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -505,7 +502,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
@@ -554,7 +550,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Парковка</Checkbox>
@@ -564,7 +559,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Детская площадка</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Этаж" disableBg disableShadow>
+                  <FormCard title="Этаж" disableBg>
                     <HStack>
                       <Input type="number" placeholder="с" />
                       <Box>-</Box>
@@ -597,7 +592,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -637,7 +631,7 @@ export const ObjectSearchLayout = () => {
                       ]}
                     />
                   </FormCard>
-                  <FormCard title="Санузел" disableBg disableShadow>
+                  <FormCard title="Санузел" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
                       <Checkbox colorScheme="red">Свой туалет</Checkbox>
@@ -660,7 +654,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Завтрак</Checkbox>
@@ -670,7 +663,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -695,7 +687,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Доступность" disableBg disableShadow>
+                  <FormCard title="Доступность" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">Лифт</Checkbox>
                       <Checkbox colorScheme="red">
@@ -703,7 +695,7 @@ export const ObjectSearchLayout = () => {
                       </Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Дополнительно" disableBg disableShadow>
+                  <FormCard title="Дополнительно" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">быстро отвечают</Checkbox>
                       <Checkbox colorScheme="red">Суперхозяева</Checkbox>
@@ -830,7 +822,7 @@ export const ObjectSearchLayout = () => {
                   bgColor={"white"}
                   rounded={"lg"}
                 >
-                  <FormCard disableBg disableShadow title="Выбирайте лучшее">
+                  <FormCard disableBg title="Выбирайте лучшее">
                     <HStack
                       justifyContent={"space-between"}
                       alignItems={"center"}
@@ -866,7 +858,7 @@ export const ObjectSearchLayout = () => {
                       <Switch colorScheme="red" />
                     </HStack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Варианты размещения">
+                  <FormCard disableBg title="Варианты размещения">
                     <Stack>
                       <Checkbox colorScheme="red">
                         Квартиры, апартаменты
@@ -883,7 +875,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Хостелы</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Отдельные спальни">
+                  <FormCard disableBg title="Отдельные спальни">
                     <Select>
                       <option>любое</option>
                       <option value="is_studio">студия</option>
@@ -910,7 +902,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <FormControl>
@@ -937,7 +928,7 @@ export const ObjectSearchLayout = () => {
                       </FormControl>
                     </Stack>
                   </FormCard>
-                  <FormCard disableBg disableShadow title="Площадь">
+                  <FormCard disableBg title="Площадь">
                     <HStack>
                       <InputGroup>
                         <Input placeholder="от" type="number" />
@@ -956,7 +947,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -1000,7 +990,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -1048,7 +1037,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
@@ -1097,7 +1085,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Парковка</Checkbox>
@@ -1107,7 +1094,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">Детская площадка</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Этаж" disableBg disableShadow>
+                  <FormCard title="Этаж" disableBg>
                     <HStack>
                       <Input type="number" placeholder="с" />
                       <Box>-</Box>
@@ -1140,7 +1127,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -1180,7 +1166,7 @@ export const ObjectSearchLayout = () => {
                       ]}
                     />
                   </FormCard>
-                  <FormCard title="Санузел" disableBg disableShadow>
+                  <FormCard title="Санузел" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
                       <Checkbox colorScheme="red">Свой туалет</Checkbox>
@@ -1203,7 +1189,6 @@ export const ObjectSearchLayout = () => {
                       </>
                     }
                     disableBg
-                    disableShadow
                   >
                     <Stack>
                       <Checkbox colorScheme="red">Завтрак</Checkbox>
@@ -1213,7 +1198,6 @@ export const ObjectSearchLayout = () => {
                   </FormCard>
                   <FormCard
                     disableBg
-                    disableShadow
                     title={
                       <>
                         <HStack>
@@ -1238,7 +1222,7 @@ export const ObjectSearchLayout = () => {
                       <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Доступность" disableBg disableShadow>
+                  <FormCard title="Доступность" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">Лифт</Checkbox>
                       <Checkbox colorScheme="red">
@@ -1246,7 +1230,7 @@ export const ObjectSearchLayout = () => {
                       </Checkbox>
                     </Stack>
                   </FormCard>
-                  <FormCard title="Дополнительно" disableBg disableShadow>
+                  <FormCard title="Дополнительно" disableBg>
                     <Stack>
                       <Checkbox colorScheme="red">быстро отвечают</Checkbox>
                       <Checkbox colorScheme="red">Суперхозяева</Checkbox>
@@ -1433,7 +1417,7 @@ export const ObjectSearchLayout = () => {
                 bgColor={"white"}
                 rounded={"lg"}
               >
-                <FormCard disableBg disableShadow title="Выбирайте лучшее">
+                <FormCard disableBg title="Выбирайте лучшее">
                   <HStack
                     justifyContent={"space-between"}
                     alignItems={"center"}
@@ -1469,7 +1453,7 @@ export const ObjectSearchLayout = () => {
                     <Switch colorScheme="red" />
                   </HStack>
                 </FormCard>
-                <FormCard disableBg disableShadow title="Варианты размещения">
+                <FormCard disableBg title="Варианты размещения">
                   <Stack>
                     <Checkbox colorScheme="red">Квартиры, апартаменты</Checkbox>
                     <Checkbox colorScheme="red">Дома, коттеджи</Checkbox>
@@ -1484,7 +1468,7 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">Хостелы</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard disableBg disableShadow title="Отдельные спальни">
+                <FormCard disableBg title="Отдельные спальни">
                   <Select>
                     <option>любое</option>
                     <option value="is_studio">студия</option>
@@ -1511,7 +1495,6 @@ export const ObjectSearchLayout = () => {
                     </>
                   }
                   disableBg
-                  disableShadow
                 >
                   <Stack>
                     <FormControl>
@@ -1538,7 +1521,7 @@ export const ObjectSearchLayout = () => {
                     </FormControl>
                   </Stack>
                 </FormCard>
-                <FormCard disableBg disableShadow title="Площадь">
+                <FormCard disableBg title="Площадь">
                   <HStack>
                     <InputGroup>
                       <Input placeholder="от" type="number" />
@@ -1557,7 +1540,6 @@ export const ObjectSearchLayout = () => {
                 </FormCard>
                 <FormCard
                   disableBg
-                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1601,7 +1583,6 @@ export const ObjectSearchLayout = () => {
                 </FormCard>
                 <FormCard
                   disableBg
-                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1649,7 +1630,6 @@ export const ObjectSearchLayout = () => {
                     </>
                   }
                   disableBg
-                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Интернет Wi-Fi</Checkbox>
@@ -1696,7 +1676,6 @@ export const ObjectSearchLayout = () => {
                     </>
                   }
                   disableBg
-                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Парковка</Checkbox>
@@ -1706,7 +1685,7 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">Детская площадка</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Этаж" disableBg disableShadow>
+                <FormCard title="Этаж" disableBg>
                   <HStack>
                     <Input type="number" placeholder="с" />
                     <Box>-</Box>
@@ -1739,7 +1718,6 @@ export const ObjectSearchLayout = () => {
                 </FormCard>
                 <FormCard
                   disableBg
-                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1779,7 +1757,7 @@ export const ObjectSearchLayout = () => {
                     ]}
                   />
                 </FormCard>
-                <FormCard title="Санузел" disableBg disableShadow>
+                <FormCard title="Санузел" disableBg>
                   <Stack>
                     <Checkbox colorScheme="red">Своя ванная комната</Checkbox>
                     <Checkbox colorScheme="red">Свой туалет</Checkbox>
@@ -1802,7 +1780,6 @@ export const ObjectSearchLayout = () => {
                     </>
                   }
                   disableBg
-                  disableShadow
                 >
                   <Stack>
                     <Checkbox colorScheme="red">Завтрак</Checkbox>
@@ -1812,7 +1789,6 @@ export const ObjectSearchLayout = () => {
                 </FormCard>
                 <FormCard
                   disableBg
-                  disableShadow
                   title={
                     <>
                       <HStack>
@@ -1837,13 +1813,13 @@ export const ObjectSearchLayout = () => {
                     <Checkbox colorScheme="red">1 звёзд и без звёзд</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Доступность" disableBg disableShadow>
+                <FormCard title="Доступность" disableBg>
                   <Stack>
                     <Checkbox colorScheme="red">Лифт</Checkbox>
                     <Checkbox colorScheme="red">Доступ для инвалидов</Checkbox>
                   </Stack>
                 </FormCard>
-                <FormCard title="Дополнительно" disableBg disableShadow>
+                <FormCard title="Дополнительно" disableBg>
                   <Stack>
                     <Checkbox colorScheme="red">быстро отвечают</Checkbox>
                     <Checkbox colorScheme="red">Суперхозяева</Checkbox>
