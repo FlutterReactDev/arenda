@@ -6,6 +6,7 @@ import {
   getHover,
   getIsMoving,
   getMakers,
+  getMapInstance,
   getUserGeolocation,
   getZoom,
 } from "./selectors";
@@ -18,6 +19,8 @@ import {
 } from "./types";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { searchMapActions } from "..";
+import { getBoundsOfCoords } from "./utils";
+import { Map } from "@2gis/mapgl/global";
 
 export const useSearchMap = () => {
   const markers = useAppSelector(getMakers);
@@ -28,7 +31,7 @@ export const useSearchMap = () => {
   const isMoving = useAppSelector(getIsMoving);
   const fitBounds = useAppSelector(getFitBounds);
   const userGeolocation = useAppSelector(getUserGeolocation);
-
+  const mapInstance = useAppSelector(getMapInstance);
   const dispatch = useAppDispatch();
 
   const addMarkers = (data: Marker[]) => {
@@ -67,10 +70,12 @@ export const useSearchMap = () => {
 
   const setCenter = (data: number[]) => {
     dispatch(searchMapActions.setCenter(data));
+    mapInstance?.setCenter(data);
   };
 
   const setZoom = (data: number) => {
     dispatch(searchMapActions.setZoom(data));
+    mapInstance?.setZoom(data);
   };
 
   const setBounds = (data: { northEast: NorthEast; southWest: SouthWest }) => {
@@ -92,7 +97,45 @@ export const useSearchMap = () => {
     northEast: NorthEast;
     southWest: SouthWest;
   }) => {
+    mapInstance?.fitBounds(data);
     dispatch(searchMapActions.setFitBounds(data));
+  };
+
+  const setMarkerBounds = () => {
+    const bounds = getBoundsOfCoords(
+      markers.map((marker) => [marker.latitude, marker.longitude])
+    );
+
+    const northEast = [
+      markers[bounds.northEast[1]].longitude,
+      markers[bounds.northEast[0]].latitude,
+    ];
+
+    const southWest = [
+      markers[bounds.southWest[1]].longitude,
+      markers[bounds.southWest[0]].latitude,
+    ];
+
+    mapInstance?.fitBounds(
+      {
+        northEast,
+        southWest,
+      },
+      {
+        padding: {
+          bottom: 40,
+          top: 40,
+          left: 60,
+          right: 60,
+        },
+      }
+    );
+    dispatch(
+      searchMapActions.setFitBounds({
+        northEast,
+        southWest,
+      })
+    );
   };
 
   const clearFitBounds = () => {
@@ -101,6 +144,10 @@ export const useSearchMap = () => {
 
   const setUserGeolocation = (data: UserGeolocation) => {
     dispatch(searchMapActions.setUserGeolocation(data));
+  };
+
+  const setMapInstance = (data: Map) => {
+    dispatch(searchMapActions.setMapInstance(data));
   };
 
   return {
@@ -129,5 +176,8 @@ export const useSearchMap = () => {
     clearFitBounds,
     setUserGeolocation,
     userGeolocation,
+    setMapInstance,
+    mapInstance,
+    setMarkerBounds,
   };
 };

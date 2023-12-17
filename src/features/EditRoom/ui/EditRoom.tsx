@@ -1,9 +1,69 @@
 import { Stack } from "@chakra-ui/react";
+import {
+  useGetCurrenciesQuery,
+  useGetBedTypesQuery,
+  useGetCleaningFeeTypesQuery,
+  useGetRoomCategoriesQuery,
+  useGetFromBookingToCheckInQuery,
+  useGetInstantBookingValidQuery,
+  useGetRoomNameTypesQuery,
+} from "@entites/CommonReference";
+import {
+  FormSuspense,
+  GeneralRoomInformationForm,
+  FacilitiesForm,
+  PostingRulesForm,
+  CheckInCheckOutForm,
+  PriceForm,
+  RoomOptionalServiceForm,
+} from "@entites/Object";
+import { CollapseFormCard } from "@shared/ui/CollapseFormCard";
+import { Loader } from "@shared/ui/Loader";
 
 export const EditRoom = () => {
+  const {
+    data: currencies,
+    isSuccess: currenciesIsSuccess,
+    isLoading: currenciesIsLoading,
+  } = useGetCurrenciesQuery("");
+
+  const {
+    data: bedTypes,
+    isSuccess: bedTypesIsSuccess,
+    isLoading: bedTypesIsLoading,
+  } = useGetBedTypesQuery("");
+
+  const {
+    data: cleaningFeeTypes,
+    isLoading: cleaningFeeTypesIsLoading,
+    isSuccess: cleaningFeeTypesIsSuccess,
+  } = useGetCleaningFeeTypesQuery("");
+
+  const {
+    data: roomCategories,
+    isLoading: roomCategoriesIsLoading,
+    isSuccess: roomCategoriesIsSuccess,
+  } = useGetRoomCategoriesQuery("");
+  const {
+    data: fromBookingToCheckInOptions,
+    isLoading: fromBookingToCheckInIsLoading,
+    isSuccess: fromBookingToCheckInIsSuccess,
+  } = useGetFromBookingToCheckInQuery("");
+
+  const {
+    data: instantBookingValid,
+    isSuccess: instantBookingValidIsSuccess,
+    isLoading: instantBookingValidIsLoading,
+  } = useGetInstantBookingValidQuery("");
+
+  const {
+    data: roomNameTypes,
+    isLoading: roomNameTypesIsLoading,
+    isSuccess: roomNameTypesIsSuccess,
+  } = useGetRoomNameTypesQuery("");
   return (
     <Stack>
-      {/* <CollapseFormCard
+      <CollapseFormCard
         render={(closeButton) => {
           return (
             <>
@@ -280,7 +340,7 @@ export const EditRoom = () => {
             </>
           );
         }}
-      /> */}
+      />
     </Stack>
   );
 };

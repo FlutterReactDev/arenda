@@ -34,7 +34,7 @@ import {
 } from "@chakra-ui/react";
 import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 
-import { SearchMap, getBoundsOfCoords, useSearchMap } from "@entites/Map";
+import { SearchMap, distance, useSearchMap } from "@entites/Map";
 
 import {
   CalendarIcon,
@@ -66,13 +66,22 @@ import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { BiCollapse, BiExpand } from "react-icons/bi";
+import { BsGeoAlt } from "react-icons/bs";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 export const ObjectSearchLayout = () => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
-  const { addMarkers, setFitBounds, bounds } = useSearchMap();
+  const {
+    addMarkers,
+    setMarkerBounds,
+    setUserGeolocation,
+    setCenter,
+    userGeolocation,
+    setZoom,
+  } = useSearchMap();
+
   const markers = [
     {
       longitude: 77.1757361557851,
@@ -121,9 +130,12 @@ export const ObjectSearchLayout = () => {
       longitude: 78.392196,
       price: 5600,
     },
+    {
+      latitude: 42.642381,
+      longitude: 77.100584,
+      price: 1250,
+    },
   ];
-
-  console.log(bounds);
 
   const {
     isOpen: mapIsOpen,
@@ -182,24 +194,67 @@ export const ObjectSearchLayout = () => {
   }, []);
 
   const onSetFitBounds = () => {
-    const bounds = getBoundsOfCoords(
-      markers.map((marker) => [marker.latitude, marker.longitude])
+    setMarkerBounds();
+  };
+
+  const findMe = () => {
+    navigator.geolocation.watchPosition(
+      function (position) {
+        // Successfully obtained the current position
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
+
+        setUserGeolocation({
+          latitude,
+          longitude,
+        });
+      },
+      function (error) {
+        // Handle any errors that occurred while getting the position
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("User denied the request for geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+        }
+      }
     );
 
-    const northEast = [
-      markers[bounds.northEast[1]].longitude,
-      markers[bounds.northEast[0]].latitude,
-    ];
+    navigator.geolocation.getCurrentPosition(
+      function (position) {
+        // Successfully obtained the current position
+        const latitude = position.coords.latitude;
+        const longitude = position.coords.longitude;
 
-    const southWest = [
-      markers[bounds.southWest[1]].longitude,
-      markers[bounds.southWest[0]].latitude,
-    ];
+        setCenter([longitude, latitude]);
+        setZoom(18);
+      },
+      function (error) {
+        // Handle any errors that occurred while getting the position
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error("User denied the request for geolocation.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error("Location information is unavailable.");
+            break;
+          case error.TIMEOUT:
+            console.error("The request to get user location timed out.");
+            break;
+        }
+      }
+    );
 
-    setFitBounds({
-      northEast,
-      southWest,
-    });
+    if (userGeolocation) {
+      const { latitude, longitude } = userGeolocation;
+      setCenter([longitude, latitude]);
+      setZoom(18);
+    }
   };
   return (
     <>
@@ -769,23 +824,48 @@ export const ObjectSearchLayout = () => {
             h={"calc(100vh - 160px)"}
           >
             <Box w="full" h="full" position={"relative"}>
-              <IconButton
-                position={"absolute"}
-                top={2}
-                left={2}
-                zIndex={"popover"}
-                rounded={"full"}
-                colorScheme="red"
-                aria-label="asdas"
-                size={"lg"}
-                onClick={mapOnToggle}
-                icon={
-                  <>
-                    {!mapIsOpen && <Icon as={BiExpand} h={6} w={6} />}
-                    {mapIsOpen && <Icon as={BiCollapse} h={6} w={6} />}
-                  </>
-                }
-              />
+              <HStack position={"absolute"} top={2} left={2} zIndex={"popover"}>
+                <IconButton
+                  rounded={"full"}
+                  colorScheme="red"
+                  aria-label="asdas"
+                  size={"lg"}
+                  onClick={mapOnToggle}
+                  icon={
+                    <>
+                      {!mapIsOpen && <Icon as={BiExpand} h={6} w={6} />}
+                      {mapIsOpen && <Icon as={BiCollapse} h={6} w={6} />}
+                    </>
+                  }
+                />
+
+                <Button colorScheme="blue" onClick={findMe}>
+                  <Icon as={BsGeoAlt} />
+                </Button>
+                {userGeolocation && (
+                  <Box
+                    rounded={"lg"}
+                    bgColor={"white"}
+                    p={3}
+                    fontWeight={"medium"}
+                  >
+                    {Math.floor(
+                      distance(
+                        {
+                          latitude: userGeolocation.latitude,
+                          longitude: userGeolocation.longitude,
+                        },
+                        {
+                          latitude: 42.642381,
+                          longitude: 77.100584,
+                        }
+                      )
+                    )}{" "}
+                    км
+                  </Box>
+                )}
+              </HStack>
+
               <Button
                 position={"absolute"}
                 top={4}
@@ -1273,7 +1353,27 @@ export const ObjectSearchLayout = () => {
         </Show>
       </Show>
       <Show breakpoint="(max-width: 900px)">
-        <Box h="calc(100dvh - 48px)">
+        <Box h="calc(100dvh - 48px)" position={"relative"}>
+          <HStack position={"absolute"} top={2} left={2} zIndex={"popover"}>
+            <Button colorScheme="blue" onClick={findMe}>
+              <Icon as={BsGeoAlt} />
+            </Button>
+          </HStack>
+          {userGeolocation && (
+            <Box rounded={"lg"} bgColor={"white"} p={3}>
+              {distance(
+                {
+                  latitude: userGeolocation.latitude,
+                  longitude: userGeolocation.longitude,
+                },
+                {
+                  latitude: 42.642381,
+                  longitude: 77.100584,
+                }
+              )}
+            </Box>
+          )}
+
           <SearchMap />
           <DraggbleDrawer
             header={

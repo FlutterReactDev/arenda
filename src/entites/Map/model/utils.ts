@@ -46,3 +46,15 @@ export function parsePolygon(polygon: string) {
     return [Number(coord.split(" ")[0]), Number(coord.split(" ")[1])];
   });
 }
+
+export function distance(latlng1: LatLong, latlng2: LatLong) {
+  const EARTH_RADIUS = 6371000;
+  const rad = Math.PI / 180,
+    lat1 = latlng1.latitude * rad,
+    lat2 = latlng2.latitude * rad,
+    sinDLat = Math.sin(((latlng2.latitude - latlng1.latitude) * rad) / 2),
+    sinDLon = Math.sin(((latlng2.longitude - latlng1.longitude) * rad) / 2),
+    a = sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon,
+    c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return (EARTH_RADIUS * c) / 1000;
+}

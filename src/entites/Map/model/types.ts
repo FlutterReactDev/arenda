@@ -1,3 +1,4 @@
+import { Map } from "@2gis/mapgl/global";
 export enum ZoomView {
   CLUSTER = 15,
   MARKER = 18,
@@ -63,6 +64,7 @@ export interface SearchMapState {
     southWest: SouthWest;
   };
   userGeolocation: UserGeolocation | null;
+  mapInstance: Map | null;
 }
 
 export interface SelectMapState {

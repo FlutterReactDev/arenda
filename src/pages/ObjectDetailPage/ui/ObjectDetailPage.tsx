@@ -14,6 +14,7 @@ const ObjectDetailPage = () => {
         <GridItem
           position={"sticky"}
           top={0}
+          zIndex={"popover"}
           area={"aside"}
           bgColor={"white"}
           rounded={"lg"}

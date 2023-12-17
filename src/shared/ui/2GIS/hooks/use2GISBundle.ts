@@ -1,45 +1,47 @@
-import { load } from '@2gis/mapgl'
-import { useEffect, useState } from 'react'
+import { load } from "@2gis/mapgl";
+import { useEffect, useState } from "react";
 
-import { MapGLBundle } from '../models'
+import { MapGLBundle } from "../models";
 
 const loadBundleWrapper = () => {
-  let bundle: MapGLBundle | null = null
-  let promise: Promise<MapGLBundle> | null = null
+  let bundle: MapGLBundle | null = null;
+  let promise: Promise<MapGLBundle> | null = null;
 
   return async (): Promise<MapGLBundle> => {
     if (bundle) {
-      return bundle
+      return bundle;
     }
 
     if (!promise) {
-      promise = new Promise((resolve, reject) => void load().then(resolve).catch(reject))
+      promise = new Promise(
+        (resolve, reject) => void load().then(resolve).catch(reject)
+      );
     }
 
-    bundle = await promise
+    bundle = await promise;
 
-    return bundle
-  }
-}
+    return bundle;
+  };
+};
 
-const loadBundle = loadBundleWrapper()
+const loadBundle = loadBundleWrapper();
 
 /**
  * Хук загрузки бандля карты.
  */
 export const use2GISBundle = () => {
-  const [bundle, setBundle] = useState<MapGLBundle | null>(null)
+  const [bundle, setBundle] = useState<MapGLBundle | null>(null);
 
   useEffect(() => {
     loadBundle()
       .then((mapglAPI) => {
-        setBundle(mapglAPI)
+        setBundle(mapglAPI);
       })
       .catch(() => {
         // eslint-disable-next-line no-console
-        console.error('Cannot load 2GIS bundle')
-      })
-  }, [])
+        console.error("Cannot load 2GIS bundle");
+      });
+  }, []);
 
-  return bundle
-}
+  return bundle;
+};

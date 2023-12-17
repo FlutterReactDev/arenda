@@ -10,6 +10,7 @@ const initialState = {
   isMove: false,
   fitBounds: null,
   userGeolocation: null,
+  mapInstance: null,
 } as SearchMapState;
 
 const searchMapSlice = createSlice({
@@ -112,6 +113,10 @@ const searchMapSlice = createSlice({
     },
     clearFitBounds(state) {
       state.fitBounds = null;
+    },
+
+    setMapInstance(state, action) {
+      state.mapInstance = action.payload;
     },
   },
 });
