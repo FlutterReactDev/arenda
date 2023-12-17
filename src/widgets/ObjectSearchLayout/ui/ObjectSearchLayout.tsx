@@ -1358,21 +1358,21 @@ export const ObjectSearchLayout = () => {
             <Button colorScheme="blue" onClick={findMe}>
               <Icon as={BsGeoAlt} />
             </Button>
+            {userGeolocation && (
+              <Box rounded={"lg"} bgColor={"white"} p={3}>
+                {distance(
+                  {
+                    latitude: userGeolocation.latitude,
+                    longitude: userGeolocation.longitude,
+                  },
+                  {
+                    latitude: 42.642381,
+                    longitude: 77.100584,
+                  }
+                )}
+              </Box>
+            )}
           </HStack>
-          {userGeolocation && (
-            <Box rounded={"lg"} bgColor={"white"} p={3}>
-              {distance(
-                {
-                  latitude: userGeolocation.latitude,
-                  longitude: userGeolocation.longitude,
-                },
-                {
-                  latitude: 42.642381,
-                  longitude: 77.100584,
-                }
-              )}
-            </Box>
-          )}
 
           <SearchMap />
           <DraggbleDrawer
