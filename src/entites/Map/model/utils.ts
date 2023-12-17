@@ -56,5 +56,5 @@ export function distance(latlng1: LatLong, latlng2: LatLong) {
     sinDLon = Math.sin(((latlng2.longitude - latlng1.longitude) * rad) / 2),
     a = sinDLat * sinDLat + Math.cos(lat1) * Math.cos(lat2) * sinDLon * sinDLon,
     c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return (EARTH_RADIUS * c) / 1000;
+  return EARTH_RADIUS * c;
 }

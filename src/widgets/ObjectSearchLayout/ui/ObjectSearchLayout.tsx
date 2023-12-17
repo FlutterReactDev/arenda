@@ -1354,22 +1354,25 @@ export const ObjectSearchLayout = () => {
       </Show>
       <Show breakpoint="(max-width: 900px)">
         <Box h="calc(100dvh - 48px)" position={"relative"}>
-          <HStack position={"absolute"} top={2} left={2} zIndex={"popover"}>
+          <HStack position={"absolute"} top={2} left={2} zIndex={"banner"}>
             <Button colorScheme="blue" onClick={findMe}>
               <Icon as={BsGeoAlt} />
             </Button>
             {userGeolocation && (
-              <Box rounded={"lg"} bgColor={"white"} p={3}>
-                {distance(
-                  {
-                    latitude: userGeolocation.latitude,
-                    longitude: userGeolocation.longitude,
-                  },
-                  {
-                    latitude: 42.642381,
-                    longitude: 77.100584,
-                  }
-                )}
+              <Box rounded={"lg"} bgColor={"white"} p={3} fontWeight={"bold"}>
+                {Math.floor(
+                  distance(
+                    {
+                      latitude: userGeolocation.latitude,
+                      longitude: userGeolocation.longitude,
+                    },
+                    {
+                      latitude: 42.642381,
+                      longitude: 77.100584,
+                    }
+                  )
+                )}{" "}
+                м
               </Box>
             )}
           </HStack>
