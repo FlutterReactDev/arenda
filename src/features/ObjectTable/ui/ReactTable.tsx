@@ -1,14 +1,13 @@
-import * as React from "react";
-import { Table, Thead, Tbody, Tr, Th, Td, chakra } from "@chakra-ui/react";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
+import { Table, Tbody, Td, Th, Thead, Tr } from "@chakra-ui/react";
 import {
-  useReactTable,
-  flexRender,
-  getCoreRowModel,
   ColumnDef,
   SortingState,
+  flexRender,
+  getCoreRowModel,
   getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
+import * as React from "react";
 
 export type DataTableProps<Data extends object> = {
   data: Data[];
@@ -33,47 +32,42 @@ export function ReactTable<Data extends object>({
   });
 
   return (
-    <Table>
-      <Thead>
+    <Table rounded={"lg"}>
+      <Thead bgColor="white">
         {table.getHeaderGroups().map((headerGroup) => (
           <Tr key={headerGroup.id}>
-            {headerGroup.headers.map((header) => {
+            {headerGroup.headers.map((header, idx) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const meta: any = header.column.columnDef.meta;
               return (
                 <Th
                   key={header.id}
-                  onClick={header.column.getToggleSortingHandler()}
                   isNumeric={meta?.isNumeric}
+                  {...(idx == 0 && {
+                    roundedLeft: "lg",
+                  })}
+                  {...(headerGroup.headers.length - 1 == idx && {
+                    roundedRight: "lg",
+                  })}
                 >
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext()
                   )}
-
-                  <chakra.span pl="4">
-                    {header.column.getIsSorted() ? (
-                      header.column.getIsSorted() === "desc" ? (
-                        <TriangleDownIcon aria-label="sorted descending" />
-                      ) : (
-                        <TriangleUpIcon aria-label="sorted ascending" />
-                      )
-                    ) : null}
-                  </chakra.span>
                 </Th>
               );
             })}
           </Tr>
         ))}
       </Thead>
-      <Tbody>
+      <Tbody bgColor="white">
         {table.getRowModel().rows.map((row) => (
           <Tr key={row.id}>
             {row.getVisibleCells().map((cell) => {
               // eslint-disable-next-line @typescript-eslint/no-explicit-any
               const meta: any = cell.column.columnDef.meta;
               return (
-                <Td key={cell.id} isNumeric={meta?.isNumeric}>
+                <Td rounded={"lg"} key={cell.id} isNumeric={meta?.isNumeric}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </Td>
               );

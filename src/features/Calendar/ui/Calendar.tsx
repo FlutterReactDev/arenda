@@ -20,7 +20,7 @@ import { memo, useCallback, useEffect, useState } from "react";
 import {
   getColumnDays,
   getCommonSettings,
-  getObjects,
+  getCurrentObjects,
 } from "../model/selectors";
 import { Day } from "./Day";
 
@@ -40,7 +40,7 @@ export const Calendar = memo(() => {
 
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const days = useAppSelector(getColumnDays);
-  const objects = useAppSelector(getObjects);
+  const objects = useAppSelector(getCurrentObjects);
   const [rangeObjectId, setRangeObjectId] = useState<null | number>(null);
 
   const { sidebarWidth } = useAppSelector(getCommonSettings);

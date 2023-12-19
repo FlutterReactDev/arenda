@@ -1,4 +1,4 @@
-import { Box, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, Stack, Text } from "@chakra-ui/react";
 
 import { SelectMap } from "@entites/Map";
 import { FC } from "react";
@@ -18,13 +18,14 @@ import { Controller, useForm } from "react-hook-form";
 interface EditSelectFormMapProps {
   value: SelectMapType;
   onChange?: (data: SelectMapType) => void;
+  onCancel: () => void;
 }
 export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
   props
 ) => {
-  const { onNext, onChange, value, navigation } = props;
+  const { onNext, onChange, value, onCancel } = props;
 
-  const { control, handleSubmit } = useForm<SelectMapType>({
+  const { control, handleSubmit, reset } = useForm<SelectMapType>({
     resolver: yupResolver(selectMapSchema),
     defaultValues: value,
   });
@@ -33,6 +34,13 @@ export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
     onChange && onChange(data);
 
     onNext && onNext();
+  };
+
+  const onClose = () => {
+    onCancel();
+    reset({
+      ...value,
+    });
   };
 
   return (
@@ -61,6 +69,7 @@ export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
                   region="Ыссык-Кол"
                   streetName={""}
                   house={""}
+                  canBack={false}
                   viewpoint1={{
                     id: 1,
                     latitude: 42.646977948,
@@ -77,7 +86,16 @@ export const EditSelectFormMap: FC<FormProps & EditSelectFormMapProps> = (
           />
         </Box>
 
-        <FormCard>{navigation}</FormCard>
+        <FormCard>
+          <HStack bgColor={"white"} w="full">
+            <Button w="full" colorScheme="red" type="submit">
+              Сохранить
+            </Button>
+            <Button w="full" onClick={onClose}>
+              Отмена
+            </Button>
+          </HStack>
+        </FormCard>
       </FormContainer>
     </Stack>
   );

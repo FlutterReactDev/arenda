@@ -3,19 +3,16 @@ import {
   ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  SearchIcon,
 } from "@chakra-ui/icons";
 import {
   Box,
   Button,
   HStack,
-  Hide,
   IconButton,
   Menu,
   MenuButton,
   MenuItem,
   MenuList,
-  Show,
   useMediaQuery,
 } from "@chakra-ui/react";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
@@ -26,12 +23,9 @@ import { FC, useEffect } from "react";
 import { Link } from "react-router-dom";
 import ScrollTo from "react-scroll-into-view";
 import { calendarActions } from "..";
-import { getObject, getObjectAvailibility } from "../model/selectors";
-import { EventClickProps } from "../model/types";
+import { getObject } from "../model/selectors";
 import { toDay } from "../utils/toDay";
 import { ObjectInfo } from "./ObjectInfo";
-import { SearchComment } from "./SearchComment";
-import { useSearchPopover } from "../model/useSearchPopover";
 
 export interface CalendarDetailHeaderProps {
   objectId: number;
@@ -40,13 +34,10 @@ export const CalendarDetailHeader: FC<CalendarDetailHeaderProps> = (props) => {
   const { objectId } = props;
   const dispatch = useAppDispatch();
   const visibleId = useAppSelector((state) => state.calendar.currentVisbleId);
-  const availabilities = useAppSelector(getObjectAvailibility(objectId));
+
   const object = useAppSelector(getObject(objectId));
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
-  const onEventClick = ({ availibilityInfo, page }: EventClickProps) => {
-    console.log(availibilityInfo, page);
-  };
-  const { onOpen } = useSearchPopover();
+
   useEffect(() => {
     const options = {
       root: null,
@@ -223,23 +214,6 @@ export const CalendarDetailHeader: FC<CalendarDetailHeaderProps> = (props) => {
             </IconButton>
           </ScrollTo>
         </HStack>
-        <Hide below="md">
-          <SearchComment
-            onEventClick={onEventClick}
-            includesAvailabilities={availabilities}
-            h="10"
-          />
-        </Hide>
-        <Show below="md">
-          <IconButton
-            aria-label="comment search"
-            bgColor={"white"}
-            isRound
-            onClick={onOpen}
-          >
-            <SearchIcon />
-          </IconButton>
-        </Show>
       </HStack>
     </Box>
   );

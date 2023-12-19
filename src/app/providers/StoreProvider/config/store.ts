@@ -11,12 +11,14 @@ import { calendarReducer } from "@features/Calendar";
 import { dragObjectReducer } from "@features/DragObject";
 import { searchMapReducer, selectMapReducer } from "@entites/Map";
 import { bookingFormReducer } from "@widgets/BookingForm";
+import { headerReducer } from "@widgets/Header";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     [baseApiWithReAuth.reducerPath]: baseApiWithReAuth.reducer,
     [base2GISApi.reducerPath]: base2GISApi.reducer,
+    header: headerReducer,
     bookingForm: bookingFormReducer,
     searchObject: searchObjectReducer,
     addObjectForm: addObjectSliceReducer,

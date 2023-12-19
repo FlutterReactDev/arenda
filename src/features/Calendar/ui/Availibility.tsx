@@ -20,16 +20,10 @@ import { EventPopover } from "./EventPopover";
 import { useSearchFullname } from "../model/useSearchFullname";
 export const Availibility: FC<CalendarAvailability> = memo(
   (props) => {
-    const { color, id, objectId, clientFullname } = props;
+    const { color, id, objectId, clientFullname, minDate, maxDate } = props;
     const [isLessThan968] = useMediaQuery("(max-width: 968px)");
-    const {
-      width,
-      isVisible,
-      isLeftRounded,
-      isRightRounded,
-      leftPadding,
-      availability,
-    } = useAvailibility(id, objectId);
+    const { width, isVisible, isLeftRounded, isRightRounded, leftPadding } =
+      useAvailibility(id, objectId);
     const availabilities = useAppSelector(getObjectAvailibility(objectId));
     const { query } = useSearchFullname();
 
@@ -40,8 +34,8 @@ export const Availibility: FC<CalendarAvailability> = memo(
         .filter((a) => {
           return isOverlaping(
             {
-              start: subDays(availability.minDate, 1),
-              end: subDays(availability.maxDate, 1),
+              start: subDays(minDate, 1),
+              end: subDays(maxDate, 1),
             },
             {
               start: a.minDate,
@@ -51,12 +45,12 @@ export const Availibility: FC<CalendarAvailability> = memo(
         })
         .filter((a) => a.id != id);
 
-      if (isCanMove.length == 0 && !isPast(availability.minDate)) {
+      if (isCanMove.length == 0 && !isPast(minDate)) {
         dispatch(
           calendarActions.editAvailabilityDates({
             id,
-            minDate: subDays(availability.minDate, 1),
-            maxDate: subDays(availability.maxDate, 1),
+            minDate: subDays(minDate, 1),
+            maxDate: subDays(maxDate, 1),
             objectId,
           })
         );
@@ -68,8 +62,8 @@ export const Availibility: FC<CalendarAvailability> = memo(
         .filter((a) => {
           return isOverlaping(
             {
-              start: addDays(availability.minDate, 1),
-              end: addDays(availability.maxDate, 1),
+              start: addDays(minDate, 1),
+              end: addDays(maxDate, 1),
             },
             {
               start: a.minDate,
@@ -82,8 +76,8 @@ export const Availibility: FC<CalendarAvailability> = memo(
         dispatch(
           calendarActions.editAvailabilityDates({
             id,
-            minDate: addDays(availability.minDate, 1),
-            maxDate: addDays(availability.maxDate, 1),
+            minDate: addDays(minDate, 1),
+            maxDate: addDays(maxDate, 1),
             objectId,
           })
         );
@@ -198,7 +192,9 @@ export const Availibility: FC<CalendarAvailability> = memo(
       oldProps.color == newProps.color &&
       oldProps.objectId == newProps.objectId &&
       isEqual(oldProps.createdDate, newProps.createdDate) &&
-      oldProps.totalSum == newProps.totalSum
+      oldProps.totalSum == newProps.totalSum &&
+      oldProps.clientFullname == newProps.clientFullname &&
+      oldProps.phoneNumber == newProps.phoneNumber
     );
   }
 );

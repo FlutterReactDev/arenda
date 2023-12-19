@@ -9,7 +9,6 @@ export const useSearchObjects = () => {
 
   const onChangeQuery = (value: string) => {
     dispatch(calendarActions.search(value));
-    dispatch(calendarActions.jumpPage(1));
   };
 
   return {

@@ -106,12 +106,9 @@ export const getObjectsBySearchAvailibility = createSelector(
 export const getSaerchPopover = (state: RootState) =>
   state.calendar.searchPopover;
 export const getCurrentObjects = createSelector(
-  [getPagination, getObjectsBySearch],
-  (pagination, searchFilteredObjects) => {
-    const begin = (pagination.currentPage - 1) * pagination.visibleObjectCount;
-    const end = begin + pagination.visibleObjectCount;
-
-    return searchFilteredObjects.slice(begin, end);
+  [getObjectsBySearch],
+  (searchFilteredObjects) => {
+    return searchFilteredObjects;
   }
 );
 export const getCurrentObjectsAvailibility = createSelector(

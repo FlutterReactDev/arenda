@@ -1,35 +1,50 @@
 import { CloseIcon } from "@chakra-ui/icons";
-import { CircularProgress, HStack, IconButton, Text } from "@chakra-ui/react";
+import { Box, HStack, IconButton, Text } from "@chakra-ui/react";
 import { FC } from "react";
+import { MapLoader } from "..";
 interface SelectMapToolbarProps {
   address: string;
   onBack: () => void;
   isLoading: boolean;
+  canBack: boolean;
 }
 export const SelectMapToolbar: FC<SelectMapToolbarProps> = (props) => {
-  const { address, onBack, isLoading } = props;
+  const { address, onBack, isLoading, canBack } = props;
 
   return (
-    <HStack
-      spacing={2}
-      bgColor={"white"}
-      boxShadow={"2xl"}
-      padding={2}
-      rounded={"lg"}
-      position={"absolute"}
-      top={"2"}
-      left={"2"}
-    >
-      {address && !isLoading && (
-        <>
-          <Text>{address}</Text>
-          <IconButton aria-label="Close Button" size={"xs"} onClick={onBack}>
-            <CloseIcon />
-          </IconButton>
-        </>
+    <>
+      {isLoading && (
+        <Box position={"absolute"} top={"2"} left={"2"}>
+          <MapLoader />
+        </Box>
       )}
-
-      {isLoading && <CircularProgress isIndeterminate color="red.600" />}
-    </HStack>
+      {!isLoading && (
+        <HStack
+          spacing={2}
+          bgColor={"white"}
+          boxShadow={"2xl"}
+          padding={2}
+          rounded={"lg"}
+          position={"absolute"}
+          top={"2"}
+          left={"2"}
+        >
+          {address && (
+            <>
+              <Text>{address}</Text>
+              {canBack && (
+                <IconButton
+                  aria-label="Close Button"
+                  size={"xs"}
+                  onClick={onBack}
+                >
+                  <CloseIcon />
+                </IconButton>
+              )}
+            </>
+          )}
+        </HStack>
+      )}
+    </>
   );
 };

@@ -25,14 +25,23 @@ import { ModalType } from "../model/types/HeaderTypes";
 
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import { AuthButton, useAuth, useAuthModal } from "@entites/User";
+import { UserAccount } from "@entites/User/ui/UserAccount";
 import { LoginButton } from "@features/LoginButton";
 import { Link } from "react-router-dom";
 import { HeaderLinkItem } from "./HeaderLinkItem";
-import { UserAccount } from "@entites/User/ui/UserAccount";
+import { useInView } from "react-intersection-observer";
+import { useHeader } from "../model/useHeader";
 
 export const Header = memo(() => {
-  const { isLoggin } = useAuth();
+  const { setHeaderHeight } = useHeader();
+  const { ref } = useInView({
+    threshold: [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0],
+    onChange(_, entry) {
+      setHeaderHeight(entry.intersectionRatio * 48);
+    },
+  });
 
+  const { isLoggin } = useAuth();
   const { isOpen, onClose } = useAuthModal();
   const [modalType, setModalType] = useState<ModalType>(ModalType.LOGIN);
 
@@ -51,9 +60,18 @@ export const Header = memo(() => {
   }, [isOpen]);
 
   return (
-    <Box bgColor="blackAlpha.900" h={"12"} px={2} overflow={"hidden"}>
+    <Box
+      ref={ref}
+      bgColor="blackAlpha.900"
+      h={"12"}
+      px={2}
+      overflow={"hidden"}
+      as="header"
+    >
       <Flex h="full" justifyContent={"space-between"} alignContent={"center"}>
-        <Box color="white">logo</Box>
+        <Text color="white" fontSize={"2xl"} fontWeight={"medium"}>
+          Turak KG
+        </Text>
         <HStack spacing={6} alignItems={"center"} h="full">
           {!isLoggin && (
             <HeaderLinkItem

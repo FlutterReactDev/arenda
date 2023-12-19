@@ -7,4 +7,6 @@ export interface ObjectNotHotel {
   };
   instantBooking: boolean;
   lastChange: Date;
+  calendar: boolean;
+  todayPrice: number;
 }

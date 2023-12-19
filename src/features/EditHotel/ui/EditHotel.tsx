@@ -21,11 +21,11 @@ export const EditHotel = () => {
 
   return (
     <Stack minH="100dvh">
-      {isSuccess && data && (
+      {isSuccess && !isLoading && data && (
         <CollapseFormCard
           title="Карта"
           defaultIsOpen
-          render={(closeButton) => {
+          render={(_, onClose) => {
             const { fullAddress, latitude, longitude } = data;
             return (
               <EditSelectFormMap
@@ -38,16 +38,6 @@ export const EditHotel = () => {
                     },
                   },
                 }}
-                navigation={
-                  <>
-                    <HStack bgColor={"white"} w="full">
-                      <Button w="full" colorScheme="red" type="submit">
-                        Сохранить
-                      </Button>
-                      {closeButton}
-                    </HStack>
-                  </>
-                }
                 onChange={({ selectMap }) => {
                   const {
                     coordinates: { latitude, longitude },
@@ -59,12 +49,16 @@ export const EditHotel = () => {
                     longitude,
                   });
                 }}
+                onCancel={() => {
+                  onClose();
+                }}
               />
             );
           }}
         />
       )}
-      {isSuccess && data && (
+
+      {isSuccess && !isLoading && data && (
         <CollapseFormCard
           title="Информация об отеле"
           render={(closeButton) => {
@@ -121,7 +115,8 @@ export const EditHotel = () => {
           }}
         />
       )}
-      {isSuccess && data && (
+
+      {isSuccess && !isLoading && data && (
         <CollapseFormCard
           title="Изображение"
           render={(closeButton) => {
@@ -154,7 +149,7 @@ export const EditHotel = () => {
             right={0}
             bottom={0}
             zIndex={"popover"}
-            bgColor={"blackAlpha.100"}
+            bgColor={"blackAlpha.500"}
           >
             <Center w="full" h="full">
               <Loader />

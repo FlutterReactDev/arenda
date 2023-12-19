@@ -123,8 +123,8 @@ export const useSearchMap = () => {
       },
       {
         padding: {
-          bottom: 40,
-          top: 40,
+          bottom: 60,
+          top: 60,
           left: 60,
           right: 60,
         },

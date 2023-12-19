@@ -21,12 +21,11 @@ interface ImageReorderProps {
   onImageDelete: (id: number) => void;
   openFileLoader: () => void;
 }
-
+const DragComponent = lazy(() => import("./DragComponentChunk"));
 export const ImageReorder: FC<ImageReorderProps> = memo((props) => {
   const { files, isOpen, onClose, onDragEnd, onImageDelete, openFileLoader } =
     props;
 
-  const DragComponent = lazy(() => import("./DragComponentChunk"));
   return (
     <Modal isOpen={isOpen} onClose={onClose} size={"sm"}>
       <ModalOverlay />

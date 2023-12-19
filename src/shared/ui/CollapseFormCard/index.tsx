@@ -10,16 +10,22 @@ import { FC, PropsWithChildren, ReactNode, memo } from "react";
 
 interface CollapseFormCardProps {
   title: string;
-  render: (closeButton: ReactNode) => ReactNode;
+  render: (closeButton: ReactNode, closeFn: () => void) => ReactNode;
   defaultIsOpen?: boolean;
+  onCloseClick?: () => void;
 }
 
 export const CollapseFormCard: FC<PropsWithChildren<CollapseFormCardProps>> =
   memo((props) => {
-    const { title, render, defaultIsOpen = false } = props;
+    const { title, render, defaultIsOpen = false, onCloseClick } = props;
     const { isOpen, onOpen, onClose } = useDisclosure({
       defaultIsOpen,
     });
+
+    const onHide = () => {
+      onClose();
+      onCloseClick && onCloseClick();
+    };
     return (
       <Box bgColor={"white"} p={4} rounded={"lg"}>
         <HStack mb={2} justifyContent={"space-between"}>
@@ -40,9 +46,12 @@ export const CollapseFormCard: FC<PropsWithChildren<CollapseFormCardProps>> =
           }}
         >
           {render(
-            <Button variant={"outline"} w="full" onClick={onClose}>
+            <Button variant={"outline"} w="full" onClick={onHide}>
               Отмена
-            </Button>
+            </Button>,
+            () => {
+              onClose();
+            }
           )}
         </Collapse>
       </Box>

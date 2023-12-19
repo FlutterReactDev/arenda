@@ -1,4 +1,4 @@
-import { Box, HStack, Stack, Text } from "@chakra-ui/react";
+import { Box, Button, HStack, Stack, Text, Textarea } from "@chakra-ui/react";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { format } from "date-fns";
 import { FC } from "react";
@@ -61,7 +61,7 @@ export const EventItem: FC<EventItemProps> = (props) => {
           fontWeight={"medium"}
           color={"gray.500"}
         >
-          {availibilityInfo.comment || "Нет коментария"}
+          {availibilityInfo.clientFullname || "Нет ФИО"}
         </Text>
         <Box
           h={2}
@@ -100,6 +100,20 @@ export const EventItem: FC<EventItemProps> = (props) => {
       >
         Номер: {name}
       </Text>
+      <Text
+        fontSize={"sm"}
+        overflow={"hidden"}
+        textOverflow={"ellipsis"}
+        whiteSpace={"nowrap"}
+        fontWeight={"medium"}
+        color={"gray.500"}
+      >
+        Номер телефона:{" "}
+        <Button variant={"link"} ref={`tel:${availibilityInfo.phoneNumber}`}>
+          {availibilityInfo.phoneNumber}
+        </Button>
+      </Text>
+      <Textarea value={availibilityInfo.comment} />
     </Stack>
   );
 };

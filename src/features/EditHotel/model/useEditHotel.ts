@@ -13,10 +13,7 @@ export const useEditHotel = () => {
   const [editObject, { isLoading: editIsLoading }] = useEditObjectMutation();
 
   const updateHotelGeneralInfo = (data: EditHotelInfo) => {
-    console.log("dsadsa");
     if (objectData) {
-      console.log("dsadsa");
-
       editObject({
         data: { ...objectData, ...data },
         anObjectId: Number(hotelId),

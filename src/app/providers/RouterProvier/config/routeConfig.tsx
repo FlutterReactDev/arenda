@@ -20,6 +20,9 @@ import { ObjectSecureRoute } from "../ui/ObjectSecureRoute";
 import { MyObjectsPage } from "@pages/MyObjectsPage";
 import { EditHotelPage } from "@pages/EditHotelPage";
 import { EditRoomPage } from "@pages/EditRoomPage";
+import { ResetPage } from "@pages/ResetPage";
+import { ForgotPage } from "@pages/ForgotPage";
+import { VerifyPage } from "@pages/VerifyPage";
 
 export enum RouteName {
   MAIN_PAGE = "/",
@@ -29,6 +32,10 @@ export enum RouteName {
 
   LOGIN_PAGE = "/login",
   REGISTER_PAGE = "/register",
+  RESET_PAGE = "/reset",
+  FORGOT_PAGE = "/forgot",
+  VERIFY_PAGE = "/verify",
+
   MY_OBJECTS = "/my-objects",
   CABINET = "/cabinet",
   SELECTION = "/selection",
@@ -167,6 +174,24 @@ export const routeConfig: Route[] = [
   {
     path: RouteName.REGISTER_PAGE,
     element: <RegisterPage />,
+    private: false,
+    layout: true,
+  },
+  {
+    path: RouteName.RESET_PAGE,
+    element: <ResetPage />,
+    private: false,
+    layout: true,
+  },
+  {
+    path: RouteName.FORGOT_PAGE,
+    element: <ForgotPage />,
+    private: false,
+    layout: true,
+  },
+  {
+    path: RouteName.VERIFY_PAGE,
+    element: <VerifyPage />,
     private: false,
     layout: true,
   },

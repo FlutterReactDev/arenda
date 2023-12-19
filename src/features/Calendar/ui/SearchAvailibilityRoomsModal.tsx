@@ -1,32 +1,30 @@
 import {
+  Button,
+  HStack,
   Modal,
-  ModalOverlay,
+  ModalBody,
+  ModalCloseButton,
   ModalContent,
   ModalHeader,
-  ModalCloseButton,
-  ModalBody,
+  ModalOverlay,
   Stack,
-  HStack,
-  Text,
-  Button,
-  Hide,
-  Show,
-  TagLabel,
   Tag,
+  TagLabel,
+  Text,
 } from "@chakra-ui/react";
-import { useSearchAvailibilityRoomsModal } from "../model/useSearchAvailibilityRoomsModal";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+import { format, setHours } from "date-fns";
+import { calendarActions } from "..";
 import {
   getAvailibilityRooms,
   getSearchAvailibilityRoomsModal,
 } from "../model/selectors";
-import { ObjectInfo } from "./ObjectInfo";
-import { format, setHours } from "date-fns";
-import { convertToHour } from "../utils/convertToHour";
-import { useSidebar } from "../model/useSidebar";
 import { SidebarType } from "../model/types";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { calendarActions } from "..";
+import { useSearchAvailibilityRoomsModal } from "../model/useSearchAvailibilityRoomsModal";
+import { useSidebar } from "../model/useSidebar";
+import { convertToHour } from "../utils/convertToHour";
+import { ObjectInfo } from "./ObjectInfo";
 
 export const SearchAvailibilityRoomsModal = () => {
   const { isOpen, onClose } = useSearchAvailibilityRoomsModal();
@@ -87,37 +85,11 @@ export const SearchAvailibilityRoomsModal = () => {
                 return (
                   <HStack>
                     <ObjectInfo address={address} objectId={id} name={name} />
-                    <Hide below="sm">
-                      <Stack spacing={0} fontWeight={"medium"}>
-                        <HStack spacing={1}>
-                          <Text>заезд:</Text>
-                          <Text>
-                            {minDate &&
-                              checkIn &&
-                              format(
-                                setHours(minDate, convertToHour(checkIn) || 0),
-                                "dd.MM.Y H:mm"
-                              )}
-                          </Text>
-                        </HStack>
-                        <HStack spacing={1}>
-                          <Text>выезд:</Text>
-                          <Text>
-                            {maxDate &&
-                              checkOut &&
-                              format(
-                                setHours(maxDate, convertToHour(checkOut) || 0),
-                                "dd.MM.Y H:mm"
-                              )}
-                          </Text>
-                        </HStack>
-                      </Stack>
-                    </Hide>
-                    <Show below="sm">
-                      <Tag colorScheme="green">
-                        <TagLabel>Свободно</TagLabel>
-                      </Tag>
-                    </Show>
+
+                    <Tag colorScheme="green">
+                      <TagLabel>Свободно</TagLabel>
+                    </Tag>
+
                     <Button
                       onClick={() => onBook(id)}
                       rounded={"full"}

@@ -1,9 +1,23 @@
 import { useGetAllObjectsQuery } from "@entites/Object";
 import { ObjectNotHotel } from "./types";
-import { Stack, Button, Text, Image } from "@chakra-ui/react";
+import {
+  Stack,
+  Button,
+  Text,
+  Image,
+  HStack,
+  IconButton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverBody,
+  PopoverArrow,
+} from "@chakra-ui/react";
 import { createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
+import { DeleteIcon, EditIcon, SettingsIcon } from "@chakra-ui/icons";
+import { Link } from "react-router-dom";
 
 export const useObjectTable = () => {
   const { data: objects, isLoading, isSuccess } = useGetAllObjectsQuery();
@@ -20,6 +34,8 @@ export const useObjectTable = () => {
           },
           instantBooking: false,
           lastChange: new Date(),
+          calendar: true,
+          todayPrice: 1500,
         };
       })
     : [];
@@ -30,13 +46,27 @@ export const useObjectTable = () => {
       cell: (info) => {
         const { fullAddress, image, id, name } = info.getValue();
         return (
-          <Stack>
-            <Text>{id}</Text>
+          <HStack>
+            <Stack>
+              <Text fontWeight={"medium"} color={"gray.500"}>
+                № {id}
+              </Text>
 
-            <Image w="28" h="28" src={image} />
-            <Text>{fullAddress}</Text>
-            <Text>{name}</Text>
-          </Stack>
+              <Image rounded={"lg"} w="24" h="24" src={image} />
+            </Stack>
+            <Stack maxW="200px" w="full">
+              <Text
+                fontWeight={"medium"}
+                fontSize={"lg"}
+                overflow={"hidden"}
+                textOverflow={"ellipsis"}
+                whiteSpace={"nowrap"}
+              >
+                {name}
+              </Text>
+              <Text color={"gray.500"}>{fullAddress}</Text>
+            </Stack>
+          </HStack>
         );
       },
       header: "Объявление",
@@ -45,13 +75,37 @@ export const useObjectTable = () => {
       cell: (info) => {
         return (
           <>
-            <Button colorScheme={info.getValue() ? "green" : "red"}>
-              {info.getValue() ? "Yes" : "no"}
-            </Button>
+            {info.getValue() ? (
+              <Text fontWeight={"medium"} color={"green.600"}>
+                Включено
+              </Text>
+            ) : (
+              <Text fontWeight={"medium"} color={"red.500"}>
+                Выключено
+              </Text>
+            )}
           </>
         );
       },
       header: "Мгновенное бронирование",
+    }),
+    columnHelper.accessor("calendar", {
+      cell: (info) => {
+        return (
+          <Text fontWeight={"medium"}>
+            сегодня {info.getValue() ? "свободно" : "зането"}
+          </Text>
+        );
+      },
+
+      header: "Календарь",
+    }),
+    columnHelper.accessor("todayPrice", {
+      cell: (info) => {
+        return <Text fontWeight={"medium"}>{info.getValue()} сом</Text>;
+      },
+
+      header: "Цена на сегодня",
     }),
     columnHelper.accessor("lastChange", {
       cell: (info) =>
@@ -59,6 +113,36 @@ export const useObjectTable = () => {
           locale: ru,
         }),
       header: "Последнее изменение",
+    }),
+
+    columnHelper.display({
+      id: "edit",
+      cell: ({ row }) => {
+        return (
+          <Popover>
+            <PopoverTrigger>
+              <IconButton aria-label="settings">
+                <SettingsIcon />
+              </IconButton>
+            </PopoverTrigger>
+            <PopoverContent maxW={"60"} w="full">
+              <PopoverBody>
+                <PopoverArrow />
+                <Stack>
+                  <Button
+                    as={Link}
+                    to={`/hotel/${row.original.announcement.id}/edit-hotel`}
+                    leftIcon={<EditIcon />}
+                  >
+                    Редактировать
+                  </Button>
+                  <Button leftIcon={<DeleteIcon />}>Удалить</Button>
+                </Stack>
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
+        );
+      },
     }),
   ];
 

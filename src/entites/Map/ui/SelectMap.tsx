@@ -32,6 +32,7 @@ interface SelectMapProps {
     latitude: number;
     longitude: number;
   };
+  canBack?: boolean;
 }
 export const SelectMap: FC<SelectMapProps> = (props) => {
   const {
@@ -43,6 +44,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
     region,
     viewpoint1,
     viewpoint2,
+    canBack = true,
   } = props;
 
   const {
@@ -87,6 +89,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
       });
     }
   }, [markers?.result, markersIsSuccess]);
+
   useEffect(() => {
     const address = getItemByCoords(
       {
@@ -105,6 +108,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
       });
     }
   }, [objectInfo?.result, objectInfoIsSuccess]);
+
   const addressInfo =
     (value.selectMap.coordinates.latitude &&
       value.selectMap.coordinates.longitude &&
@@ -214,6 +218,7 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
             address={objectInfo?.result?.items[0].address_name}
             onBack={onBack}
             isLoading={objectInfoIsFetching}
+            canBack={canBack}
           />
         )}
       </Box>

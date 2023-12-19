@@ -37,11 +37,13 @@ export const ImageUploader: FC<ImageUploaderProps> = memo((props) => {
 
   const onImageDelete = useCallback(
     (id: number) => {
+      console.log(id);
+
       const newFiles = files.filter((_, i) => {
         return i != id;
       });
-      setFiles(newFiles);
 
+      setFiles(newFiles);
       onChangeFile(newFiles);
     },
     [files, onChangeFile]
