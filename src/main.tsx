@@ -5,6 +5,7 @@ import { ThemeProvider } from "@app/providers/ThemeProvider";
 import { StoreProvider } from "@app/providers/StoreProvider";
 import { RouterProvider } from "@app/providers/RouterProvier";
 import { CookiesProvider } from "react-cookie";
+// import { ErrorBoundary } from "@app/providers/ErrorBoundary";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <StoreProvider>

@@ -13,7 +13,6 @@ import { memo } from "react";
 import { calendarActions } from "..";
 import { getObjectsBySearchAvailibility } from "../model/selectors";
 import { EventClickProps } from "../model/types";
-import { usePagination } from "../model/usePagination";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import { GoToDateBtn } from "./GoToDateBtn";
@@ -28,11 +27,9 @@ export const ActionTop = memo(() => {
   const dispatch = useAppDispatch();
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const availabilities = useAppSelector(getObjectsBySearchAvailibility);
-  const { jump } = usePagination();
 
-  const onEventClick = ({ availibilityInfo, page }: EventClickProps) => {
+  const onEventClick = ({ availibilityInfo }: EventClickProps) => {
     dispatch(calendarActions.setBeginDate(availibilityInfo.minDate));
-    jump(page);
   };
 
   const onPrev = () => {
@@ -42,7 +39,7 @@ export const ActionTop = memo(() => {
     dispatch(calendarActions.increaseStep());
   };
   return (
-    <GridItem area={"actionsTop"} >
+    <GridItem area={"actionsTop"}>
       <Grid gridTemplateColumns={isLessThan968 ? "1fr" : "1fr 300px"}>
         <GridItem>
           <HStack p={isLessThan968 ? 2 : 4}>

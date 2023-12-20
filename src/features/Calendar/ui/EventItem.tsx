@@ -109,7 +109,11 @@ export const EventItem: FC<EventItemProps> = (props) => {
         color={"gray.500"}
       >
         Номер телефона:{" "}
-        <Button variant={"link"} ref={`tel:${availibilityInfo.phoneNumber}`}>
+        <Button
+          as="a"
+          variant={"link"}
+          href={`tel:${availibilityInfo.phoneNumber}`}
+        >
           {availibilityInfo.phoneNumber}
         </Button>
       </Text>

@@ -28,6 +28,18 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
       }),
     }),
 
+    deleteObject: build.mutation<void, number>({
+      query: (anObjectId) => ({
+        url: "/Delete",
+        method: "DELETE",
+        params: {
+          anObjectId,
+        },
+      }),
+
+      invalidatesTags: ["object"],
+    }),
+
     getAllObjects: build.query<ObjectResponse[], void>({
       query: () => ({
         url: "/GetAll",
@@ -69,4 +81,5 @@ export const {
   useGetAllObjectsQuery,
   useGetObjectByIdQuery,
   useEditObjectMutation,
+  useDeleteObjectMutation,
 } = objectApi;

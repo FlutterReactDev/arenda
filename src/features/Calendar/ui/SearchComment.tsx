@@ -36,7 +36,7 @@ export const SearchComment: FC<SearchCommentProps> = memo((props) => {
   const getEvents = !query.length
     ? availabilities
     : availabilities.filter((o) =>
-        search(query.toLowerCase(), `${o.clientFullname}`.trim().toLowerCase())
+        search(query.toLowerCase(), `${o?.clientFullname}`.trim().toLowerCase())
       );
 
   useOutsideClick({

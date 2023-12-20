@@ -1,27 +1,33 @@
-import { useGetAllObjectsQuery } from "@entites/Object";
-import { ObjectNotHotel } from "./types";
+import { DeleteIcon, EditIcon, SettingsIcon } from "@chakra-ui/icons";
 import {
-  Stack,
   Button,
-  Text,
-  Image,
   HStack,
   IconButton,
+  Image,
   Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
   PopoverArrow,
+  PopoverBody,
+  PopoverContent,
+  PopoverTrigger,
+  Stack,
+  Text,
+  useToast,
 } from "@chakra-ui/react";
+import {
+  useDeleteObjectMutation,
+  useGetAllObjectsQuery,
+} from "@entites/Object";
 import { createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { DeleteIcon, EditIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Link } from "react-router-dom";
+import { ObjectNotHotel } from "./types";
 
 export const useObjectTable = () => {
+  const toast = useToast();
   const { data: objects, isLoading, isSuccess } = useGetAllObjectsQuery();
-
+  const [deleteObject, { isLoading: deleteIsLoading }] =
+    useDeleteObjectMutation();
   const data: ObjectNotHotel[] = isSuccess
     ? objects?.map((object) => {
         return {
@@ -39,6 +45,22 @@ export const useObjectTable = () => {
         };
       })
     : [];
+
+  const onDeleteObject = (id: number, objectInfo: ObjectNotHotel) => {
+    deleteObject(id)
+      .unwrap()
+      .then(() => {
+        toast({
+          title: "Удаление",
+          description: `Удален объект ${objectInfo.announcement.name}`,
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+        });
+      });
+  };
+
   const columnHelper = createColumnHelper<ObjectNotHotel>();
 
   const columns = [
@@ -52,7 +74,13 @@ export const useObjectTable = () => {
                 № {id}
               </Text>
 
-              <Image rounded={"lg"} w="24" h="24" src={image} />
+              <Image
+                rounded={"lg"}
+                w="24"
+                h="24"
+                objectFit={"cover"}
+                src={image}
+              />
             </Stack>
             <Stack maxW="200px" w="full">
               <Text
@@ -136,7 +164,17 @@ export const useObjectTable = () => {
                   >
                     Редактировать
                   </Button>
-                  <Button leftIcon={<DeleteIcon />}>Удалить</Button>
+                  <Button
+                    colorScheme="red"
+                    leftIcon={<DeleteIcon />}
+                    isLoading={deleteIsLoading}
+                    loadingText={deleteIsLoading}
+                    onClick={() =>
+                      onDeleteObject(row.original.announcement.id, row.original)
+                    }
+                  >
+                    Удалить
+                  </Button>
                 </Stack>
               </PopoverBody>
             </PopoverContent>

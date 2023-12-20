@@ -36,6 +36,7 @@ export {
   useGetAllObjectsQuery,
   useGetObjectByIdQuery,
   useEditObjectMutation,
+  useDeleteObjectMutation,
 } from "./model/api/objectApi";
 export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";
 export { useCreateObject } from "./model/useCreateObject";
