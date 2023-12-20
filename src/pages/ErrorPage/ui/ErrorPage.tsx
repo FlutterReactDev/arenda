@@ -1,4 +1,11 @@
-import { Button, Center, Text } from "@chakra-ui/react";
+import {
+  Button,
+  Center,
+  ChakraProvider,
+  Stack,
+  Text,
+  theme,
+} from "@chakra-ui/react";
 
 export const ErrorPage = () => {
   const reloadPage = () => {
@@ -6,9 +13,13 @@ export const ErrorPage = () => {
   };
 
   return (
-    <Center minH={"80dvh"}>
-      <Text>Произошла непредвиденная ошибка</Text>
-      <Button onClick={reloadPage}>Обновить страницу</Button>
-    </Center>
+    <ChakraProvider theme={theme}>
+      <Center minH={"80dvh"}>
+        <Stack>
+          <Text>Произошла непредвиденная ошибка</Text>
+          <Button onClick={reloadPage}>Обновить страницу</Button>
+        </Stack>
+      </Center>
+    </ChakraProvider>
   );
 };
