@@ -4,6 +4,7 @@ import {
   Center,
   CircularProgress,
   HStack,
+  useToast,
 } from "@chakra-ui/react";
 import {
   AddressForm,
@@ -14,11 +15,14 @@ import {
 import { HotelGeneralInformationType } from "@entites/Object/model/schemas/hotelGeneralInformationSchema";
 import { useCreateObject } from "@entites/Object/model/useCreateObject";
 import { useAddObject } from "@features/SelectLocationForm";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
+import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
 import { FormStepper } from "@shared/ui/FormSteppter";
 import { PageLoader } from "@shared/ui/PageLoader";
 import { Suspense, useEffect } from "react";
 
 export const CreateHotel = () => {
+  const toast = useToast();
   const {
     objectFormData: { city, country, objectType, objectTypeProperty, region },
   } = useAddObject();
@@ -77,7 +81,40 @@ export const CreateHotel = () => {
   const [createObject, { isLoading }] = useCreateObjectMutation();
 
   const onSave = (data: HotelGeneralInformationType) => {
-    createObject({ ...formData, ...data });
+    createObject({ ...formData, ...data })
+      .unwrap()
+      .then(() => {
+        toast({
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+          render({ onClose }) {
+            return (
+              <SucessAlert
+                title="Создание"
+                description={`${objectTypeProperty.name} успешно создана`}
+                onClose={onClose}
+              />
+            );
+          },
+        });
+      })
+      .catch(() => {
+        toast({
+          duration: 3000,
+          isClosable: true,
+          position: "top-right",
+          render({ onClose }) {
+            return (
+              <ErrorAlert
+                title="Ошибка"
+                description={`Ошибка при создании ${objectTypeProperty.name}`}
+                onClose={onClose}
+              />
+            );
+          },
+        });
+      });
   };
 
   return (

@@ -1,15 +1,13 @@
 import {
   Box,
   Button,
-  Center,
   HStack,
   Stack,
-  Tag,
-  Text,
   useDisclosure,
   useMergeRefs,
 } from "@chakra-ui/react";
 
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import { SearchIcon } from "@chakra-ui/icons";
 import { useSearchObjects } from "@features/SearchObjects";
 import {
@@ -24,7 +22,6 @@ import { useNavigate } from "react-router-dom";
 import { DesktopDatepicker } from "./DesktopDatepicker";
 import { DesktopGuests } from "./DesktopGuests";
 import { DesktopSearchInput } from "./DesktopSearchInput";
-import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 
 export const DesktopSearch = () => {
   const navigate = useNavigate();
@@ -156,16 +153,6 @@ export const DesktopSearch = () => {
           ></Box>
         </Stack>
       </FormProvider>
-
-      <Center>
-        <HStack gap={"2"} mt={10}>
-          <Text>Например:</Text>
-          <Tag rounded={"full"}>Санкт-Петербург</Tag>
-          <Tag rounded={"full"}>Санкт-Петербург</Tag>
-          <Tag rounded={"full"}>Санкт-Петербург</Tag>
-          <Tag rounded={"full"}>Санкт-Петербург</Tag>
-        </HStack>
-      </Center>
     </Box>
   );
 };

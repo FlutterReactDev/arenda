@@ -17,6 +17,7 @@ import {
   useDeleteObjectMutation,
   useGetAllObjectsQuery,
 } from "@entites/Object";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { createColumnHelper } from "@tanstack/react-table";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
@@ -51,12 +52,18 @@ export const useObjectTable = () => {
       .unwrap()
       .then(() => {
         toast({
-          title: "Удаление",
-          description: `Удален объект ${objectInfo.announcement.name}`,
-          status: "error",
           duration: 3000,
           isClosable: true,
           position: "top-right",
+          render: ({ onClose }) => {
+            return (
+              <ErrorAlert
+                title="Удаление"
+                description={`Удален объект ${objectInfo.announcement.name}`}
+                onClose={onClose}
+              />
+            );
+          },
         });
       });
   };

@@ -8,6 +8,7 @@ import { EditHotelInfo, EditPositionData } from "./types";
 
 export const useEditHotel = () => {
   const { hotelId } = useParams();
+
   const {
     data: objectData,
     isSuccess,
@@ -19,19 +20,19 @@ export const useEditHotel = () => {
 
   const updateHotelGeneralInfo = (data: EditHotelInfo) => {
     if (objectData) {
-      editObject({
+      return editObject({
         data: { ...objectData, ...data },
         anObjectId: Number(hotelId),
-      });
+      }).unwrap();
     }
   };
 
   const updatePositionData = (data: EditPositionData) => {
     if (objectData) {
-      editObject({
+      return editObject({
         data: { ...objectData, ...data },
         anObjectId: Number(hotelId),
-      });
+      }).unwrap();
     }
   };
 

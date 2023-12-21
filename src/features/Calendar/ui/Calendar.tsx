@@ -88,7 +88,7 @@ export const Calendar = memo(() => {
         {...(!isLessThan968 && {
           position: "sticky",
           top: 0,
-          zIndex: "docked",
+          zIndex: "9",
         })}
         bgColor={"#f5f5f5"}
       >
@@ -185,7 +185,18 @@ export const Calendar = memo(() => {
             );
           })}
         </CalendarCollapseGroup>
-
+        <CalendarCollapseGroup title="Иди на хуй">
+          {objects.map((object) => {
+            return (
+              <ObjectItem
+                setRangeObjectId={onRangeObjectId}
+                rangeObjectId={rangeObjectId}
+                {...object}
+                key={object.id}
+              />
+            );
+          })}
+        </CalendarCollapseGroup>
         <CalendarScroller />
       </Box>
       <ModalDeleteAvailibility />

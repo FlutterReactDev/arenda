@@ -23,6 +23,7 @@ import { EditRoomPage } from "@pages/EditRoomPage";
 import { ResetPage } from "@pages/ResetPage";
 import { ForgotPage } from "@pages/ForgotPage";
 import { VerifyPage } from "@pages/VerifyPage";
+import { NotFoundPage } from "@pages/NotFoundPage";
 
 export enum RouteName {
   MAIN_PAGE = "/",
@@ -206,5 +207,11 @@ export const routeConfig: Route[] = [
     element: <ObjectDetailPage />,
     private: false,
     layout: true,
+  },
+  {
+    path: "*",
+    element: <NotFoundPage />,
+    layout: true,
+    private: false,
   },
 ];

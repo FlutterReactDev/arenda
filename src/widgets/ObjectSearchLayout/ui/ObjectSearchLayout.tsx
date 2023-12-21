@@ -300,7 +300,7 @@ export const ObjectSearchLayout = () => {
             area={"header"}
             zIndex={9}
             boxShadow={"md"}
-            bgColor={"white"}
+            bg="gray.50"
           >
             <HStack
               justifyContent={{

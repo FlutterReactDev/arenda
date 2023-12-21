@@ -1,4 +1,4 @@
-import { Box, Button, Center, HStack, Stack } from "@chakra-ui/react";
+import { Box, Button, Center, HStack, Stack, useToast } from "@chakra-ui/react";
 import {
   EditSelectFormMap,
   HotelGeneralInformationForm,
@@ -8,8 +8,11 @@ import { CollapseFormCard } from "@shared/ui/CollapseFormCard";
 import { useEditHotel } from "../model/useEditHotel";
 import { EditForm } from "./EditForm";
 import { Loader } from "@shared/ui/Loader";
+import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 
 export const EditHotel = () => {
+  const toast = useToast();
   const {
     data,
     isSuccess,
@@ -47,7 +50,37 @@ export const EditHotel = () => {
                     fullAddress,
                     latitude,
                     longitude,
-                  });
+                  })
+                    ?.then(() => {
+                      toast({
+                        isClosable: true,
+                        position: "top-right",
+                        render({ onClose }) {
+                          return (
+                            <SucessAlert
+                              title="Сохранение"
+                              description="Расположение объекта сохранено"
+                              onClose={onClose}
+                            />
+                          );
+                        },
+                      });
+                    })
+                    .catch(() => {
+                      toast({
+                        isClosable: true,
+                        position: "top-right",
+                        render({ onClose }) {
+                          return (
+                            <ErrorAlert
+                              title="Ошибка"
+                              description="Произошла ошибка"
+                              onClose={onClose}
+                            />
+                          );
+                        },
+                      });
+                    });
                 }}
                 onCancel={() => {
                   onClose();
@@ -106,9 +139,41 @@ export const EditHotel = () => {
                       </HStack>
                     </>
                   }
-                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                  // @ts-ignore
-                  changeState={updateHotelGeneralInfo}
+                  changeState={(data) =>
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-ignore
+                    updateHotelGeneralInfo(data)
+                      ?.then(() => {
+                        toast({
+                          isClosable: true,
+                          position: "top-right",
+                          render({ onClose }) {
+                            return (
+                              <SucessAlert
+                                title="Сохранение"
+                                description="Информация об объекте сохранено"
+                                onClose={onClose}
+                              />
+                            );
+                          },
+                        });
+                      })
+                      .catch(() => {
+                        toast({
+                          isClosable: true,
+                          position: "top-right",
+                          render({ onClose }) {
+                            return (
+                              <ErrorAlert
+                                title="Ошибка"
+                                description="Произошла ошибка"
+                                onClose={onClose}
+                              />
+                            );
+                          },
+                        });
+                      })
+                  }
                 />
               </EditForm>
             );

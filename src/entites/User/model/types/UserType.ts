@@ -4,14 +4,14 @@ export enum Gender {
 }
 
 export interface RefreshToken {
-  expireAt: Date;
+  expireAt: string;
   phoneNumber: string;
   tokenString: string;
 }
 
 export interface UserLoginData {
   accessToken: string;
-  accessTokenExpireAt: Date;
+  accessTokenExpireAt: string;
   refreshToken: RefreshToken;
 }
 

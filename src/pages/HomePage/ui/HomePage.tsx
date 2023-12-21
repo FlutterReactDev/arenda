@@ -56,7 +56,7 @@ const HomePage = () => {
     <Box bgColor={"blackAlpha.50"} py={32}>
       <main>
         <Heading color="blackAlpha.900" size="3xl" textAlign="center">
-          Найдём, где остановиться!
+          Ваш одтых начинается хдесь
         </Heading>
         <Text
           color="blackAlpha.300"
@@ -65,8 +65,8 @@ const HomePage = () => {
           mt={"4"}
           fontSize={"larger"}
         >
-          Квартиры, отели, гостевые дома — 200 тысяч вариантов для поездок по
-          Кыргысзтану и зарубежью
+          Квартиры, отели, гостевые дома — по
+          Кыргызстану 
         </Text>
         <MainSearch />
         <Box>

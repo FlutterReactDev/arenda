@@ -1,10 +1,11 @@
 import { USER_TOKEN } from "@shared/constants/user";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+import { parseISO } from "date-fns";
+import Cookies from "js-cookie";
 import { useEffect, useState } from "react";
 import { UserLoginData, userAction } from "..";
-import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { getIsLoggin } from "./selectors";
-
 export const useAuth = () => {
   const isLoggin = useAppSelector(getIsLoggin);
   const dispatch = useAppDispatch();
@@ -26,10 +27,19 @@ export const useAuth = () => {
   };
 
   const login = (data: UserLoginData) => {
-    dispatch(userAction.setAuthData(data));
+    Cookies.set("accessToken", data.accessToken, {
+      expires: parseISO(data.accessTokenExpireAt),
+    });
+
+    Cookies.set("refreshToken", data.refreshToken.tokenString, {
+      expires: parseISO(data.refreshToken.expireAt),
+    });
+
     setAccessToken_(data.accessToken);
     setRefreshToken_(data.refreshToken.tokenString);
+
     dispatch(userAction.setIsLoggin(true));
+    dispatch(userAction.setAuthData(data));
   };
 
   const logout = () => {

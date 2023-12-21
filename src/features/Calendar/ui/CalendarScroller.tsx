@@ -149,6 +149,7 @@ export const CalendarScroller = memo(() => {
       }}
       position={"sticky"}
       bottom={0}
+      zIndex={9}
     >
       <a.div
         style={{

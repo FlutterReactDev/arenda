@@ -10,6 +10,7 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
         body: data,
         method: "POST",
       }),
+      invalidatesTags: ["object"],
     }),
 
     createRoom: build.mutation<unknown, CreateRoomType>({
