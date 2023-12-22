@@ -28,9 +28,10 @@ export const CalendarCollapseGroup: FC<
         minH="50px"
         bgColor={"blue.50"}
         pos={"sticky"}
+        top={0}
+        zIndex={8}
         {...(!isLessThan968 && {
           top: "204px",
-          zIndex: "8",
         })}
       >
         <HStack cursor={"pointer"} onClick={onToggle}>
