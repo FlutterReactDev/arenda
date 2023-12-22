@@ -78,7 +78,7 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/ObjectStarRating",
       }),
     }),
-    getCurrencies: build.query<Currency[], unknown>({
+    getCurrencies: build.query<Currency[], void>({
       query: () => ({
         url: "/Currencies",
       }),

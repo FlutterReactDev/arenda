@@ -1,0 +1,1 @@
+export const USER_CURRENCY = 'USER_CURRENCY'

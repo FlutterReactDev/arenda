@@ -22,9 +22,17 @@ export interface UserAuthData {
 export interface UserModalState {
   isOpen: boolean;
 }
+export interface Currency {
+  id: number;
+  symbol: string;
+  name: string;
+}
+export interface UserData {}
 
 export interface UserState {
   userAuthData: UserLoginData | undefined;
   userAuthModal: UserModalState;
   isLoggin: boolean;
+  userData: UserData | undefined;
+  userCurrency: Currency;
 }

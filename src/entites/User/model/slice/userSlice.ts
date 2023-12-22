@@ -1,13 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { UserLoginData, UserState } from "../types/UserType";
 import { USER_TOKEN } from "@shared/constants/user";
+import { USER_CURRENCY } from "../../constant/user";
+
+const defaultCurrency = {
+  id: 417,
+  symbol: "KGS",
+  name: "Сом",
+};
 const initialState = {
   userAuthData: undefined,
   userAuthModal: {
     isOpen: false,
   },
   isLoggin: false,
+  userCurrency:
+    JSON.parse(localStorage.getItem(USER_CURRENCY) as string) ||
+    defaultCurrency,
 } as UserState;
+
 const userSlice = createSlice({
   name: "userSlice",
   initialState,
@@ -36,6 +47,10 @@ const userSlice = createSlice({
 
     setIsLoggin(state, action) {
       state.isLoggin = action.payload;
+    },
+
+    setCurrency(state, action) {
+      state.userCurrency = action.payload;
     },
   },
 });

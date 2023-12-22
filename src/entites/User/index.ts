@@ -1,11 +1,11 @@
 export { LoginSchema } from "./model/schemas/LoginSchema";
-export { RegisterSchema } from "./model/schemas/RegisterSchema";
 export { PhoneSchema } from "./model/schemas/PhoneSchema";
+export { RegisterSchema } from "./model/schemas/RegisterSchema";
+export { getAuthData } from "./model/selectors";
+export { userAction, userReducer } from "./model/slice/userSlice";
 export { Gender } from "./model/types/UserType";
 export type { RefreshToken, UserLoginData } from "./model/types/UserType";
-export { userAction, userReducer } from "./model/slice/userSlice";
-export { getAuthData } from "./model/selectors";
-export { useAuthModal } from "./model/useAuthModal";
-export { useAuthToken } from "./model/useAuthToken";
-export { AuthButton } from "./ui/AuthButton";
 export { useAuth } from "./model/useAuth";
+export { useAuthModal } from "./model/useAuthModal";
+export { useUser } from "./model/useUser";
+export { AuthButton } from "./ui/AuthButton";

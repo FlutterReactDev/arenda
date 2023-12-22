@@ -26,6 +26,7 @@ import { UserAccount } from "@entites/User/ui/UserAccount";
 import { useInView } from "react-intersection-observer";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useHeader } from "../model/useHeader";
+import { CurrencySwitcher } from "@features/CurrencySwitcher";
 
 export const Header = memo(() => {
   const { setHeaderHeight } = useHeader();
@@ -149,6 +150,7 @@ export const Header = memo(() => {
                 </HStack>
               )}
               {isLoggin && <UserAccount />}
+              <CurrencySwitcher />
             </HStack>
           </Flex>
         </chakra.div>
