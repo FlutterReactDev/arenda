@@ -56,7 +56,7 @@ const HomePage = () => {
     <Box bgColor={"blackAlpha.50"} py={32}>
       <main>
         <Heading color="blackAlpha.900" size="3xl" textAlign="center">
-          Ваш одтых начинается хдесь
+          Ваш отдых начинается здесь
         </Heading>
         <Text
           color="blackAlpha.300"
@@ -65,8 +65,7 @@ const HomePage = () => {
           mt={"4"}
           fontSize={"larger"}
         >
-          Квартиры, отели, гостевые дома — по
-          Кыргызстану 
+          Квартиры, отели, гостевые дома — по Кыргызстану
         </Text>
         <MainSearch />
         <Box>
