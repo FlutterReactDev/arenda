@@ -16,7 +16,7 @@ import {
   MutableRefObject,
 } from "react";
 import { ResultSearchDatepickerInput } from "./ResultSearchDatepickerInput";
-import { DatePickerInput } from "@features/ResultSearch/model/types";
+import { DatePickerInput } from "@features/SearchObjects/model/types";
 
 interface ResultSearchDatepickerProps {
   containerRef: LegacyRef<HTMLDivElement>;
