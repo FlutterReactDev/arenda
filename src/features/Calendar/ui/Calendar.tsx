@@ -185,18 +185,7 @@ export const Calendar = memo(() => {
             );
           })}
         </CalendarCollapseGroup>
-        <CalendarCollapseGroup title="Иди на хуй">
-          {objects.map((object) => {
-            return (
-              <ObjectItem
-                setRangeObjectId={onRangeObjectId}
-                rangeObjectId={rangeObjectId}
-                {...object}
-                key={object.id}
-              />
-            );
-          })}
-        </CalendarCollapseGroup>
+
         <CalendarScroller />
       </Box>
       <ModalDeleteAvailibility />

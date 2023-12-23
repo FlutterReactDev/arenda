@@ -2,9 +2,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { base2GISApi } from "@shared/api/2GiSApi";
 import { baseApiWithReAuth, baseApi } from "@shared/api/rtk";
 import { createRoomReducer, createObjectReducer } from "@entites/Object";
-
 import { addObjectSliceReducer } from "@features/SelectLocationForm";
-
 import { userReducer } from "@entites/User";
 import { searchObjectReducer } from "@features/SearchObjects";
 import { calendarReducer } from "@features/Calendar";
