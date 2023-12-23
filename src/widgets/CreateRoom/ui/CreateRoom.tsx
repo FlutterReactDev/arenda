@@ -34,7 +34,7 @@ export const CreateRoom = () => {
     data: currencies,
     isSuccess: currenciesIsSuccess,
     isLoading: currenciesIsLoading,
-  } = useGetCurrenciesQuery("");
+  } = useGetCurrenciesQuery();
 
   const {
     data: bedTypes,

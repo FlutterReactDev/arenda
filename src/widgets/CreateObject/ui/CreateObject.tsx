@@ -37,7 +37,7 @@ export const CreateObject = () => {
     data: currencies,
     isSuccess: currenciesIsSuccess,
     isLoading: currenciesIsLoading,
-  } = useGetCurrenciesQuery("");
+  } = useGetCurrenciesQuery();
 
   const {
     data: bedTypes,
