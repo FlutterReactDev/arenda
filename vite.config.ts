@@ -6,9 +6,10 @@ const manifestForPlugIn: Partial<VitePWAOptions> = {
   registerType: "prompt",
   includeAssets: ["favicon.ico", "apple-touc-icon.png", "masked-icon.svg"],
   manifest: {
-    name: "React-vite-app",
-    short_name: "react-vite-app",
-    description: "I am a simple vite app",
+    name: "Turak.kg",
+    short_name: "turak.kg",
+    description:
+      "Turak.kg — сервис бронирования жилья: отели, квартиры посуточно, гостевые дома, коттеджи в частном секторе",
     icons: [
       {
         src: "/android-chrome-192x192.png",
