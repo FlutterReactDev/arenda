@@ -33,6 +33,10 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
           key: _2GIS_KEY_,
           scaleControl: true,
           minZoom: 5,
+          trafficControl: true,
+          zoomControl: true,
+          floorControl: true,
+          lang: "ru",
         }}
         onMousedown={() => {
           onMove && onMove();

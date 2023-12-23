@@ -61,7 +61,6 @@ export const ObjectSearchLayout = () => {
 
   const {
     addMarkers,
-    setMarkerBounds,
     setUserGeolocation,
     setCenter,
     userGeolocation,
@@ -178,10 +177,6 @@ export const ObjectSearchLayout = () => {
   useEffect(() => {
     addMarkers(markers);
   }, []);
-
-  const onSetFitBounds = () => {
-    setMarkerBounds();
-  };
 
   const findMe = () => {
     navigator.geolocation.watchPosition(
@@ -377,16 +372,6 @@ export const ObjectSearchLayout = () => {
                   <Icon as={BsGeoAlt} />
                 </Button>
               </HStack>
-
-              <Button
-                position={"absolute"}
-                top={4}
-                right={4}
-                onClick={onSetFitBounds}
-                zIndex={"popover"}
-              >
-                Заполнить
-              </Button>
 
               <SearchMap onMove={mapOnOpen} />
             </Box>

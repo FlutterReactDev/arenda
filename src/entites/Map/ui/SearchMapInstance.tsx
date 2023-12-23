@@ -9,7 +9,6 @@ export const SearchMapInstance = () => {
   useEffect(() => {
     if (mapInstance) {
       setMapInstance(mapInstance);
-      mapInstance?.setLanguage("ru");
     }
   }, [mapInstance]);
 

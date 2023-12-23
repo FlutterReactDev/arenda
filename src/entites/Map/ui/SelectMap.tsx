@@ -182,8 +182,8 @@ export const SelectMap: FC<SelectMapProps> = (props) => {
         <Map2GIS
           initialMapOptions={{
             key: _2GIS_KEY_,
-            keepCenterWhileUserZoomRotate: false,
-            scaleControl: false,
+            zoomControl: false,
+            lang: "ru",
           }}
           onClick={onMapClick}
         >
