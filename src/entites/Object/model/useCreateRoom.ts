@@ -5,7 +5,7 @@ import {
   AnObjectRoomAvailability,
   AnObjectRoomBaseCost,
   AnObjectRoomBathroom,
-  AnObjectRoomBed,
+  AnObjectRoomBeds,
   AnObjectRoomCleaningFee,
   AnObjectRoomDescription,
   AnObjectRoomEquipment,
@@ -17,7 +17,7 @@ import {
   AnObjectRoomKitchenEquipment,
   AnObjectRoomOutsideRelaxation,
   AnObjectRoomViewFromWindow,
-} from "..";
+} from "./types/createRoomTypes";
 import { createRoomAction } from "./createRoomSlice";
 import { getCreateRoomForm } from "./selectors";
 import { RootState } from "@app/providers/StoreProvider";
@@ -45,8 +45,8 @@ export const useCreateRoom = () => {
   ) => {
     dispatch(createRoomAction.setAnObjectRoomDescription(data));
   };
-  const setAnObjectRoomBed = (data: Partial<AnObjectRoomBed>) => {
-    dispatch(createRoomAction.setAnObjectRoomBed(data));
+  const setAnObjectRoomBeds = (data: AnObjectRoomBeds[]) => {
+    dispatch(createRoomAction.setAnObjectRoomBeds(data));
   };
 
   const setAnObjectRoomBaseCost = (data: Partial<AnObjectRoomBaseCost>) => {
@@ -153,6 +153,10 @@ export const useCreateRoom = () => {
     dispatch(createRoomAction.setAnObjectRoomPostingRule(data));
   };
 
+  const setAnObjectRoomMaximumGuests = (data: number) => {
+    dispatch(createRoomAction.setAnObjectRoomMaximumGuests(data));
+  };
+
   return {
     createRoomForm,
     anObjectId,
@@ -160,7 +164,7 @@ export const useCreateRoom = () => {
     categoryCount,
     clearForm,
     setAnObjectRoomDescription,
-    setAnObjectRoomBed,
+    setAnObjectRoomBeds,
     setAnObjectRoomBaseCost,
     setAnObjectRoomInsuranceDeposit,
     setAnObjectRoomCleaningFee,
@@ -181,5 +185,6 @@ export const useCreateRoom = () => {
     setAnObjectId,
     setAnObjectRoomBookingSettings,
     setAnObjectRoomPostingRule,
+    setAnObjectRoomMaximumGuests,
   };
 };

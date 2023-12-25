@@ -37,6 +37,8 @@ export {
   useGetObjectByIdQuery,
   useEditObjectMutation,
   useDeleteObjectMutation,
+  useGetRoomByIdQuery,
+  useEditRoomMutation,
 } from "./model/api/objectApi";
 export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";
 export { useCreateObject } from "./model/useCreateObject";
@@ -54,7 +56,7 @@ export type {
   AnObjectRoomAvailability,
   AnObjectRoomBaseCost,
   AnObjectRoomBathroom,
-  AnObjectRoomBed,
+  AnObjectRoomBeds,
   AnObjectRoomCleaningFee,
   AnObjectRoomDescription,
   AnObjectRoomEquipment,

@@ -17,4 +17,7 @@ export {
   useGetFromBookingToCheckInQuery,
   useGetInstantBookingValidQuery,
   useGetRoomNameTypesQuery,
+  useGetKitchenTypeQuery,
+  useGetRepairTypeQuery,
+  useGetNumberOfIsolatedBedroomQuery,
 } from "./model/api/commonReferenceApi.ts";

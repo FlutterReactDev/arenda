@@ -1,10 +1,12 @@
 import { baseApiWithReAuth } from "@shared/api/rtk";
 import { CreateRoomType } from "../types/createRoomTypes";
 import { ObjectResponse } from "../types/object";
+import { CreateObjectType } from "../types/createObjectTypes";
+import { RoomResponse } from "../types/room";
 
 const objectApi = baseApiWithReAuth.injectEndpoints({
   endpoints: (build) => ({
-    createObject: build.mutation<unknown, unknown>({
+    createObject: build.mutation<ObjectResponse, CreateObjectType>({
       query: (data) => ({
         url: "/Create",
         body: data,
@@ -72,6 +74,28 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
       }),
       invalidatesTags: ["object"],
     }),
+
+    editRoom: build.mutation<
+      void,
+      {
+        roomId: string;
+        data: RoomResponse;
+      }
+    >({
+      query: ({ data, roomId }) => ({
+        url: "/UpdateRoom/" + roomId,
+        body: data,
+        method: "POST",
+      }),
+      invalidatesTags: ["room"],
+    }),
+
+    getRoomById: build.query<RoomResponse, string>({
+      query: (roomId) => ({
+        url: "/GetRoomById/" + roomId,
+      }),
+      providesTags: ["room"],
+    }),
   }),
 });
 
@@ -83,4 +107,6 @@ export const {
   useGetObjectByIdQuery,
   useEditObjectMutation,
   useDeleteObjectMutation,
+  useGetRoomByIdQuery,
+  useEditRoomMutation,
 } = objectApi;

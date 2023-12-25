@@ -81,6 +81,8 @@ export const CreateHotel = () => {
   const [createObject, { isLoading }] = useCreateObjectMutation();
 
   const onSave = (data: HotelGeneralInformationType) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
     createObject({ ...formData, ...data })
       .unwrap()
       .then(() => {

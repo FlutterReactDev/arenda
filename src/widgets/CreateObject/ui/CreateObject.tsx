@@ -1,12 +1,16 @@
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
-import { Box, Button, Center, HStack } from "@chakra-ui/react";
+import { Box, Button, Center, HStack, useToast } from "@chakra-ui/react";
 import {
   useGetBedTypesQuery,
   useGetCleaningFeeTypesQuery,
   useGetCurrenciesQuery,
   useGetFromBookingToCheckInQuery,
   useGetInstantBookingValidQuery,
+  useGetKitchenTypeQuery,
+  useGetNumberOfIsolatedBedroomQuery,
+  useGetRepairTypeQuery,
 } from "@entites/CommonReference";
+import { useGetFloorTypeQuery } from "@entites/CommonReference/model/api/commonReferenceApi";
 import {
   AddressForm,
   BookingSettingForm,
@@ -16,22 +20,26 @@ import {
   GeneralInformationForm,
   HeadingForm,
   HowGuestBookForm,
+  ImageUploadForm,
   OptionalServiceForm,
   PostingRulesForm,
   PriceForm,
   SelectLocationMapForm,
+  useCreateObjectMutation,
   useCreateRoom,
   useCreateRoomMutation,
 } from "@entites/Object";
 import { GeneralInformationSchemaType } from "@entites/Object/model/schemas/generalInformationSchema";
 import { useCreateObject } from "@entites/Object/model/useCreateObject";
 import { useAddObject } from "@features/SelectLocationForm";
+import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
 import { FormStepper } from "@shared/ui/FormSteppter";
 import { PageLoader } from "@shared/ui/PageLoader";
 import { Suspense, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 export const CreateObject = () => {
+  const toast = useToast();
   const navigate = useNavigate();
   const {
     data: currencies,
@@ -39,6 +47,23 @@ export const CreateObject = () => {
     isLoading: currenciesIsLoading,
   } = useGetCurrenciesQuery();
 
+  const {
+    data: numberOfIsolatedBedroomTypes,
+    isLoading: numberOfIsolatedBedroomIsLoading,
+    isSuccess: numberOfIsolatedBedroomIsSuccess,
+  } = useGetNumberOfIsolatedBedroomQuery();
+
+  const {
+    data: kitchenTypes,
+    isLoading: kitchenTypeIsLoading,
+    isSuccess: kitchenTypeIsSuccess,
+  } = useGetKitchenTypeQuery();
+
+  const {
+    data: repairTypes,
+    isLoading: repairTypeIsLoading,
+    isSuccess: repairTypeIsSuccess,
+  } = useGetRepairTypeQuery();
   const {
     data: bedTypes,
     isSuccess: bedTypesIsSuccess,
@@ -51,10 +76,22 @@ export const CreateObject = () => {
     isSuccess: cleaningFeeTypesIsSuccess,
   } = useGetCleaningFeeTypesQuery("");
 
-  const [createRoom, { isLoading }] = useCreateRoomMutation();
+  const {
+    data: floorTypes,
+    isLoading: floorTypesIsLoading,
+    isSuccess: floorTypeIsSuccesss,
+  } = useGetFloorTypeQuery();
+
+  const [createRoom, { isLoading: createRoomIsLoading }] =
+    useCreateRoomMutation();
+
+  const [createObject, { isLoading: createObjectIsLoading }] =
+    useCreateObjectMutation();
+
   const {
     objectFormData: { city, country, objectType, objectTypeProperty, region },
   } = useAddObject();
+
   const {
     data: fromBookingToCheckInOptions,
     isLoading: fromBookingToCheckInIsLoading,
@@ -66,6 +103,7 @@ export const CreateObject = () => {
     isSuccess: instantBookingValidIsSuccess,
     isLoading: instantBookingValidIsLoading,
   } = useGetInstantBookingValidQuery("");
+
   const {
     setAnObjectPropertyTypeId,
     setAnObjectTypeId,
@@ -73,10 +111,18 @@ export const CreateObject = () => {
     setCountryId,
     setRegionId,
     setAddressData,
-
-    formData: { addressData, longitude, latitude, fullAddress },
+    formData: {
+      addressData,
+      longitude,
+      latitude,
+      fullAddress,
+      anObjectFeeAdditionalService,
+      anObjectAdditionalComfort,
+      anObjectMeal,
+    },
     setLocationMap,
     clearForm: clearObjectForm,
+    setAnObjectFeeAdditionalService,
   } = useCreateObject();
 
   useEffect(() => {
@@ -92,13 +138,16 @@ export const CreateObject = () => {
       anObjectRoomDescription: {
         area,
         count,
-        floor,
         floorsInTheBuilding,
         ownName,
         uniqueName,
+        kitchenType,
+        numberOfIsolatedBedroom,
+        repairType,
+        floorType,
       },
       anObjectRoomBathroom,
-      anObjectRoomBed: { beds },
+      anObjectRoomBeds,
       anObjectRoomEquipment,
       anObjectRoomAvailability,
       anObjectRoomAmenities,
@@ -114,11 +163,12 @@ export const CreateObject = () => {
       description,
       anObjectRoomPostingRule,
       anObjectRoomBookingSettings,
+      maximumGuests,
     },
-    anObjectId,
+
     categoryType,
     setAnObjectRoomBathroom,
-    setAnObjectRoomBed,
+    setAnObjectRoomBeds,
     setAnObjectRoomDescription,
     setAnObjectRoomEquipment,
     setAnObjectRoomAvailability,
@@ -135,6 +185,7 @@ export const CreateObject = () => {
     setDescription,
     setAnObjectRoomPostingRule,
     setAnObjectRoomBookingSettings,
+    setAnObjectRoomMaximumGuests,
     clearForm: clearRoomForm,
   } = useCreateRoom();
 
@@ -148,16 +199,16 @@ export const CreateObject = () => {
   const generalInformationData: GeneralInformationSchemaType = {
     area,
     count,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    floor,
+    floorType,
     floorsInTheBuilding,
     ...anObjectRoomBathroom,
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    //@ts-ignore
-    beds,
+    beds: anObjectRoomBeds.map(({ bedType, count }) => ({ bedType, count })),
     elevator: anObjectRoomAvailability.elevator,
     attic: anObjectRoomEquipment.attic,
+    kitchenType,
+    numberOfIsolatedBedroom,
+    repairType,
+    maximumGuests,
   };
 
   return (
@@ -224,62 +275,29 @@ export const CreateObject = () => {
                 render(props) {
                   return (
                     <>
-                      {bedTypesIsSuccess && (
-                        <Suspense fallback={<PageLoader />}>
-                          <GeneralInformationForm
-                            value={generalInformationData}
-                            onChange={({
-                              beds,
-                              area,
-                              count,
-                              floor,
-                              floorsInTheBuilding,
-                              numberOfBathroomsWithToilet,
-                              numberOfBathroomsWithOutToilet,
-
-                              numberOfSeparateToilets,
-                              additionalBathroom,
-                              additionalToilet,
-                              attic,
-                              bath,
-                              bidet,
-                              elevator,
-                              hairDryer,
-                              hygienicShower,
-                              robe,
-                              sauna,
-                              sharedBathroom,
-                              sharedShowerRoom,
-                              sharedToilet,
-                              shower,
-                              slippers,
-                              toiletries,
-                              towels,
-                              maximumGuests,
-                            }) => {
-                              setAnObjectRoomBed({
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                //@ts-ignore
+                      {bedTypesIsSuccess &&
+                        repairTypeIsSuccess &&
+                        kitchenTypeIsSuccess &&
+                        numberOfIsolatedBedroomIsSuccess &&
+                        floorTypeIsSuccesss && (
+                          <Suspense fallback={<PageLoader />}>
+                            <GeneralInformationForm
+                              value={generalInformationData}
+                              onChange={({
                                 beds,
-                                maximumGuests,
-                              });
-                              setAnObjectRoomDescription({
-                                roomNameType: 1,
-                                count,
                                 area,
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                //@ts-ignore
-                                floor,
+                                count,
+                                floorType,
                                 floorsInTheBuilding,
-                              });
-                              setAnObjectRoomBathroom({
+                                numberOfBathroomsWithToilet,
+                                numberOfBathroomsWithOutToilet,
+                                numberOfSeparateToilets,
                                 additionalBathroom,
                                 additionalToilet,
-                                bidet,
-                                numberOfBathroomsWithOutToilet,
-                                numberOfBathroomsWithToilet,
-                                numberOfSeparateToilets,
+                                attic,
                                 bath,
+                                bidet,
+                                elevator,
                                 hairDryer,
                                 hygienicShower,
                                 robe,
@@ -291,20 +309,74 @@ export const CreateObject = () => {
                                 slippers,
                                 toiletries,
                                 towels,
-                              });
-                              setAnObjectRoomEquipment({
-                                attic,
-                              });
-                              setAnObjectRoomAvailability({
-                                elevator,
-                              });
-                            }}
-                            bedTypes={bedTypes}
-                            {...props}
-                          />
-                        </Suspense>
-                      )}
-                      {bedTypesIsLoading && <PageLoader />}
+                                maximumGuests,
+                                kitchenType,
+                                numberOfIsolatedBedroom,
+                                repairType,
+                              }) => {
+                                const roomBeds = beds.map(
+                                  ({ bedType, count }) => ({
+                                    bedType,
+                                    count,
+                                    anObjectRoomId: 0,
+                                  })
+                                );
+                                setAnObjectRoomBeds(roomBeds);
+
+                                setAnObjectRoomMaximumGuests(maximumGuests);
+                                setAnObjectRoomDescription({
+                                  roomNameTypeId: 1,
+                                  count,
+                                  area,
+                                  floorType,
+                                  floorsInTheBuilding,
+                                  kitchenType,
+                                  numberOfIsolatedBedroom,
+                                  repairType,
+                                });
+                                setAnObjectRoomBathroom({
+                                  additionalBathroom,
+                                  additionalToilet,
+                                  bidet,
+                                  numberOfBathroomsWithOutToilet,
+                                  numberOfBathroomsWithToilet,
+                                  numberOfSeparateToilets,
+                                  bath,
+                                  hairDryer,
+                                  hygienicShower,
+                                  robe,
+                                  sauna,
+                                  sharedBathroom,
+                                  sharedShowerRoom,
+                                  sharedToilet,
+                                  shower,
+                                  slippers,
+                                  toiletries,
+                                  towels,
+                                });
+                                setAnObjectRoomEquipment({
+                                  attic,
+                                });
+                                setAnObjectRoomAvailability({
+                                  elevator,
+                                });
+                              }}
+                              bedTypes={bedTypes}
+                              kitchenTypes={kitchenTypes}
+                              repairTypes={repairTypes}
+                              floorTypes={floorTypes}
+                              numberOfIsolatedBedroomTypes={
+                                numberOfIsolatedBedroomTypes
+                              }
+                              {...props}
+                            />
+                          </Suspense>
+                        )}
+                      {bedTypesIsLoading ||
+                        kitchenTypeIsLoading ||
+                        repairTypeIsLoading ||
+                        floorTypesIsLoading ||
+                        (numberOfIsolatedBedroomIsLoading && <PageLoader />)}
                     </>
                   );
                 },
@@ -369,29 +441,16 @@ export const CreateObject = () => {
                   );
                 },
               },
-              // {
-              //   id: "ImageUploadForm",
-              //   render(props) {
-              //     return (
-              //       <Suspense fallback={<PageLoader />}>
-              //         <ImageUploadForm
-              //           stateValue={files}
-              //           changeState={(data) => {
-              //             const files = data as { files: File[] };
-              //             dispatch(
-              //               addObjectStepActions.setForm({
-              //                 step: 0,
-              //                 screen: 4,
-              //                 data: files,
-              //               })
-              //             );
-              //           }}
-              //           {...props}
-              //         />
-              //       </Suspense>
-              //     );
-              //   },
-              // },
+              {
+                id: "ImageUploadForm",
+                render(props) {
+                  return (
+                    <Suspense fallback={<PageLoader />}>
+                      <ImageUploadForm {...props} />
+                    </Suspense>
+                  );
+                },
+              },
               {
                 id: "HeadingForm",
                 render(props) {
@@ -556,18 +615,23 @@ export const CreateObject = () => {
                           <OptionalServiceForm
                             currencies={currencies}
                             currentCurrencyId={currencyId}
+                            cleaningFeeTypes={cleaningFeeTypes}
                             value={{
                               cleaningFeeType,
                               cleaningAmount: amount,
                               depositAmount:
                                 anObjectRoomInsuranceDeposit.amount,
-                              transfer: true,
-                              transferDescription: "sasfksdosaokdpaskdops",
+                              transfer:
+                                anObjectFeeAdditionalService.hasTransfer,
+                              transferDescription:
+                                anObjectFeeAdditionalService.transferDetails,
                             }}
                             onChange={({
                               cleaningFeeType,
                               cleaningAmount,
                               depositAmount,
+                              transfer,
+                              transferDescription,
                             }) => {
                               setAnObjectRoomCleaningFee({
                                 amount: cleaningAmount,
@@ -576,59 +640,110 @@ export const CreateObject = () => {
                               setAnObjectRoomInsuranceDeposit({
                                 amount: depositAmount,
                               });
-
-                              createRoom({
-                                anObjectId,
-                                anObjectRoomAmenities,
-                                anObjectRoomAvailability,
-                                anObjectRoomBaseCost,
-                                anObjectRoomBathroom,
-                                anObjectRoomBed: {
-                                  maximumGuests: 10,
-                                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                  //@ts-ignore
-                                  bedType: 1,
-                                  count: 1,
+                              setAnObjectFeeAdditionalService({
+                                transferDetails: transferDescription,
+                                hasTransfer: transfer,
+                              });
+                              createObject({
+                                addressData,
+                                longitude,
+                                latitude,
+                                fullAddress,
+                                anObjectFeeAdditionalService,
+                                building: "",
+                                countryId: country.id,
+                                cityId: city.id,
+                                regionId: region.id,
+                                anObjectTypeId: objectType,
+                                anObjectPropertyTypeId: objectTypeProperty.id,
+                                anObjectDetail: {
+                                  areaOfTheLand: area,
+                                  checkInAfter:
+                                    anObjectRoomBookingSettings.checkInAfter,
+                                  checkOutAfter:
+                                    anObjectRoomBookingSettings.checkOutAfter,
+                                  numberOfRooms: count,
+                                  paymentType: 1,
+                                  smokingOnSite: 1,
+                                  yearOfConstruntion: 2233,
                                 },
-                                anObjectRoomCleaningFee: {
-                                  amount: cleaningAmount || 0,
-                                  cleaningFeeType,
-                                },
-
-                                anObjectRoomDescription: {
-                                  area,
-                                  count,
-                                  floor,
-                                  floorsInTheBuilding,
-                                  ownName,
-                                  roomNameType: 1,
-                                  uniqueName,
-                                },
-                                anObjectRoomEquipment,
-                                anObjectRoomForChildren,
-                                anObjectRoomImages: [
-                                  {
-                                    fileName: "asdasd",
-                                    id: 0,
-                                  },
-                                ],
-                                anObjectRoomIndoorRelaxation,
-                                anObjectRoomInfrastructureLeisureNearby,
-                                anObjectRoomInsuranceDeposit,
-                                anObjectRoomKitchenEquipment,
-                                anObjectRoomOutsideRelaxation,
-                                anObjectRoomViewFromWindow,
-                                categoryType,
-                                description,
+                                internetAccess: 1,
+                                internetAccessSumm: 0,
+                                parking: 1,
+                                parkingSumm: 0,
+                                rating: 1,
+                                anObjectAdditionalComfort,
+                                anObjectMeal,
+                                name: ownName,
                               })
                                 .unwrap()
-                                .then(() => {
-                                  navigate(RouteName.ADD_OBJECT);
-                                  clearObjectForm();
-                                  clearRoomForm();
+                                .then(({ id }) => {
+                                  createRoom({
+                                    anObjectId: id,
+                                    anObjectRoomAmenities,
+                                    anObjectRoomAvailability,
+                                    anObjectRoomBaseCost,
+                                    anObjectRoomBathroom,
+                                    anObjectRoomBeds,
+                                    anObjectRoomCleaningFee: {
+                                      amount: cleaningAmount || 0,
+                                      cleaningFeeType,
+                                    },
+
+                                    anObjectRoomDescription: {
+                                      area,
+                                      count,
+                                      floorType,
+                                      floorsInTheBuilding,
+                                      ownName,
+                                      roomNameTypeId: 1,
+                                      uniqueName,
+                                      kitchenType,
+                                      numberOfIsolatedBedroom,
+                                      repairType,
+                                    },
+                                    anObjectRoomEquipment,
+                                    anObjectRoomForChildren,
+                                    anObjectRoomImages: [
+                                      {
+                                        fileName: "asdasd",
+                                        id: 0,
+                                      },
+                                    ],
+                                    anObjectRoomIndoorRelaxation,
+                                    anObjectRoomInfrastructureLeisureNearby,
+                                    anObjectRoomInsuranceDeposit,
+                                    anObjectRoomKitchenEquipment,
+                                    anObjectRoomOutsideRelaxation,
+                                    anObjectRoomViewFromWindow,
+                                    categoryType,
+                                    description,
+                                    anObjectRoomBookingSettings,
+                                    anObjectRoomPostingRule,
+                                    maximumGuests,
+                                  })
+                                    .unwrap()
+                                    .then(() => {
+                                      navigate(RouteName.MY_OBJECTS);
+                                      clearObjectForm();
+                                      clearRoomForm();
+                                      toast({
+                                        position: "top-right",
+                                        isClosable: true,
+                                        duration: 3000,
+                                        render({ onClose }) {
+                                          return (
+                                            <SucessAlert
+                                              onClose={onClose}
+                                              title="Создание"
+                                              description={`Создан обьект`}
+                                            />
+                                          );
+                                        },
+                                      });
+                                    });
                                 });
                             }}
-                            cleaningFeeTypes={cleaningFeeTypes}
                             {...props}
                           />
                         </Suspense>
@@ -644,20 +759,21 @@ export const CreateObject = () => {
           },
         ]}
       />
-      {isLoading && (
-        <Box
-          pos={"fixed"}
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          bgColor={"blackAlpha.500"}
-        >
-          <Center w="full" h="full">
-            <PageLoader />
-          </Center>
-        </Box>
-      )}
+      {createRoomIsLoading ||
+        (createObjectIsLoading && (
+          <Box
+            pos={"fixed"}
+            top={0}
+            left={0}
+            right={0}
+            bottom={0}
+            bgColor={"blackAlpha.500"}
+          >
+            <Center w="full" h="full">
+              <PageLoader />
+            </Center>
+          </Box>
+        ))}
     </>
   );
 };

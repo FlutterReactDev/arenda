@@ -4,14 +4,18 @@ import {
   BedType,
   CleaningFeeTypes,
   Currency,
+  FloorType,
   FoodType,
   FromBookingToCheckIn,
   InstantBookingValid,
   InternetAccess,
+  KitchenTypes,
   MealServiceTypes,
+  NumberOfIsolatedBedroomType,
   ObjectStarRating,
   Parking,
   PaymentType,
+  RepairType,
   ReportingDocumentType,
   SmokingOnSite,
 } from "../types";
@@ -115,6 +119,31 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/RoomNameTypes",
       }),
     }),
+
+    getKitchenType: build.query<KitchenTypes[], void>({
+      query: () => ({
+        url: "/KitchenType",
+      }),
+    }),
+
+    getRepairType: build.query<RepairType[], void>({
+      query: () => ({
+        url: "/RepairType",
+      }),
+    }),
+    getNumberOfIsolatedBedroom: build.query<
+      NumberOfIsolatedBedroomType[],
+      void
+    >({
+      query: () => ({
+        url: "/NumberOfIsolatedBedroom",
+      }),
+    }),
+    getFloorType: build.query<FloorType[], void>({
+      query: () => ({
+        url: "/FloorType",
+      }),
+    }),
   }),
 });
 
@@ -137,4 +166,8 @@ export const {
   useGetFromBookingToCheckInQuery,
   useGetInstantBookingValidQuery,
   useGetRoomNameTypesQuery,
+  useGetKitchenTypeQuery,
+  useGetRepairTypeQuery,
+  useGetNumberOfIsolatedBedroomQuery,
+  useGetFloorTypeQuery,
 } = commonReferencePrivateApi;

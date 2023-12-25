@@ -7,6 +7,7 @@ import {
   DrawerContent,
   DrawerHeader,
   DrawerOverlay,
+  Flex,
   FormControl,
   Grid,
   GridItem,
@@ -17,8 +18,12 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  List,
+  ListIcon,
   Show,
   SimpleGrid,
+  Stack,
+  Text,
   VStack,
   useDisclosure,
   useMediaQuery,
@@ -31,7 +36,7 @@ import { CalendarIcon, SearchIcon } from "@chakra-ui/icons";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 import { useCallback, useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
-import { MdBookmarkBorder } from "react-icons/md";
+import { MdApartment, MdBookmarkBorder } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
 
 import { FreeMode } from "swiper/modules";
@@ -47,6 +52,7 @@ import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
 import { getWordByNum } from "@shared/utils/getWordByNum";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 
+import Pagination from "@choc-ui/paginator";
 import { FilterObjects } from "@features/FilterObjects";
 import { useHeader } from "@widgets/Header";
 import { format } from "date-fns";
@@ -151,8 +157,14 @@ export const ObjectSearchLayout = () => {
     onOpen: guestsOnOpen,
   } = useDisclosure();
 
-  const [isLessThan630] = useMediaQuery("(max-width: 630px)");
+  const {
+    isOpen: searchIsOpen,
+    onClose: searchOnClose,
+    onOpen: searchOnOpen,
+  } = useDisclosure();
 
+  const [isLessThan630] = useMediaQuery("(max-width: 630px)");
+  const [isLessThen900] = useMediaQuery("(max-width: 900px)");
   const { guests, dates } = useSearchObjectData();
   const [calendarDates, setCalendarDates] = useState<Date[]>([
     dates?.checkIn,
@@ -321,7 +333,7 @@ export const ObjectSearchLayout = () => {
           )}
 
           <GridItem area={"main"}>
-            <VStack spacing={5}>
+            <VStack spacing={5} pb={4}>
               <Hide below="xl">
                 <ObjectCard />
                 <ObjectCard />
@@ -343,6 +355,15 @@ export const ObjectSearchLayout = () => {
                   <SimpleObjectCard />
                 </SimpleGrid>
               </Show>
+              <Pagination
+                defaultCurrent={5}
+                total={500}
+                paginationProps={{
+                  display: "flex",
+                }}
+                pageNeighbours={2}
+                colorScheme="red"
+              />
             </VStack>
           </GridItem>
           <GridItem
@@ -397,7 +418,7 @@ export const ObjectSearchLayout = () => {
         </Show>
       </Show>
       <Show breakpoint="(max-width: 900px)">
-        <Box h="calc(100dvh - 48px)" position={"relative"}>
+        <Box h="calc(100dvh - 80px)" position={"relative"}>
           <HStack position={"absolute"} top={2} left={2} zIndex={"docked"}>
             <Button colorScheme="blue" onClick={findMe}>
               <Icon as={BsGeoAlt} />
@@ -424,6 +445,7 @@ export const ObjectSearchLayout = () => {
                         _hover={{
                           bgColor: "white",
                         }}
+                        onClick={searchOnOpen}
                       />
                     </InputGroup>
                   </FormControl>
@@ -499,25 +521,45 @@ export const ObjectSearchLayout = () => {
               </>
             }
           >
-            <SimpleGrid
-              columns={{
-                ...(isLessThan630
-                  ? {
-                      base: 1,
-                    }
-                  : { base: 1, sm: 2 }),
-              }}
-              spacing={5}
-              pt={5}
-            >
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-              <SimpleObjectCard />
-            </SimpleGrid>
+            <Box py={4} w="full">
+              <SimpleGrid
+                columns={{
+                  ...(isLessThan630
+                    ? {
+                        base: 1,
+                      }
+                    : { base: 1, sm: 2 }),
+                }}
+                spacing={5}
+                pt={5}
+              >
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+                <SimpleObjectCard />
+              </SimpleGrid>
+              <HStack pt={3} justifyContent={"center"} w="full">
+                <Pagination
+                  pageSize={1}
+                  total={10}
+                  {...(isLessThen900 && {
+                    size: "sm",
+                    pageNeighbours: 2,
+                  })}
+                  {...(isLessThan630 && {
+                    size: "sm",
+                    pageNeighbours: 0,
+                  })}
+                  colorScheme="red"
+                  paginationProps={{
+                    display: "flex",
+                  }}
+                />
+              </HStack>
+            </Box>
           </DraggbleDrawer>
         </Box>
         <Drawer
@@ -539,6 +581,60 @@ export const ObjectSearchLayout = () => {
             <DrawerCloseButton />
             <DrawerBody h={"100dvh"} p={0} bgColor={"white"}>
               <FilterObjects />
+            </DrawerBody>
+          </DrawerContent>
+        </Drawer>
+        <Drawer
+          placement="bottom"
+          onClose={searchOnClose}
+          isOpen={searchIsOpen}
+        >
+          <DrawerOverlay />
+          <DrawerContent h={"90dvh"} roundedTop={"2xl"}>
+            <DrawerBody>
+              <DrawerCloseButton />
+              <DrawerHeader>Выбрать направления</DrawerHeader>
+
+              <DrawerBody p="0">
+                <InputGroup>
+                  <Input placeholder="Курорт, город или адрес" />
+                  <InputLeftElement>
+                    <SearchIcon />
+                  </InputLeftElement>
+                </InputGroup>
+
+                <Box mt={"4"} p="4">
+                  <List color="blackAlpha.800" spacing={3} mt={2}>
+                    <Flex
+                      alignItems="flex-start"
+                      onClick={() => {
+                        searchOnClose();
+                      }}
+                      cursor={"pointer"}
+                    >
+                      <ListIcon
+                        as={MdApartment}
+                        fontSize={"3xl"}
+                        color="blackAlpha.800"
+                      />
+                      <Stack
+                        spacing={0}
+                        borderBottom={"1px solid"}
+                        borderColor={"gray.300"}
+                        w="full"
+                        pb={2}
+                      >
+                        <Text fontWeight={"medium"} fontSize={"sm"}>
+                          Бостери
+                        </Text>
+                        <Text color="gray.500" fontSize={"small"}>
+                          Ыссык-кол
+                        </Text>
+                      </Stack>
+                    </Flex>
+                  </List>
+                </Box>
+              </DrawerBody>
             </DrawerBody>
           </DrawerContent>
         </Drawer>

@@ -8,22 +8,22 @@ import { CalendarStatPage } from "@pages/CalendarStatPage";
 import { CreateHotelPage } from "@pages/CreateHotelPage";
 import { CreateObjectPage } from "@pages/CreateObjectPage";
 import { CreateRoomPage } from "@pages/CreateRoomPage";
+import { EditHotelPage } from "@pages/EditHotelPage";
+import { EdtiObjectPage } from "@pages/EditObjectPage";
+import { EditRoomPage } from "@pages/EditRoomPage";
+import { ForgotPage } from "@pages/ForgotPage";
 import { HomePage } from "@pages/HomePage";
 import { LoginPage } from "@pages/LoginPage";
+import { MyObjectsPage } from "@pages/MyObjectsPage";
+import { NotFoundPage } from "@pages/NotFoundPage";
 import { ObjectDetailPage } from "@pages/ObjectDetailPage";
 import { RegisterPage } from "@pages/RegisterPage";
+import { ResetPage } from "@pages/ResetPage";
 import { SearchResultPage } from "@pages/SearchResultPage";
-import { SelectionPage } from "@pages/SelectionPage";
+import { VerifyPage } from "@pages/VerifyPage";
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { ObjectSecureRoute } from "../ui/ObjectSecureRoute";
-import { MyObjectsPage } from "@pages/MyObjectsPage";
-import { EditHotelPage } from "@pages/EditHotelPage";
-import { EditRoomPage } from "@pages/EditRoomPage";
-import { ResetPage } from "@pages/ResetPage";
-import { ForgotPage } from "@pages/ForgotPage";
-import { VerifyPage } from "@pages/VerifyPage";
-import { NotFoundPage } from "@pages/NotFoundPage";
 
 export enum RouteName {
   MAIN_PAGE = "/",
@@ -123,6 +123,12 @@ export const routeConfig: Route[] = [
     private: true,
   },
   {
+    path: RouteName.EDIT_OBJECT,
+    element: <EdtiObjectPage />,
+    layout: true,
+    private: true,
+  },
+  {
     path: RouteName.CALENDAR_PAGE,
     element: <CalendarPage />,
     private: false,
@@ -196,12 +202,12 @@ export const routeConfig: Route[] = [
     private: false,
     layout: true,
   },
-  {
-    path: RouteName.SELECTION,
-    element: <SelectionPage />,
-    private: false,
-    layout: false,
-  },
+  // {
+  //   path: RouteName.SELECTION,
+  //   element: <SelectionPage />,
+  //   private: false,
+  //   layout: false,
+  // },
   {
     path: RouteName.DETAIL_PAGE,
     element: <ObjectDetailPage />,

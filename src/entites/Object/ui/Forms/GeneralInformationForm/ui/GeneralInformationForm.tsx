@@ -24,7 +24,13 @@ import {
   Text,
   Tooltip,
 } from "@chakra-ui/react";
-import { BedType } from "@entites/CommonReference/model/types";
+import {
+  BedType,
+  KitchenTypes,
+  RepairType,
+  NumberOfIsolatedBedroomType,
+  FloorType,
+} from "@entites/CommonReference/model/types";
 import {
   GeneralInformationSchemaType,
   generalInformationSchema,
@@ -41,11 +47,25 @@ interface GeneralInformationFormProps {
   value: GeneralInformationSchemaType;
   onChange: (value: GeneralInformationSchemaType) => void;
   bedTypes: BedType[];
+  kitchenTypes: KitchenTypes[];
+  repairTypes: RepairType[];
+  numberOfIsolatedBedroomTypes: NumberOfIsolatedBedroomType[];
+  floorTypes: FloorType[];
 }
 const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
   props
 ) => {
-  const { navigation, onNext, onChange, value, bedTypes } = props;
+  const {
+    navigation,
+    onNext,
+    onChange,
+    value,
+    bedTypes,
+    kitchenTypes,
+    repairTypes,
+    numberOfIsolatedBedroomTypes,
+    floorTypes,
+  } = props;
 
   const {
     control,
@@ -75,13 +95,13 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
   });
 
   const typeAndCountBeds = useWatch({ control, name: "beds" });
-  const floors = useWatch({ control, name: "floor" });
+  const floorType = useWatch({ control, name: "floorType" });
   const floorInHouse = useWatch({ control, name: "floorsInTheBuilding" });
   const roomsCount = useWatch({ control, name: "count" });
 
-  const numberOfIsolatedBedrooms = useWatch({
+  const numberOfIsolatedBedroom = useWatch({
     control,
-    name: "numberOfIsolatedBedrooms",
+    name: "numberOfIsolatedBedroom",
   });
 
   useEffect(() => {
@@ -91,7 +111,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
   }, [typeAndCountBeds]);
 
   useEffect(() => {
-    if (floors == "basement") {
+    if (floorType == 0) {
       setValue("elevator", false);
       setValue("attic", false);
     }
@@ -99,20 +119,21 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
     if (Number(floorInHouse) < 3) {
       setValue("elevator", false);
     }
-    if (Number(floors) != floorInHouse) {
+
+    if (Number(floorType) != floorInHouse) {
       setValue("attic", false);
     }
 
-    if (floors && floorInHouse) {
+    if (floorType && floorInHouse) {
       trigger("floorsInTheBuilding");
     }
-  }, [floors, setValue, trigger, floorInHouse]);
+  }, [floorType, setValue, trigger, floorInHouse]);
 
   useEffect(() => {
-    if (roomsCount && numberOfIsolatedBedrooms != undefined) {
-      trigger("numberOfIsolatedBedrooms");
+    if (roomsCount && numberOfIsolatedBedroom != undefined) {
+      trigger("numberOfIsolatedBedroom");
     }
-  }, [roomsCount, trigger, numberOfIsolatedBedrooms]);
+  }, [roomsCount, trigger, numberOfIsolatedBedroom]);
 
   const onSubmit = (data: InferType<typeof generalInformationSchema>) => {
     onChange(data);
@@ -141,112 +162,18 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
               <FormErrorMessage>{errors.area?.message}</FormErrorMessage>
             </FormControl>
             <HStack alignItems={"flex-start"}>
-              <FormControl maxW="50%" isInvalid={!!errors.floor?.message}>
+              <FormControl maxW="50%" isInvalid={!!errors.floorType?.message}>
                 <FormLabel>Этаж</FormLabel>
-                <Select {...register("floor")} placeholder="Выберите этаж">
-                  <option value="basement">цокольный</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8</option>
-                  <option value="9">9</option>
-                  <option value="10">10</option>
-                  <option value="11">11</option>
-                  <option value="12">12</option>
-                  <option value="13">13</option>
-                  <option value="14">14</option>
-                  <option value="15">15</option>
-                  <option value="16">16</option>
-                  <option value="17">17</option>
-                  <option value="18">18</option>
-                  <option value="19">19</option>
-                  <option value="20">20</option>
-                  <option value="21">21</option>
-                  <option value="22">22</option>
-                  <option value="23">23</option>
-                  <option value="24">24</option>
-                  <option value="25">25</option>
-                  <option value="26">26</option>
-                  <option value="27">27</option>
-                  <option value="28">28</option>
-                  <option value="29">29</option>
-                  <option value="30">30</option>
-                  <option value="31">31</option>
-                  <option value="32">32</option>
-                  <option value="33">33</option>
-                  <option value="34">34</option>
-                  <option value="35">35</option>
-                  <option value="36">36</option>
-                  <option value="37">37</option>
-                  <option value="38">38</option>
-                  <option value="39">39</option>
-                  <option value="40">40</option>
-                  <option value="41">41</option>
-                  <option value="42">42</option>
-                  <option value="43">43</option>
-                  <option value="44">44</option>
-                  <option value="45">45</option>
-                  <option value="46">46</option>
-                  <option value="47">47</option>
-                  <option value="48">48</option>
-                  <option value="49">49</option>
-                  <option value="50">50</option>
-                  <option value="51">51</option>
-                  <option value="52">52</option>
-                  <option value="53">53</option>
-                  <option value="54">54</option>
-                  <option value="55">55</option>
-                  <option value="56">56</option>
-                  <option value="57">57</option>
-                  <option value="58">58</option>
-                  <option value="59">59</option>
-                  <option value="60">60</option>
-                  <option value="61">61</option>
-                  <option value="62">62</option>
-                  <option value="63">63</option>
-                  <option value="64">64</option>
-                  <option value="65">65</option>
-                  <option value="66">66</option>
-                  <option value="67">67</option>
-                  <option value="68">68</option>
-                  <option value="69">69</option>
-                  <option value="70">70</option>
-                  <option value="71">71</option>
-                  <option value="72">72</option>
-                  <option value="73">73</option>
-                  <option value="74">74</option>
-                  <option value="75">75</option>
-                  <option value="76">76</option>
-                  <option value="77">77</option>
-                  <option value="78">78</option>
-                  <option value="79">79</option>
-                  <option value="80">80</option>
-                  <option value="81">81</option>
-                  <option value="82">82</option>
-                  <option value="83">83</option>
-                  <option value="84">84</option>
-                  <option value="85">85</option>
-                  <option value="86">86</option>
-                  <option value="87">87</option>
-                  <option value="88">88</option>
-                  <option value="89">89</option>
-                  <option value="90">90</option>
-                  <option value="91">91</option>
-                  <option value="92">92</option>
-                  <option value="93">93</option>
-                  <option value="94">94</option>
-                  <option value="95">95</option>
-                  <option value="96">96</option>
-                  <option value="97">97</option>
-                  <option value="98">98</option>
-                  <option value="99">99</option>
-                  <option value="100">100</option>
+                <Select {...register("floorType")} placeholder="Выберите этаж">
+                  {floorTypes.map(({ name, value }) => {
+                    return (
+                      <option key={value} value={value}>
+                        {name}
+                      </option>
+                    );
+                  })}
                 </Select>
-                <FormErrorMessage>{errors.floor?.message}</FormErrorMessage>
+                <FormErrorMessage>{errors.floorType?.message}</FormErrorMessage>
               </FormControl>
               <FormControl
                 maxW="50%"
@@ -274,7 +201,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                 </FormErrorMessage>
               </FormControl>
             </HStack>
-            {floors != "basement" && (
+            {floorType != 0 && (
               <HStack>
                 <FormControl maxW="50%">
                   <HStack alignItems={"center"} spacing={2}>
@@ -291,7 +218,7 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                             colorScheme="red"
                             ref={ref}
                             isChecked={value}
-                            isDisabled={!(floorInHouse == Number(floors))}
+                            isDisabled={!(floorInHouse == Number(floorType))}
                           >
                             мансарда
                           </Checkbox>
@@ -359,25 +286,23 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
                 вспомогательных помещений
               </FormHelperText>
             </FormControl>
-            <FormControl isInvalid={!!errors.kitchen?.message}>
+            <FormControl isInvalid={!!errors.kitchenType?.message}>
               <FormLabel>Кухня</FormLabel>
-              <Select {...register("kitchen")} placeholder="Выберите">
-                <option value="noKitchen">без кухни</option>
-                <option value="separateKitchen">отдельная кухня</option>
-                <option value="kitchenLivingRoom">кухня-гостиная</option>
-                <option value="kitchenZone">кухонная зона</option>
+              <Select {...register("kitchenType")} placeholder="Выберите">
+                {kitchenTypes.map(({ name, value }) => (
+                  <option value={value}>{name}</option>
+                ))}
               </Select>
-              <FormErrorMessage>{errors.kitchen?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.kitchenType?.message}</FormErrorMessage>
             </FormControl>
-            <FormControl isInvalid={!!errors.repair?.message}>
+            <FormControl isInvalid={!!errors.repairType?.message}>
               <FormLabel>Ремонт</FormLabel>
-              <Select {...register("repair")} placeholder="Выберите">
-                <option value="withoutRepair">без ремонта</option>
-                <option value="redecorating">косметический ремонт</option>
-                <option value="europeanQualityRenovation">евроремонт</option>
-                <option value="designerRenovation">дизайнерский ремонт</option>
+              <Select {...register("repairType")} placeholder="Выберите">
+                {repairTypes.map(({ name, value }) => (
+                  <option value={value}>{name}</option>
+                ))}
               </Select>
-              <FormErrorMessage>{errors.repair?.message}</FormErrorMessage>
+              <FormErrorMessage>{errors.repairType?.message}</FormErrorMessage>
             </FormControl>
           </Stack>
         </FormCard>
@@ -386,36 +311,18 @@ const GeneralInformationForm: FC<FormProps & GeneralInformationFormProps> = (
             Укажите количество спален, каждая из которых имеет отдельный выход.
           </Heading>
           <Stack spacing={2} mt={4}>
-            <FormControl isInvalid={!!errors.numberOfIsolatedBedrooms?.message}>
+            <FormControl isInvalid={!!errors.numberOfIsolatedBedroom?.message}>
               <FormLabel>Количество изолированных спален</FormLabel>
               <Select
-                {...register("numberOfIsolatedBedrooms")}
+                {...register("numberOfIsolatedBedroom")}
                 placeholder="Выберите"
               >
-                <option value="0">студия</option>
-                <option value="1">1 спальня</option>
-                <option value="2">2 спальни</option>
-                <option value="3">3 спальни</option>
-                <option value="4">4 спальни</option>
-                <option value="5">5 спален</option>
-                <option value="6">6 спален</option>
-                <option value="7">7 спален</option>
-                <option value="8">8 спален</option>
-                <option value="9">9 спален</option>
-                <option value="10">10 спален</option>
-                <option value="11">11 спален</option>
-                <option value="12">12 спален</option>
-                <option value="13">13 спален</option>
-                <option value="14">14 спален</option>
-                <option value="15">15 спален</option>
-                <option value="16">16 спален</option>
-                <option value="17">17 спален</option>
-                <option value="18">18 спален</option>
-                <option value="19">19 спален</option>
-                <option value="20">20 спален</option>
+                {numberOfIsolatedBedroomTypes.map(({ name, value }) => {
+                  return <option value={value}>{name}</option>;
+                })}
               </Select>
               <FormErrorMessage>
-                {errors.numberOfIsolatedBedrooms?.message}
+                {errors.numberOfIsolatedBedroom?.message}
               </FormErrorMessage>
               <FormHelperText>
                 Спальни с отдельным входом и дверью (проходные комнаты не

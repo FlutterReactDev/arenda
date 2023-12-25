@@ -51,6 +51,29 @@ export interface CreateObjectState {
   addressData: AddressData;
 }
 
+export interface CreateObjectType {
+  anObjectTypeId?: number;
+  anObjectPropertyTypeId?: number;
+  name?: string;
+  countryId?: number;
+  regionId?: number;
+  cityId?: number;
+  internetAccess?: number;
+  internetAccessSumm?: number;
+  parking?: number;
+  parkingSumm?: number;
+  rating?: number | undefined;
+  fullAddress?: string;
+  building?: string;
+  latitude?: number;
+  longitude?: number;
+  anObjectDetail?: AnObjectDetail;
+  anObjectAdditionalComfort?: AnObjectAdditionalComfort;
+  anObjectMeal?: AnObjectMeal;
+  anObjectFeeAdditionalService?: AnObjectFeeAdditionalService;
+  addressData?: AddressData;
+}
+
 export interface AddressData {
   streetName: string;
   house: string;

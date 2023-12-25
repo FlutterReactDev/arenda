@@ -4,7 +4,7 @@ export interface CreateRoomState {
   categoryCount: number;
   createRoomForm: {
     anObjectRoomDescription: AnObjectRoomDescription;
-    anObjectRoomBed: AnObjectRoomBed;
+    anObjectRoomBeds: AnObjectRoomBeds[];
     anObjectRoomBaseCost: AnObjectRoomBaseCost;
     anObjectRoomInsuranceDeposit: AnObjectRoomInsuranceDeposit;
     anObjectRoomCleaningFee: AnObjectRoomCleaningFee;
@@ -22,6 +22,7 @@ export interface CreateRoomState {
     anObjectRoomPostingRule: AnObjectRoomPostingRule;
     anObjectRoomBookingSettings: AnObjectRoomBookingSettings;
     description: string;
+    maximumGuests: 0;
   };
 }
 
@@ -29,7 +30,7 @@ export interface CreateRoomType {
   anObjectId: number;
   categoryType: number;
   anObjectRoomDescription: AnObjectRoomDescription;
-  anObjectRoomBed: AnObjectRoomBed;
+  anObjectRoomBeds: AnObjectRoomBeds[];
   anObjectRoomBaseCost: AnObjectRoomBaseCost;
   anObjectRoomInsuranceDeposit: AnObjectRoomInsuranceDeposit;
   anObjectRoomCleaningFee: AnObjectRoomCleaningFee;
@@ -47,6 +48,7 @@ export interface CreateRoomType {
   anObjectRoomPostingRule: AnObjectRoomPostingRule;
   anObjectRoomBookingSettings: AnObjectRoomBookingSettings;
   description: string;
+  maximumGuests: number;
 }
 
 export enum CleaningFeeType {
@@ -83,16 +85,20 @@ export interface AnObjectRoomBaseCost {
 export interface AnObjectRoomDescription {
   uniqueName: string;
   ownName: string;
-  roomNameType: number;
+  roomNameTypeId: number;
   count: number;
   area: number;
-  floor: number;
+  floorType: number;
   floorsInTheBuilding: number;
+  kitchenType: number;
+  repairType: number;
+  numberOfIsolatedBedroom: number;
 }
 
-export interface AnObjectRoomBed {
-  maximumGuests: number;
-  beds: BedTypes[];
+export interface AnObjectRoomBeds {
+  anObjectRoomId: number;
+  bedType: number;
+  count: number;
 }
 
 export interface BedTypes {

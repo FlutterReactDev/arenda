@@ -4,13 +4,15 @@ export const generalInformationSchema = Yup.object({
   area: Yup.number()
     .typeError("Поле обязательно для заполнения")
     .required("Поле обязательно для заполнения"),
-  floor: Yup.string().required("Поле обязательно для заполнения"),
+  floorType: Yup.number()
+    .typeError("Поле обязательно для заполнения")
+    .required("Поле обязательно для заполнения"),
   floorsInTheBuilding: Yup.number()
-    .when("floor", (floor, schema) => {
-      if (floor[0] !== "basement") {
+    .when("floorType", (floorType, schema) => {
+      if (floorType[0] !== 0) {
         return schema
           .min(
-            Number(floor[0]),
+            Number(floorType[0]),
             "Общее число этажей не может быть меньше выбранного в поле «Этаж»"
           )
           .required("Выберите один из предложенных вариантов");
@@ -20,27 +22,16 @@ export const generalInformationSchema = Yup.object({
     .min(1)
     .required("Поле обязательно для заполнения"),
   count: Yup.number().min(1).required(),
-  kitchen: Yup.string()
-    .oneOf(
-      ["noKitchen", "separateKitchen", "kitchenLivingRoom", "kitchenZone"],
-      "Выберите один из предложенных вариантов"
-    )
+  kitchenType: Yup.number()
+    .typeError("Выберите один из предложенных вариантов")
     .required("Выберите один из предложенных вариантов"),
-  repair: Yup.string()
-    .oneOf(
-      [
-        "withoutRepair",
-        "redecorating",
-        "europeanQualityRenovation",
-        "designerRenovation",
-      ],
-      "Выберите один из предложенных вариантов"
-    )
+  repairType: Yup.number()
+    .typeError("Выберите один из предложенных вариантов")
     .required("Выберите один из предложенных вариантов"),
   attic: Yup.boolean().required(),
   elevator: Yup.boolean().required(),
 
-  numberOfIsolatedBedrooms: Yup.number()
+  numberOfIsolatedBedroom: Yup.number()
     .typeError("Выберите один из предложенных вариантов")
     .when("count", (count, schema) => {
       return schema

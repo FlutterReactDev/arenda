@@ -2,28 +2,30 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CleaningFeeType, CreateRoomState } from "./types/createRoomTypes";
 
 const initialState = {
-  anObjectId: 6,
+  anObjectId: 1071,
   categoryType: 1,
   categoryCount: 1,
   createRoomForm: {
     anObjectRoomDescription: {
       area: 0,
       count: 1,
-      floor: 1,
+      floorType: 1,
       floorsInTheBuilding: 1,
       ownName: "",
-      roomNameType: 1,
+
       uniqueName: "",
+      kitchenType: 1,
+      numberOfIsolatedBedroom: 1,
+      repairType: 1,
+      roomNameTypeId: 1,
     },
-    anObjectRoomBed: {
-      beds: [
-        {
-          bedType: 1,
-          count: 1,
-        },
-      ],
-      maximumGuests: 0,
-    },
+    anObjectRoomBeds: [
+      {
+        anObjectRoomId: 0,
+        bedType: 1,
+        count: 1,
+      },
+    ],
     anObjectRoomBathroom: {
       additionalBathroom: false,
       additionalToilet: false,
@@ -248,7 +250,7 @@ const initialState = {
       checkInAfter: "12:00",
       checkOutAfter: "14:00",
       fromBookingToCheckIn: 1,
-      howCanBook: 0,
+      howCanBook: 1,
       instantBookingStart: 1,
       prepaymentPercent: 10,
       reportingDocuments: 1,
@@ -263,6 +265,7 @@ const initialState = {
     },
 
     description: "",
+    maximumGuests: 0,
   },
 } as CreateRoomState;
 const createRoomSlice = createSlice({
@@ -276,11 +279,8 @@ const createRoomSlice = createSlice({
       };
     },
 
-    setAnObjectRoomBed(state, action) {
-      state.createRoomForm.anObjectRoomBed = {
-        ...state.createRoomForm.anObjectRoomBed,
-        ...action.payload,
-      };
+    setAnObjectRoomBeds(state, action) {
+      state.createRoomForm.anObjectRoomBeds = action.payload;
     },
 
     setAnObjectRoomBaseCost(state, action) {
@@ -401,6 +401,9 @@ const createRoomSlice = createSlice({
     },
     setAnObjectId(state, action) {
       state.anObjectId = action.payload;
+    },
+    setAnObjectRoomMaximumGuests(state, action) {
+      state.createRoomForm.maximumGuests = action.payload;
     },
   },
 });

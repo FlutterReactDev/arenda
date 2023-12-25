@@ -77,3 +77,23 @@ export interface RoomNameTypes {
   value: number;
   name: string;
 }
+
+export interface KitchenTypes {
+  value: number;
+  name: string;
+}
+
+export interface RepairType {
+  value: number;
+  name: string;
+}
+
+export interface NumberOfIsolatedBedroomType {
+  value: number;
+  name: string;
+}
+
+export interface FloorType {
+  value: number;
+  name: string;
+}

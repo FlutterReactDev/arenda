@@ -7,8 +7,8 @@ export const getCategoryType = (state: RootState) =>
 export const getAnObjectId = (state: RootState) => state.createRoom.anObjectId;
 export const getAnObjectRoomDescription = (state: RootState) =>
   state.createRoom.createRoomForm.anObjectRoomDescription;
-export const getAnObjectRoomBed = (state: RootState) =>
-  state.createRoom.createRoomForm.anObjectRoomBed;
+export const getAnObjectRoomBeds = (state: RootState) =>
+  state.createRoom.createRoomForm.anObjectRoomBeds;
 export const getAnObjectRoomBaseCost = (state: RootState) =>
   state.createRoom.createRoomForm.anObjectRoomBaseCost;
 export const getAnObjectRoomInsuranceDeposit = (state: RootState) =>
@@ -39,6 +39,8 @@ export const getAnObjectRoomImages = (state: RootState) =>
   state.createRoom.createRoomForm.anObjectRoomImages;
 export const getDescription = (state: RootState) =>
   state.createRoom.createRoomForm.description;
+export const getMaximumGuests = (state: RootState) =>
+  state.createRoom.createRoomForm.maximumGuests;
 export const getAnObjectRoomBookingSettings = (state: RootState) =>
   state.createRoom.createRoomForm.anObjectRoomBookingSettings;
 export const getAnObjectRoomPostingRule = (state: RootState) =>
@@ -46,7 +48,7 @@ export const getAnObjectRoomPostingRule = (state: RootState) =>
 export const getCreateRoomForm = createSelector(
   [
     getAnObjectRoomDescription,
-    getAnObjectRoomBed,
+    getAnObjectRoomBeds,
     getAnObjectRoomBaseCost,
     getAnObjectRoomInsuranceDeposit,
     getAnObjectRoomCleaningFee,
@@ -64,10 +66,11 @@ export const getCreateRoomForm = createSelector(
     getDescription,
     getAnObjectRoomBookingSettings,
     getAnObjectRoomPostingRule,
+    getMaximumGuests,
   ],
   (
     anObjectRoomDescription,
-    anObjectRoomBed,
+    anObjectRoomBeds,
     anObjectRoomBaseCost,
     anObjectRoomInsuranceDeposit,
     anObjectRoomCleaningFee,
@@ -84,11 +87,12 @@ export const getCreateRoomForm = createSelector(
     anObjectRoomImages,
     description,
     anObjectRoomBookingSettings,
-    anObjectRoomPostingRule
+    anObjectRoomPostingRule,
+    maximumGuests
   ) => {
     return {
       anObjectRoomDescription,
-      anObjectRoomBed,
+      anObjectRoomBeds,
       anObjectRoomBaseCost,
       anObjectRoomInsuranceDeposit,
       anObjectRoomCleaningFee,
@@ -106,6 +110,7 @@ export const getCreateRoomForm = createSelector(
       description,
       anObjectRoomBookingSettings,
       anObjectRoomPostingRule,
+      maximumGuests,
     };
   }
 );
