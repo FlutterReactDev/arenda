@@ -1,8 +1,8 @@
-import { Flex, Icon, Box, chakra, IconButton } from "@chakra-ui/react";
-import { FC } from "react";
-import { BsLightningFill } from "react-icons/bs";
-import { AlertProps } from "../type";
 import { CloseIcon } from "@chakra-ui/icons";
+import { Box, Flex, Icon, IconButton, chakra } from "@chakra-ui/react";
+import { FC } from "react";
+import { AlertProps } from "../type";
+import { MdErrorOutline } from "react-icons/md";
 
 export const ErrorAlert: FC<AlertProps> = (props) => {
   const { description, onClose, title } = props;
@@ -13,7 +13,6 @@ export const ErrorAlert: FC<AlertProps> = (props) => {
       alignItems="center"
       justifyContent="center"
       rounded={"lg"}
-   
     >
       <Flex
         maxW="sm"
@@ -39,8 +38,8 @@ export const ErrorAlert: FC<AlertProps> = (props) => {
         >
           <CloseIcon />
         </IconButton>
-        <Flex justifyContent="center" alignItems="center" w={12} bg="red.500">
-          <Icon as={BsLightningFill} color="white" boxSize={6} />
+        <Flex justifyContent="center" alignItems="center" w={20} bg="red.500">
+          <Icon as={MdErrorOutline} color="white" boxSize={6} />
         </Flex>
 
         <Box mx={-3} py={2} px={4}>
