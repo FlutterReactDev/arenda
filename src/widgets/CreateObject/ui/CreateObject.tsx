@@ -724,9 +724,6 @@ export const CreateObject = () => {
                                   })
                                     .unwrap()
                                     .then(() => {
-                                      navigate(RouteName.MY_OBJECTS);
-                                      clearObjectForm();
-                                      clearRoomForm();
                                       toast({
                                         position: "top-right",
                                         isClosable: true,
@@ -741,6 +738,9 @@ export const CreateObject = () => {
                                           );
                                         },
                                       });
+                                      navigate(RouteName.MY_OBJECTS);
+                                      clearObjectForm();
+                                      clearRoomForm();
                                     });
                                 });
                             }}
