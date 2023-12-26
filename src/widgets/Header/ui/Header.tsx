@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Center,
   Flex,
@@ -26,6 +27,7 @@ import { CurrencySwitcher } from "@features/CurrencySwitcher";
 import { useInView } from "react-intersection-observer";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useHeader } from "../model/useHeader";
+import { HeaderMobileNav } from "./HeaderMobileNav";
 
 export const Header = memo(() => {
   const { setHeaderHeight } = useHeader();
@@ -66,7 +68,7 @@ export const Header = memo(() => {
         h="4.5rem"
         overflow={"hidden"}
       >
-        <chakra.div h="full" mx="auto" maxW="1200px">
+        <chakra.div h="full" mx="auto" maxW="1400px">
           <Flex
             w="full"
             h="full"
@@ -136,20 +138,31 @@ export const Header = memo(() => {
               )}
 
               {!isLoggin && (
-                <HStack
-                  spacing="5"
+                <Button colorScheme="red" onClick={onOpen}>
+                  Войти
+                </Button>
+              )}
+              {isLoggin && (
+                <Box
                   display={{
                     base: "none",
-                    md: "flex",
+                    md: "block",
                   }}
                 >
-                  <Button colorScheme="red" onClick={onOpen}>
-                    Войти
-                  </Button>
-                </HStack>
+                  <UserAccount />
+                </Box>
               )}
-              {isLoggin && <UserAccount />}
               <CurrencySwitcher />
+              {isLoggin && (
+                <Box
+                  display={{
+                    base: "block",
+                    md: "none",
+                  }}
+                >
+                  <HeaderMobileNav />
+                </Box>
+              )}
             </HStack>
           </Flex>
         </chakra.div>
