@@ -60,18 +60,25 @@ export const Slider: FC<PropsWithChildren<SliderProps>> = memo((props) => {
       {!disableArrow && (
         <>
           <IconButton
+            colorScheme="red"
             pos={"absolute"}
             aria-label="arrow left"
-            variant={"unstyle"}
+            variant={"ghost"}
             onClick={handlePrev}
             top={"50%"}
             transform={"translateY(-50%)"}
             zIndex={"docked"}
-            left={"-90px"}
+            left={"0"}
             icon={<ChevronLeftIcon boxSize={"10"} />}
+            isRound
+            bgColor={"transparent"}
+            _hover={{
+              bgColor: "transparent",
+            }}
           />
 
           <IconButton
+            colorScheme="red"
             pos={"absolute"}
             aria-label="arrow left"
             variant={"ghost"}
@@ -79,8 +86,13 @@ export const Slider: FC<PropsWithChildren<SliderProps>> = memo((props) => {
             top={"50%"}
             transform={"translateY(-50%)"}
             zIndex={"docked"}
-            right={"-90px"}
+            right={"0"}
             icon={<ChevronRightIcon boxSize={"10"} />}
+            isRound
+            bgColor={"transparent"}
+            _hover={{
+              bgColor: "transparent",
+            }}
           />
         </>
       )}
