@@ -675,12 +675,13 @@ const HomePage = () => {
                 "@1.00": {
                   slidesPerView: 4,
                 },
-
-                "@0.50": {
+                "@0.90": {
+                  slidesPerView: 3,
+                },
+                "@0.70": {
                   slidesPerView: 2,
                 },
-
-                "@0.00": {
+                "@0.40": {
                   slidesPerView: 1,
                 },
               }}
@@ -709,12 +710,13 @@ const HomePage = () => {
                 "@1.00": {
                   slidesPerView: 4,
                 },
-
-                "@0.50": {
+                "@0.90": {
+                  slidesPerView: 3,
+                },
+                "@0.70": {
                   slidesPerView: 2,
                 },
-
-                "@0.00": {
+                "@0.40": {
                   slidesPerView: 1,
                 },
               }}
