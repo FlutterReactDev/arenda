@@ -3,7 +3,6 @@ import {
   Center,
   Flex,
   HStack,
-  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -23,10 +22,10 @@ import { ModalType } from "../model/types/HeaderTypes";
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import { useAuth, useAuthModal } from "@entites/User";
 import { UserAccount } from "@entites/User/ui/UserAccount";
+import { CurrencySwitcher } from "@features/CurrencySwitcher";
 import { useInView } from "react-intersection-observer";
 import { Link as RouterLink, useLocation } from "react-router-dom";
 import { useHeader } from "../model/useHeader";
-import { CurrencySwitcher } from "@features/CurrencySwitcher";
 
 export const Header = memo(() => {
   const { setHeaderHeight } = useHeader();
@@ -75,12 +74,12 @@ export const Header = memo(() => {
             alignItems="center"
             justifyContent={"space-between"}
           >
-            <Flex align="flex-start">
-              <Link as={RouterLink} to={RouteName.MAIN_PAGE}>
-                <HStack>
-                  <Text>Turak KG</Text>
-                </HStack>
-              </Link>
+            <Flex align="flex-start" as={RouterLink} to={RouteName.MAIN_PAGE}>
+              <HStack>
+                <Text fontWeight={"bold"} fontSize={"2xl"} color={"red.600"}>
+                  Turak.KG
+                </Text>
+              </HStack>
             </Flex>
             <HStack spacing={4}>
               {isLoggin && (
