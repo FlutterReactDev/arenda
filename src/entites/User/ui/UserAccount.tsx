@@ -1,4 +1,3 @@
-import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import {
   Avatar,
   Button,
@@ -11,26 +10,31 @@ import {
   Text,
 } from "@chakra-ui/react";
 
-import { Link } from "react-router-dom";
 import { useAuth } from "..";
 import { useLogoutMutation } from "../model/api/userApi";
-
-export const UserAccount = () => {
+import { ChevronDownIcon } from "@chakra-ui/icons";
+import { FC } from "react";
+import { Link } from "react-router-dom";
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
+interface UserAccountProps {
+  onLogout?: () => void;
+}
+export const UserAccount: FC<UserAccountProps> = (props) => {
+  const { onLogout } = props;
   const { logout } = useAuth();
   const [logoutApi, { isLoading }] = useLogoutMutation();
 
-  const onLogout = async () => {
+  const handleLogout = async () => {
     await logoutApi().then(() => {
       logout();
+      onLogout && onLogout();
     });
   };
 
   return (
-    <Popover trigger="hover" gutter={0} openDelay={0} closeDelay={0}>
+    <Popover gutter={0} openDelay={0} closeDelay={0}>
       <PopoverTrigger>
         <Button
-          as={Link}
-          to={RouteName.CABINET}
           variant={"unstyled"}
           h="full"
           position={"relative"}
@@ -40,8 +44,9 @@ export const UserAccount = () => {
           justifyContent={"center"}
           leftIcon={<Avatar h={8} w={8} src="https://bit.ly/broken-link" />}
           p={2}
+          rightIcon={<ChevronDownIcon boxSize={"6"} />}
         >
-          <Stack spacing={1}>
+          <Stack alignItems={"flex-start"} spacing={1}>
             <Text fontWeight={"medium"} lineHeight={"12px"}>
               DEnchik
             </Text>
@@ -54,16 +59,20 @@ export const UserAccount = () => {
       <PopoverContent>
         <PopoverBody rounded={"xl"} mt={1} color="white" p={4}>
           <Stack>
+            <Button>Профиль</Button>
             <Button>Редактировать профиль</Button>
-            <Button>Изменить пароль</Button>
+            <Button as={Link} to={RouteName.RESET_PAGE}>
+              Изменить пароль
+            </Button>
             <Divider />
             <Button
               _hover={{
                 bgColor: "transparent",
               }}
               variant={"outline"}
-              onClick={onLogout}
+              onClick={handleLogout}
               isLoading={isLoading}
+              colorScheme="red"
             >
               Выйти из аккаунта
             </Button>
