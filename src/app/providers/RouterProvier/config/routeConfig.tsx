@@ -45,7 +45,7 @@ export enum RouteName {
   EDIT_HOTEL = "/hotel/:hotelId/edit-hotel",
 
   CREATE_ROOM = "/hotel/:hotelId/create-room",
-  EDIT_ROOM = "/hotel/edit-room",
+  EDIT_ROOM = "/hotel/:roomId/edit-room",
 
   CREATE_OBJECT = "/object/create",
   EDIT_OBJECT = "/object/:objectId/edit-object",

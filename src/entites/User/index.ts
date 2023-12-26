@@ -4,7 +4,11 @@ export { RegisterSchema } from "./model/schemas/RegisterSchema";
 export { getAuthData } from "./model/selectors";
 export { userAction, userReducer } from "./model/slice/userSlice";
 export { Gender } from "./model/types/UserType";
-export type { RefreshToken, UserLoginData } from "./model/types/UserType";
+export type {
+  RefreshToken,
+  UserLoginData,
+  UserErrorResponse,
+} from "./model/types/UserType";
 export { useAuth } from "./model/useAuth";
 export { useAuthModal } from "./model/useAuthModal";
 export { useUser } from "./model/useUser";

@@ -276,6 +276,7 @@ interface AnObjectRoomBed {
   anObjectRoomId: number;
   bedType: number;
   count: number;
+  isDelete: boolean;
 }
 interface AnObjectRoomDescription {
   id: number;

@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { HeaderState } from "./types/HeaderTypes";
 const initialState = {
-  headerHeight: 48,
+  headerHeight: 72,
 } as HeaderState;
 const headerSlice = createSlice({
   name: "headerSlice",

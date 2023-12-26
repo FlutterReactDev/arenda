@@ -76,21 +76,16 @@ export const useEditObject = () => {
       toiletries,
       towels,
     } = data;
-
     if (roomData && objectId) {
       const anObjectRoomBeds = [
-        ...roomData.anObjectRoomBeds,
         ...beds.map(({ bedType, count }) => ({
           id: 0,
           anObjectRoomId: roomData.id,
           bedType,
           count,
+          isDelete: false,
         })),
-      ].filter((bed, i, arr) => {
-        const idx = arr.findIndex(({ bedType }) => bedType == bed.bedType);
-
-        return idx != i;
-      });
+      ];
 
       return editRoom({
         data: {
@@ -217,6 +212,7 @@ export const useEditObject = () => {
       }).unwrap();
     }
   };
+
   const updatePostingRules = (data: PostingRulesType) => {
     if (roomData && objectId) {
       return editRoom({
@@ -231,6 +227,7 @@ export const useEditObject = () => {
       }).unwrap();
     }
   };
+
   const updateCheckInCheckOut = (data: CheckInCheckOutType) => {
     if (roomData && objectId) {
       return editRoom({
@@ -317,6 +314,6 @@ export const useEditObject = () => {
     updatePostingRules,
     updateCheckInCheckOut,
     updateBaseCost,
-    updateOptionalService
+    updateOptionalService,
   };
 };

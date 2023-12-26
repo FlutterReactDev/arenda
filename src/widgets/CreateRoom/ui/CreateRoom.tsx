@@ -70,6 +70,11 @@ export const CreateRoom = () => {
     isLoading: roomNameTypesIsLoading,
     isSuccess: roomNameTypesIsSuccess,
   } = useGetRoomNameTypesQuery("");
+  const {
+    data: floorTypes,
+    isLoading: floorTypesIsLoading,
+    isSuccess: floorTypeIsSuccesss,
+  } = useGetFloorTypeQuery();
 
   const [createRooms, { isLoading }] = useCreateRoomsMutation();
 
@@ -178,103 +183,106 @@ export const CreateRoom = () => {
                   const { beds, maximumGuests } = anObjectRoomBed;
                   return (
                     <>
-                      {bedTypesIsSuccess && roomNameTypesIsSuccess && (
-                        <Suspense fallback={<PageLoader />}>
-                          <GeneralRoomInformationForm
-                            bedTypes={bedTypes}
-                            roomNameTypes={roomNameTypes}
-                            onChange={(data) => {
-                              const {
+                      {bedTypesIsSuccess &&
+                        roomNameTypesIsSuccess &&
+                        floorTypeIsSuccesss && (
+                          <Suspense fallback={<PageLoader />}>
+                            <GeneralRoomInformationForm
+                              bedTypes={bedTypes}
+                              roomNameTypes={roomNameTypes}
+                              floorTypes={floorTypes}
+                              onChange={(data) => {
+                                const {
+                                  additionalBathroom,
+                                  additionalToilet,
+                                  numberOfBathroomsWithOutToilet,
+                                  numberOfSeparateToilets,
+                                  bidet,
+                                  bath,
+                                  robe,
+                                  hygienicShower,
+                                  hairDryer,
+                                  sauna,
+                                  sharedBathroom,
+                                  sharedShowerRoom,
+                                  sharedToilet,
+                                  shower,
+                                  slippers,
+                                  toiletries,
+                                  towels,
+                                  beds,
+                                  maximumGuests,
+                                  area,
+                                  count,
+                                  floor,
+                                  floorsInTheBuilding,
+                                  numberOfBathroomsWithToilet,
+                                  ownName,
+                                  roomNameType,
+                                  uniqueName,
+                                } = data;
+                                setAnObjectRoomBathroom({
+                                  additionalBathroom,
+                                  additionalToilet,
+                                  bidet,
+                                  numberOfBathroomsWithOutToilet,
+                                  numberOfBathroomsWithToilet,
+                                  numberOfSeparateToilets,
+                                  bath,
+                                  hairDryer,
+                                  hygienicShower,
+                                  robe,
+                                  sauna,
+                                  sharedBathroom,
+                                  sharedShowerRoom,
+                                  sharedToilet,
+                                  shower,
+                                  slippers,
+                                  toiletries,
+                                  towels,
+                                });
+                                setAnObjectRoomBed({
+                                  beds,
+                                  maximumGuests,
+                                });
+                                setAnObjectRoomDescription({
+                                  area,
+                                  count,
+                                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                                  //@ts-ignore
+                                  floor,
+                                  floorsInTheBuilding,
+                                  ownName,
+                                  roomNameType,
+                                  uniqueName,
+                                });
+                              }}
+                              value={{
                                 additionalBathroom,
                                 additionalToilet,
                                 numberOfBathroomsWithOutToilet,
-                                numberOfSeparateToilets,
-                                bidet,
-                                bath,
-                                robe,
-                                hygienicShower,
-                                hairDryer,
-                                sauna,
-                                sharedBathroom,
-                                sharedShowerRoom,
-                                sharedToilet,
-                                shower,
-                                slippers,
-                                toiletries,
-                                towels,
-                                beds,
-                                maximumGuests,
-                                area,
-                                count,
-                                floor,
-                                floorsInTheBuilding,
-                                numberOfBathroomsWithToilet,
-                                ownName,
-                                roomNameType,
-                                uniqueName,
-                              } = data;
-                              setAnObjectRoomBathroom({
-                                additionalBathroom,
-                                additionalToilet,
-                                bidet,
-                                numberOfBathroomsWithOutToilet,
                                 numberOfBathroomsWithToilet,
                                 numberOfSeparateToilets,
-                                bath,
-                                hairDryer,
-                                hygienicShower,
-                                robe,
-                                sauna,
-                                sharedBathroom,
-                                sharedShowerRoom,
-                                sharedToilet,
-                                shower,
-                                slippers,
-                                toiletries,
-                                towels,
-                              });
-                              setAnObjectRoomBed({
-                                beds,
-                                maximumGuests,
-                              });
-                              setAnObjectRoomDescription({
+                                ...othersBathroomForm,
                                 area,
+                                beds,
                                 count,
                                 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                                 //@ts-ignore
                                 floor,
                                 floorsInTheBuilding,
+                                maximumGuests,
                                 ownName,
                                 roomNameType,
                                 uniqueName,
-                              });
-                            }}
-                            value={{
-                              additionalBathroom,
-                              additionalToilet,
-                              numberOfBathroomsWithOutToilet,
-                              numberOfBathroomsWithToilet,
-                              numberOfSeparateToilets,
-                              ...othersBathroomForm,
-                              area,
-                              beds,
-                              count,
-                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                              //@ts-ignore
-                              floor,
-                              floorsInTheBuilding,
-                              maximumGuests,
-                              ownName,
-                              roomNameType,
-                              uniqueName,
-                            }}
-                            {...props}
-                          />
-                        </Suspense>
-                      )}
-                      {bedTypesIsLoading && roomNameTypesIsLoading && (
-                        <PageLoader />
-                      )}
+                              }}
+                              {...props}
+                            />
+                          </Suspense>
+                        )}
+                      {floorTypesIsLoading &&
+                        bedTypesIsLoading &&
+                        roomNameTypesIsLoading && <PageLoader />}
                     </>
                   );
                 },

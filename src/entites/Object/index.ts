@@ -20,6 +20,7 @@ export { RoomTypeForm } from "./ui/Forms/RoomTypeForm";
 export { GeneralRoomInformationForm } from "./ui/Forms/GeneralRoomInformationForm";
 export { RoomOptionalServiceForm } from "./ui/Forms/RoomOptionalServiceForm";
 export { EditSelectFormMap } from "./ui/Forms/EditSelectFormMap";
+export { RoomCategoryForm } from "./ui/Forms/RoomCategoryForm";
 export { FormSuspense } from "./ui/FormSuspense";
 export {
   createObjectAction,

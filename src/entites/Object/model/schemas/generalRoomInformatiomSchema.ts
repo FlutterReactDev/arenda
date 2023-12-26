@@ -2,20 +2,22 @@ import { array, boolean, number, object, string, InferType } from "yup";
 
 export const generalRoomInformationSchema = object({
   ownName: string().required("Поле обязательно для заполнения"),
-  roomNameType: number()
+  roomNameTypeId: number()
     .required("Поле обязательно для заполнения")
     .typeError("Поле обязательно для заполнения"),
   uniqueName: string().required("Поле обязательно для заполнения"),
   area: number()
     .typeError("Поле обязательно для заполнения")
     .required("Поле обязательно для заполнения"),
-  floor: string().required("Поле обязательно для заполнения"),
+  floorType: number()
+    .typeError("Поле обязательно для заполнения")
+    .required("Поле обязательно для заполнения"),
   floorsInTheBuilding: number()
-    .when("floor", (floor, schema) => {
-      if (floor[0] !== "basement") {
+    .when("floorType", (floorType, schema) => {
+      if (floorType[0] !== 0) {
         return schema
           .min(
-            Number(floor[0]),
+            Number(floorType[0]),
             "Общее число этажей не может быть меньше выбранного в поле «Этаж»"
           )
           .required("Выберите один из предложенных вариантов");

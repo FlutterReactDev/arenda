@@ -74,8 +74,9 @@ export interface InstantBookingValid {
 }
 
 export interface RoomNameTypes {
-  value: number;
+  id: number;
   name: string;
+  anObjectPropertyTypeId: number;
 }
 
 export interface KitchenTypes {

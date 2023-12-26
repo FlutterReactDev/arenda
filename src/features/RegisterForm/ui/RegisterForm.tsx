@@ -7,6 +7,7 @@ import {
   Input,
   Select,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
 
 import { AddPhoneForm, PhonesList } from "@entites/Phone";
@@ -19,9 +20,12 @@ import {
 import { useRegisterMutation } from "@entites/User/model/api/userApi";
 
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { useForm, useFieldArray } from "react-hook-form";
 import * as Yup from "yup";
 const RegisterForm = () => {
+  const toast = useToast();
   const [userRegister, { isLoading }] = useRegisterMutation();
   const {
     handleSubmit,
@@ -61,12 +65,29 @@ const RegisterForm = () => {
       ...data,
       phoneNumbers: data.phoneNumbers?.map((phone) => ({
         phoneNumber: phone.phoneNumber.replace(/ /g, ""),
-
         ...(phone.isMain && { isMain: true }),
+        ...(!phone.isMain && { isMain: false }),
       })),
     })
       .unwrap()
-      .then(() => onClose());
+      .then(() => onClose())
+      .catch((error: FetchBaseQueryError) => {
+        const data = error.data as string;
+        toast({
+          isClosable: true,
+          duration: 3000,
+          position: "top-right",
+          render({ onClose }) {
+            return (
+              <ErrorAlert
+                title="Ошибка регистрации"
+                description={data}
+                onClose={onClose}
+              />
+            );
+          },
+        });
+      });
   };
 
   const onPhoneAdd = ({ phone }: Yup.InferType<typeof PhoneSchema>) => {
@@ -77,7 +98,7 @@ const RegisterForm = () => {
       append({ phoneNumber: phone, isMain: false });
     }
   };
-  
+
   const onPhoneDelete = (phone: string) => {
     const phoneIndex = fields.findIndex((field) => field.phoneNumber == phone);
     remove(phoneIndex);

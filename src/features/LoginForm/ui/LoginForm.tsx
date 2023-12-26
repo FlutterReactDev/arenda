@@ -10,16 +10,25 @@ import {
   InputGroup,
   InputRightElement,
   Stack,
+  useToast,
 } from "@chakra-ui/react";
-import { LoginSchema, useAuth, useAuthModal } from "@entites/User";
+import {
+  LoginSchema,
+  UserErrorResponse,
+  useAuth,
+  useAuthModal,
+} from "@entites/User";
 import { useLoginMutation } from "@entites/User/model/api/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
+import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { PhoneInput } from "@shared/ui/PhoneInput";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 const LoginForm = () => {
+  const toast = useToast();
   const {
     handleSubmit,
     register,
@@ -50,6 +59,23 @@ const LoginForm = () => {
         }
 
         navigate(RouteName.MAIN_PAGE);
+      })
+      .catch((error: FetchBaseQueryError) => {
+        const data = error.data as UserErrorResponse;
+        toast({
+          isClosable: true,
+          duration: 3000,
+          position: "top-right",
+          render({ onClose }) {
+            return (
+              <ErrorAlert
+                title="Ошибка авторизации"
+                description={data.message}
+                onClose={onClose}
+              />
+            );
+          },
+        });
       });
   };
 

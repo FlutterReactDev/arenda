@@ -1,326 +1,639 @@
-import { Stack } from "@chakra-ui/react";
+import { Box, Button, Center, HStack, Stack, useToast } from "@chakra-ui/react";
+import {
+  useGetBedTypesQuery,
+  useGetCleaningFeeTypesQuery,
+  useGetCurrenciesQuery,
+  useGetRoomCategoriesQuery,
+  useGetRoomTypeNamesQuery,
+  useGetFloorTypeQuery,
+} from "@entites/CommonReference";
+
+import {
+  CheckInCheckOutForm,
+  FacilitiesForm,
+  FormSuspense,
+  GeneralRoomInformationForm,
+  ImageUploadForm,
+  PostingRulesForm,
+  PriceForm,
+  RoomCategoryForm,
+  RoomOptionalServiceForm,
+} from "@entites/Object";
+import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
+import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
+import { CollapseFormCard } from "@shared/ui/CollapseFormCard";
+import { Loader } from "@shared/ui/Loader";
+import { useEditRoom } from "../model/useEditRoom";
 
 export const EditRoom = () => {
-  // const {
-  //   data: currencies,
-  //   isSuccess: currenciesIsSuccess,
-  //   isLoading: currenciesIsLoading,
-  // } = useGetCurrenciesQuery("");
+  const toast = useToast();
+  const {
+    data: currencies,
+    isSuccess: currenciesIsSuccess,
+    isLoading: currenciesIsLoading,
+  } = useGetCurrenciesQuery();
 
-  // const {
-  //   data: bedTypes,
-  //   isSuccess: bedTypesIsSuccess,
-  //   isLoading: bedTypesIsLoading,
-  // } = useGetBedTypesQuery("");
+  const { data: bedTypes, isSuccess: bedTypesIsSuccess } =
+    useGetBedTypesQuery("");
 
-  // const {
-  //   data: cleaningFeeTypes,
-  //   isLoading: cleaningFeeTypesIsLoading,
-  //   isSuccess: cleaningFeeTypesIsSuccess,
-  // } = useGetCleaningFeeTypesQuery("");
+  const {
+    data: cleaningFeeTypes,
+    isLoading: cleaningFeeTypesIsLoading,
+    isSuccess: cleaningFeeTypesIsSuccess,
+  } = useGetCleaningFeeTypesQuery("");
 
-  // const {
-  //   data: roomCategories,
-  //   isLoading: roomCategoriesIsLoading,
-  //   isSuccess: roomCategoriesIsSuccess,
-  // } = useGetRoomCategoriesQuery("");
-  // const {
-  //   data: fromBookingToCheckInOptions,
-  //   isLoading: fromBookingToCheckInIsLoading,
-  //   isSuccess: fromBookingToCheckInIsSuccess,
-  // } = useGetFromBookingToCheckInQuery("");
+  const {
+    data: roomCategories,
+    isLoading: roomCategoriesIsLoading,
+    isSuccess: roomCategoriesIsSuccess,
+  } = useGetRoomCategoriesQuery("");
 
-  // const {
-  //   data: instantBookingValid,
-  //   isSuccess: instantBookingValidIsSuccess,
-  //   isLoading: instantBookingValidIsLoading,
-  // } = useGetInstantBookingValidQuery("");
+  const { data: roomNameTypes, isSuccess: roomNameTypesIsSuccess } =
+    useGetRoomTypeNamesQuery(30);
 
-  // const {
-  //   data: roomNameTypes,
-  //   isLoading: roomNameTypesIsLoading,
-  //   isSuccess: roomNameTypesIsSuccess,
-  // } = useGetRoomNameTypesQuery("");
+  const { data: floorTypes, isSuccess: floorTypeIsSuccesss } =
+    useGetFloorTypeQuery();
+
+  const {
+    roomData,
+    roomEditIsLoading,
+    roomIsLoading,
+    roomIsSuсcess,
+    updateBaseCost,
+    updateCheckInCheckOut,
+    updateFacilities,
+    updateGeneralRoomInformation,
+    updatePostingRules,
+    updateOptionalService,
+    updateCategoryName,
+  } = useEditRoom();
+
   return (
-    <Stack>
-      {/* <CollapseFormCard
-        render={(closeButton) => {
-          return (
-            <>
-              {bedTypesIsSuccess && roomNameTypesIsSuccess && (
+    <>
+      {roomData && roomIsSuсcess && (
+        <Stack>
+          <CollapseFormCard
+            title="Категория комнаты"
+            render={(closeButton) => {
+              const { categoryType } = roomData;
+              return (
                 <FormSuspense>
-                  <GeneralRoomInformationForm
-                    bedTypes={bedTypes}
-                    roomNameTypes={roomNameTypes}
-                    onChange={() => {}}
+                  {roomCategoriesIsSuccess && (
+                    <RoomCategoryForm
+                      value={{
+                        categoryType,
+                      }}
+                      navigation={
+                        <HStack>
+                          <HStack bgColor={"white"} w="full">
+                            <Button w="full" colorScheme="red" type="submit">
+                              Сохранить
+                            </Button>
+                            {closeButton}
+                          </HStack>
+                        </HStack>
+                      }
+                      roomCategories={roomCategories}
+                      onChange={(data) => {
+                        updateCategoryName(data)
+                          ?.then(() => {
+                            toast({
+                              isClosable: true,
+                              position: "top-right",
+                              render({ onClose }) {
+                                return (
+                                  <SucessAlert
+                                    title="Сохранение"
+                                    description="Категория комнаты сохранена"
+                                    onClose={onClose}
+                                  />
+                                );
+                              },
+                            });
+                          })
+                          .catch(() => {
+                            toast({
+                              isClosable: true,
+                              position: "top-right",
+                              render({ onClose }) {
+                                return (
+                                  <ErrorAlert
+                                    title="Ошибка"
+                                    description="Произошла ошибка"
+                                    onClose={onClose}
+                                  />
+                                );
+                              },
+                            });
+                          });
+                      }}
+                    />
+                  )}
+                  {roomCategoriesIsLoading && <Loader />}
+                </FormSuspense>
+              );
+            }}
+          />
+          <CollapseFormCard
+            render={(closeButton) => {
+              const {
+                anObjectRoomDescription,
+                anObjectRoomBathroom,
+                maximumGuests,
+                anObjectRoomBeds,
+              } = roomData;
+              return (
+                <>
+                  {bedTypesIsSuccess &&
+                    roomNameTypesIsSuccess &&
+                    floorTypeIsSuccesss && (
+                      <FormSuspense>
+                        <GeneralRoomInformationForm
+                          bedTypes={bedTypes}
+                          roomNameTypes={roomNameTypes}
+                          floorTypes={floorTypes}
+                          onChange={(data) => {
+                            updateGeneralRoomInformation(data)
+                              ?.then(() => {
+                                toast({
+                                  isClosable: true,
+                                  position: "top-right",
+                                  render({ onClose }) {
+                                    return (
+                                      <SucessAlert
+                                        title="Сохранение"
+                                        description="Информация комнаты сохранено"
+                                        onClose={onClose}
+                                      />
+                                    );
+                                  },
+                                });
+                              })
+                              .catch(() => {
+                                toast({
+                                  isClosable: true,
+                                  position: "top-right",
+                                  render({ onClose }) {
+                                    return (
+                                      <ErrorAlert
+                                        title="Ошибка"
+                                        description="Произошла ошибка"
+                                        onClose={onClose}
+                                      />
+                                    );
+                                  },
+                                });
+                              });
+                          }}
+                          value={{
+                            ...anObjectRoomDescription,
+                            ...anObjectRoomBathroom,
+                            maximumGuests,
+                            beds: anObjectRoomBeds,
+                          }}
+                          navigation={
+                            <>
+                              <HStack
+                                bgColor={"white"}
+                                w="full"
+                                position={"sticky"}
+                                bottom={0}
+                                p={3}
+                              >
+                                <Button
+                                  w="full"
+                                  colorScheme="red"
+                                  type="submit"
+                                >
+                                  Сохранить
+                                </Button>
+                                {closeButton}
+                              </HStack>
+                            </>
+                          }
+                        />
+                      </FormSuspense>
+                    )}
+                </>
+              );
+            }}
+            title={"Основная информация"}
+          />
+          <CollapseFormCard
+            title={"Удобства"}
+            render={(closeButton) => {
+              const {
+                anObjectRoomAmenities,
+                anObjectRoomAvailability,
+                anObjectRoomForChildren,
+                anObjectRoomEquipment,
+                anObjectRoomInfrastructureLeisureNearby,
+                anObjectRoomOutsideRelaxation,
+                anObjectRoomIndoorRelaxation,
+                anObjectRoomKitchenEquipment,
+                anObjectRoomViewFromWindow,
+              } = roomData;
+              return (
+                <FormSuspense>
+                  <FacilitiesForm
+                    navigation={
+                      <>
+                        <HStack
+                          bgColor={"white"}
+                          w="full"
+                          position={"sticky"}
+                          bottom={0}
+                          p={3}
+                        >
+                          <Button w="full" colorScheme="red" type="submit">
+                            Сохранить
+                          </Button>
+                          {closeButton}
+                        </HStack>
+                      </>
+                    }
+                    onChange={(data) => {
+                      updateFacilities(data)
+                        ?.then(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <SucessAlert
+                                  title="Сохранение"
+                                  description="Удобства сохранены"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        })
+                        .catch(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <ErrorAlert
+                                  title="Ошибка"
+                                  description="Произошла ошибка"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        });
+                    }}
+                    value={{
+                      roomAmenities: anObjectRoomAmenities,
+                      roomAvailability: anObjectRoomAvailability,
+                      roomEquipment: anObjectRoomEquipment,
+                      roomForChildren: anObjectRoomForChildren,
+                      roomInfrastructureLeisureNearby:
+                        anObjectRoomInfrastructureLeisureNearby,
+                      roomIndoorRelaxation: anObjectRoomIndoorRelaxation,
+                      roomOutsideRelaxation: anObjectRoomOutsideRelaxation,
+                      roomKitchenEquipment: anObjectRoomKitchenEquipment,
+                      roomViewFromWindow: anObjectRoomViewFromWindow,
+                    }}
                   />
                 </FormSuspense>
-              )}
-
-              {}
-            </>
-          );
-        }}
-        title={""}
-      />
-      <CollapseFormCard
-        title={"Удобства"}
-        render={(closeButton) => {
-          return (
-            <FormSuspense>
-              <FacilitiesForm
-                value={{
-                  roomAmenities: {
-                    airConditioner: false,
-                    balcony: false,
-                    bath: false,
-                    electricKettle: false,
-                    hairDryer: false,
-                    jacuzzi: false,
-                    microwave: false,
-                    safe: false,
-                    toiletries: false,
-                    tv: false,
-                  },
-                  roomAvailability: {
-                    contactlessCheckinPossible: false,
-                    disabledAccess: false,
-                    elevator: false,
-                    locatedOnTheFirstFloor: false,
-                    toiletWithGrabBars: false,
-                  },
-                  roomEquipment: {
-                    airConditioner: false,
-                    attic: false,
-                    balcony: false,
-                    beachTowels: false,
-                    blackoutCurtains: false,
-                    carpetCovering: false,
-                    centralHeating: false,
-                    cleaners: false,
-                    closet: false,
-                    clothesDryer: false,
-                    clothesHanger: false,
-                    coffeeTable: false,
-                    desktop: false,
-                    dryer: false,
-                    electricHeatedBlankets: false,
-                    fan: false,
-                    fireplace: false,
-                    foldingBed: false,
-                    gasWaterHeater: false,
-                    heater: false,
-                    intercom: false,
-                    ironWithIroningBoard: false,
-                    jacuzzi: false,
-                    laminate: false,
-                    linoleum: false,
-                    safe: false,
-                    wirelessInternetWiFi: false,
-                    pool: false,
-                    waterHeater: false,
-                    wardrobe: false,
-                    seatingArea: false,
-                    woodParquetFloor: false,
-                    sofa: false,
-                    sofaBed: false,
-                    soundproofing: false,
-                    steelDoor: false,
-                    mosquitoNet: false,
-                    personalComputer: false,
-                    tileMarbleFloor: false,
-                    wiredInternet: false,
-                    washingMachine: false,
-                    telephone: false,
-                    vacuumCleaner: false,
-                    skiSnowboardStorage: false,
-                  },
-                  roomForChildren: {
-                    chairForBabies: false,
-                    highChairForChild: false,
-                    childrensPotty: false,
-                    crib: false,
-                    windowProtection: false,
-                    gamesToysForChildren: false,
-                    playpenBed: false,
-                    changingTable: false,
-                    protectiveCoversOnSockets: false,
-                  },
-                  roomIndoorRelaxation: {
-                    billiards: false,
-                    radio: false,
-                    tv: false,
-                    gameConsole: false,
-                    cableTV: false,
-                    books: false,
-                    musicCenter: false,
-                    boardGames: false,
-                    tableTennis: false,
-                    laptop: false,
-                    satelliteTV: false,
-                    terrestrialTV: false,
-                    payTVChannels: false,
-                    smartTV: false,
-                  },
-                  roomInfrastructureLeisureNearby: {
-                    amusementPark: false,
-                    hotSprings: false,
-                    spaCenter: false,
-                    mountaineering: false,
-                    bathhouseOffSite: false,
-                    billiardClub: false,
-                    bowling: false,
-                    horsebackRiding: false,
-                    waterSports: false,
-                    golf: false,
-                    skiing: false,
-                    snowmobiling: false,
-                    housingIsInPrivateSector: false,
-                    zoo: false,
-                    iceRink: false,
-                    cinema: false,
-                    forest: false,
-                    nightClub: false,
-                    hunting: false,
-                    bicyclesForRent: false,
-                    rollerSkateRental: false,
-                    pondLakeNearby: false,
-                    fishing: false,
-                    theater: false,
-                    tennisCourt: false,
-                    yachtClub: false,
-                  },
-                  roomKitchenEquipment: {
-                    barCounter: false,
-                    electricKettle: false,
-                    microwave: false,
-                    blender: false,
-                    gasStove: false,
-                    oven: false,
-                    coffeeMaker: false,
-                    coffeeMachine: false,
-                    kitchenSet: false,
-                    miniBar: false,
-                    freezer: false,
-                    multicooker: false,
-                    dinnerTable: false,
-                    dishesAndAccessories: false,
-                    dishwasher: false,
-                    cutlery: false,
-                    toaster: false,
-                    turkForMakingCoffee: false,
-                    waterFilter: false,
-                    fridge: false,
-                    electricStove: false,
-                  },
-                  roomOutsideRelaxation: {
-                    alcove: false,
-                    bathhouseOnSide: false,
-                    veranda: false,
-                    hammock: false,
-                    garage: false,
-                    babySwing: false,
-                    playground: false,
-                    boat: false,
-                    barbecueGrill: false,
-                    outdoorFurniture: false,
-                    outdoorDiningArea: false,
-                    protectedArea: false,
-                    parking: false,
-                    patio: false,
-                    beachUmbrella: false,
-                    barbecueSupplies: false,
-                    gardenFurniture: false,
-                    gym: false,
-                    terrace: false,
-                    footballField: false,
-                    sunLoungers: false,
-                  },
-                  roomViewFromWindow: {
-                    intoTheYard: false,
-                    onTheSea: false,
-                    toTheMountains: false,
-                    toTheCity: false,
-                    toTheRiver: false,
-                    toTheLake: false,
-                    toTheForest: false,
-                    toThePark: false,
-                    outside: false,
-                    toThePool: false,
-                    toTheAttraction: false,
-                    toTheGarden: false,
-                  },
-                }}
-                onChange={() => {}}
-              />
-            </FormSuspense>
-          );
-        }}
-      />
-      <CollapseFormCard
-        title={"Правила"}
-        render={(closeButton) => {
-          return (
-            <FormSuspense>
-              <PostingRulesForm />
-            </FormSuspense>
-          );
-        }}
-      />
-      <CollapseFormCard
-        title={"Заезд/отъезд"}
-        render={(closeButton) => {
-          return (
-            <FormSuspense>
-              <CheckInCheckOutForm />
-            </FormSuspense>
-          );
-        }}
-      />
-      <CollapseFormCard
-        title={"Заезд/отъезд"}
-        render={(closeButton) => {
-          return (
-            <FormSuspense>
-              <CheckInCheckOutForm />
-            </FormSuspense>
-          );
-        }}
-      />
-      <CollapseFormCard
-        title={"Настройка цены"}
-        render={(closeButton) => {
-          return (
-            <>
-              {currenciesIsSuccess && (
+              );
+            }}
+          />
+          <CollapseFormCard
+            title="Изображение"
+            render={(closeButton) => {
+              return (
                 <FormSuspense>
-                  <PriceForm currencies={currencies} />
-                </FormSuspense>
-              )}
-              {currenciesIsLoading && <Loader />}
-            </>
-          );
-        }}
-      />
-      <CollapseFormCard
-        title={"Ljgjkybt"}
-        render={(closeButton) => {
-          return (
-            <>
-              {cleaningFeeTypesIsSuccess && currenciesIsSuccess && (
-                <FormSuspense>
-                  <RoomOptionalServiceForm
-                    currentCurrencyId={398}
-                    currencies={currencies}
-                    cleaningFeeTypes={cleaningFeeTypes}
+                  <ImageUploadForm
+                    navigation={
+                      <HStack>
+                        <HStack bgColor={"white"} w="full">
+                          <Button w="full" colorScheme="red" type="submit">
+                            Сохранить
+                          </Button>
+                          {closeButton}
+                        </HStack>
+                      </HStack>
+                    }
                   />
                 </FormSuspense>
-              )}
-              {cleaningFeeTypesIsLoading && currenciesIsLoading && <Loader />}
-            </>
-          );
-        }}
-      /> */}
-    </Stack>
+              );
+            }}
+          />
+          <CollapseFormCard
+            title="Правила"
+            render={(closeButton) => {
+              const {
+                anObjectRoomPostingRule: {
+                  childsAge,
+                  partiesAllowed,
+                  petsAllowed,
+                  possibleWithChildren,
+                  smokingAllowed,
+                },
+              } = roomData;
+              return (
+                <FormSuspense>
+                  <PostingRulesForm
+                    value={{
+                      partiesAllowed,
+                      petsAllowed,
+                      possibleWithChildren,
+                      smokingAllowed,
+                      childsAge,
+                    }}
+                    navigation={
+                      <HStack>
+                        <HStack bgColor={"white"} w="full">
+                          <Button w="full" colorScheme="red" type="submit">
+                            Сохранить
+                          </Button>
+                          {closeButton}
+                        </HStack>
+                      </HStack>
+                    }
+                    onChange={(data) => {
+                      updatePostingRules(data)
+                        ?.then(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <SucessAlert
+                                  title="Сохранение"
+                                  description="Правила размещения объекта сохранена"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        })
+                        .catch(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <ErrorAlert
+                                  title="Ошибка"
+                                  description="Произошла ошибка"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        });
+                    }}
+                  />
+                </FormSuspense>
+              );
+            }}
+          />
+          <CollapseFormCard
+            title="Заезд / отъезд"
+            render={(closeButton) => {
+              const {
+                anObjectRoomBookingSettings: { checkInAfter, checkOutAfter },
+              } = roomData;
+              return (
+                <FormSuspense>
+                  <CheckInCheckOutForm
+                    value={{
+                      checkInAfter,
+                      checkOutAfter,
+                    }}
+                    navigation={
+                      <HStack>
+                        <HStack bgColor={"white"} w="full">
+                          <Button w="full" colorScheme="red" type="submit">
+                            Сохранить
+                          </Button>
+                          {closeButton}
+                        </HStack>
+                      </HStack>
+                    }
+                    onChange={(data) => {
+                      updateCheckInCheckOut(data)
+                        ?.then(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <SucessAlert
+                                  title="Сохранение"
+                                  description="Заезд / отъезд объекта сохранена"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        })
+                        .catch(() => {
+                          toast({
+                            isClosable: true,
+                            position: "top-right",
+                            render({ onClose }) {
+                              return (
+                                <ErrorAlert
+                                  title="Ошибка"
+                                  description="Произошла ошибка"
+                                  onClose={onClose}
+                                />
+                              );
+                            },
+                          });
+                        });
+                    }}
+                  />
+                </FormSuspense>
+              );
+            }}
+          />
+          <CollapseFormCard
+            title="Цены"
+            render={(closeButton) => {
+              const {
+                anObjectRoomBaseCost: {
+                  currencyId,
+                  forHowManyGuests,
+                  minimumLengthOfStay,
+                  pricePerDay,
+                },
+              } = roomData;
+              return (
+                <FormSuspense>
+                  {currenciesIsSuccess && (
+                    <PriceForm
+                      value={{
+                        currencyId,
+                        forHowManyGuests,
+                        minimumLengthOfStay,
+                        pricePerDay,
+                      }}
+                      currencies={currencies}
+                      navigation={
+                        <HStack>
+                          <HStack bgColor={"white"} w="full">
+                            <Button w="full" colorScheme="red" type="submit">
+                              Сохранить
+                            </Button>
+                            {closeButton}
+                          </HStack>
+                        </HStack>
+                      }
+                      onChange={(data) => {
+                        updateBaseCost(data)
+                          ?.then(() => {
+                            toast({
+                              isClosable: true,
+                              position: "top-right",
+                              render({ onClose }) {
+                                return (
+                                  <SucessAlert
+                                    title="Сохранение"
+                                    description="Цены сохранены"
+                                    onClose={onClose}
+                                  />
+                                );
+                              },
+                            });
+                          })
+                          .catch(() => {
+                            toast({
+                              isClosable: true,
+                              position: "top-right",
+                              render({ onClose }) {
+                                return (
+                                  <ErrorAlert
+                                    title="Ошибка"
+                                    description="Произошла ошибка"
+                                    onClose={onClose}
+                                  />
+                                );
+                              },
+                            });
+                          });
+                      }}
+                    />
+                  )}
+                </FormSuspense>
+              );
+            }}
+          />
+          <CollapseFormCard
+            title={"Дополнительная информация"}
+            render={(closeButton) => {
+              const {
+                anObjectRoomCleaningFee: {
+                  cleaningFeeType,
+                  amount: cleaningAmount,
+                },
+                anObjectRoomInsuranceDeposit: { amount: depositAmount },
+                anObjectRoomBaseCost: { currencyId },
+              } = roomData;
+              return (
+                <>
+                  {cleaningFeeTypesIsSuccess && currenciesIsSuccess && (
+                    <FormSuspense>
+                      <RoomOptionalServiceForm
+                        currentCurrencyId={currencyId}
+                        currencies={currencies}
+                        cleaningFeeTypes={cleaningFeeTypes}
+                        value={{
+                          cleaningAmount,
+                          cleaningFeeType,
+                          depositAmount,
+                        }}
+                        onChange={(data) => {
+                          updateOptionalService(data)
+                            ?.then(() => {
+                              toast({
+                                isClosable: true,
+                                position: "top-right",
+                                render({ onClose }) {
+                                  return (
+                                    <SucessAlert
+                                      title="Сохранение"
+                                      description="Дополнительная информация сохранена"
+                                      onClose={onClose}
+                                    />
+                                  );
+                                },
+                              });
+                            })
+                            .catch(() => {
+                              toast({
+                                isClosable: true,
+                                position: "top-right",
+                                render({ onClose }) {
+                                  return (
+                                    <ErrorAlert
+                                      title="Ошибка"
+                                      description="Произошла ошибка"
+                                      onClose={onClose}
+                                    />
+                                  );
+                                },
+                              });
+                            });
+                        }}
+                        navigation={
+                          <HStack>
+                            <HStack bgColor={"white"} w="full">
+                              <Button w="full" colorScheme="red" type="submit">
+                                Сохранить
+                              </Button>
+                              {closeButton}
+                            </HStack>
+                          </HStack>
+                        }
+                      />
+                    </FormSuspense>
+                  )}
+                  {(cleaningFeeTypesIsLoading || currenciesIsLoading) && (
+                    <Loader />
+                  )}
+                </>
+              );
+            }}
+          />
+        </Stack>
+      )}
+      {roomEditIsLoading && (
+        <Box
+          position={"fixed"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          zIndex={"popover"}
+          bgColor={"blackAlpha.500"}
+        >
+          <Center w="full" h="full">
+            <Loader />
+          </Center>
+        </Box>
+      )}
+      {roomIsLoading && (
+        <Box
+          position={"fixed"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          zIndex={"popover"}
+          bgColor={"blackAlpha.500"}
+        >
+          <Center w="full" h="full">
+            <Loader />
+          </Center>
+        </Box>
+      )}
+    </>
   );
 };

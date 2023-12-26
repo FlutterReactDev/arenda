@@ -36,3 +36,9 @@ export interface UserState {
   userData: UserData | undefined;
   userCurrency: Currency;
 }
+
+export interface UserErrorResponse {
+  isOk: boolean;
+  message: string;
+  result: null;
+}

@@ -17,6 +17,7 @@ import {
   PaymentType,
   RepairType,
   ReportingDocumentType,
+  RoomNameTypes,
   SmokingOnSite,
 } from "../types";
 
@@ -114,9 +115,12 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
       }),
     }),
 
-    getRoomNameTypes: build.query<InstantBookingValid[], unknown>({
-      query: () => ({
-        url: "/RoomNameTypes",
+    getRoomTypeNames: build.query<RoomNameTypes[], number>({
+      query: (anObjectPropertyTypeId) => ({
+        url: "/RoomTypeNames",
+        params: {
+          anObjectPropertyTypeId,
+        },
       }),
     }),
 
@@ -165,7 +169,7 @@ export const {
   useGetMealServiceTypesQuery,
   useGetFromBookingToCheckInQuery,
   useGetInstantBookingValidQuery,
-  useGetRoomNameTypesQuery,
+  useGetRoomTypeNamesQuery,
   useGetKitchenTypeQuery,
   useGetRepairTypeQuery,
   useGetNumberOfIsolatedBedroomQuery,

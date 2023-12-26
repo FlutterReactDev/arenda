@@ -674,7 +674,7 @@ export const CreateObject = () => {
                                 rating: 1,
                                 anObjectAdditionalComfort,
                                 anObjectMeal,
-                                name: ownName,
+                                name: uniqueName,
                               })
                                 .unwrap()
                                 .then(({ id }) => {
@@ -736,7 +736,7 @@ export const CreateObject = () => {
                                             <SucessAlert
                                               onClose={onClose}
                                               title="Создание"
-                                              description={`Создан обьект`}
+                                              description={`Создан объект`}
                                             />
                                           );
                                         },
