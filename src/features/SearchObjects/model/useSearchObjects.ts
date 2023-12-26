@@ -17,6 +17,10 @@ export const useSearchObjects = () => {
     dispatch(searchObjectAction.setCheckOut(date));
   };
 
+  const setDates = (dates: { checkIn: Date; checkOut: Date }) => {
+    dispatch(searchObjectAction.setDates(dates));
+  };
+
   const setGuestData = (data: Guests) => {
     dispatch(searchObjectAction.setGuestData(data));
   };
@@ -38,5 +42,6 @@ export const useSearchObjects = () => {
     setGuestData,
     setTerm,
     setSearchData,
+    setDates,
   };
 };

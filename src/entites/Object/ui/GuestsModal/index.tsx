@@ -30,6 +30,7 @@ interface GuestsModalProps {
 
 export const GuestsModal: FC<GuestsModalProps> = (props) => {
   const { isOpen, onClose, onGuestsChange, value } = props;
+
   const ageOptions = useMemo(
     () => [
       {
@@ -116,6 +117,7 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
       ...value,
     },
   });
+
   const adultsCount = watch("adultsCount");
 
   const { fields, append, remove } = useFieldArray({
@@ -164,9 +166,7 @@ export const GuestsModal: FC<GuestsModalProps> = (props) => {
                       return (
                         <IconButton
                           onClick={() => {
-                            console.log("dsadsa");
-
-                            onChange(value - 1);
+                            onChange(value--);
                           }}
                           aria-label="decrease"
                           isRound

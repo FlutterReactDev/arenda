@@ -26,7 +26,7 @@ const searchObjectSlice = createSlice({
     },
 
     setGuestData(state, action) {
-      state.searchData.guests = action.payload;
+      state.searchData.guests = { ...action.payload };
     },
 
     setTerm(state, action) {

@@ -43,14 +43,9 @@ import { FreeMode } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import { GuestsModal } from "@entites/Object/ui/GuestsModal";
-import {
-  ResultSearch,
-  searchObjectAction,
-  useSearchObjectData,
-} from "@features/SearchObjects";
+import { ResultSearch, useSearchObjects } from "@features/SearchObjects";
 import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
 import { getWordByNum } from "@shared/utils/getWordByNum";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 
 import Pagination from "@choc-ui/paginator";
 import { FilterObjects } from "@features/FilterObjects";
@@ -133,7 +128,7 @@ export const ObjectSearchLayout = () => {
     onToggle: mapOnToggle,
     onOpen: mapOnOpen,
   } = useDisclosure();
-  const dispatch = useAppDispatch();
+
   const {
     isOpen: desktopFilterIsOpen,
     onOpen: desktopFilterOnOpen,
@@ -165,7 +160,8 @@ export const ObjectSearchLayout = () => {
 
   const [isLessThan630] = useMediaQuery("(max-width: 630px)");
   const [isLessThen900] = useMediaQuery("(max-width: 900px)");
-  const { guests, dates } = useSearchObjectData();
+  const { guests, dates, setGuestData, setDates } = useSearchObjects();
+
   const [calendarDates, setCalendarDates] = useState<Date[]>([
     dates?.checkIn,
     dates?.checkOut,
@@ -177,14 +173,12 @@ export const ObjectSearchLayout = () => {
 
   useEffect(() => {
     if (calendarDates.length == 2) {
-      dispatch(
-        searchObjectAction.setDates({
-          checkIn: calendarDates[0],
-          checkOut: calendarDates[1],
-        })
-      );
+      setDates({
+        checkIn: calendarDates[0],
+        checkOut: calendarDates[1],
+      });
     }
-  }, [calendarDates, dispatch]);
+  }, [calendarDates]);
 
   useEffect(() => {
     addMarkers(markers);
@@ -639,9 +633,7 @@ export const ObjectSearchLayout = () => {
           </DrawerContent>
         </Drawer>
         <GuestsModal
-          onGuestsChange={(value) => {
-            dispatch(searchObjectAction.setGuestData(value));
-          }}
+          onGuestsChange={setGuestData}
           value={guests}
           isOpen={guestsIsOpen}
           onClose={guestsOnClose}
