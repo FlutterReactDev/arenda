@@ -85,9 +85,7 @@ export const Footer = memo(() => {
                   <Text as="a" href="tel:+996222999338">
                     +996 (222) 999-338
                   </Text>
-                  <Text as="a" href="tel:+996(502)198-704">
-                    +996 (502) 198-704
-                  </Text>
+               
                 </Stack>
               </Box>
             </Stack>
@@ -96,6 +94,8 @@ export const Footer = memo(() => {
               rounded={"full"}
               colorScheme="whatsapp"
               maxW={"40"}
+              as={"a"}
+              href="https://api.whatsapp.com/send?phone=706284777"
             >
               WhatsApp
             </Button>
