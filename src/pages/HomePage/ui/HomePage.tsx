@@ -1,21 +1,15 @@
 import {
   Box,
-  Card,
-  CardBody,
   Container,
   Flex,
   Heading,
-  Image,
-  LinkOverlay,
   SimpleGrid,
-  Tag,
   Text,
-  VStack,
 } from "@chakra-ui/react";
 import { SimpleObjectCard } from "@entites/Object";
 import { ReviewCard } from "@entites/Review";
 import { MainSearch } from "@features/SearchObjects";
-
+import { Slider } from "@shared/ui/Slider";
 const HomePage = () => {
   const testimonials = [
     {
@@ -53,7 +47,7 @@ const HomePage = () => {
   ];
 
   return (
-    <Box bgColor={"blackAlpha.50"} py={32}>
+    <Box bgColor={"blackAlpha.50"} py={12}>
       <main>
         <Heading color="blackAlpha.900" size="3xl" textAlign="center">
           Ваш отдых начинается здесь
@@ -68,7 +62,7 @@ const HomePage = () => {
           Квартиры, отели, гостевые дома — по Кыргызстану
         </Text>
         <MainSearch />
-        <Box>
+        {/* <Box>
           <Heading color="blackAlpha.900" size="xl" textAlign="center" mt={16}>
             Куда поехать
           </Heading>
@@ -708,13 +702,28 @@ const HomePage = () => {
               </Card>
             </SimpleGrid>
           </Container>
-        </Box>
+        </Box> */}
         <Box mt={"6"}>
           <Heading color="blackAlpha.900" size="xl" textAlign="center" mt={16}>
             Популярные объекты
           </Heading>
           <Container maxW="container.xl">
-            <SimpleGrid columns={[1, 2, 2, 3]} spacing={5} mt={5}>
+            <Slider
+              slidesPerView={4}
+              breakpoint={{
+                "@1.00": {
+                  slidesPerView: 4,
+                },
+
+                "@0.50": {
+                  slidesPerView: 2,
+                },
+
+                "@0.00": {
+                  slidesPerView: 1,
+                },
+              }}
+            >
               <SimpleObjectCard />
               <SimpleObjectCard />
               <SimpleObjectCard />
@@ -725,7 +734,7 @@ const HomePage = () => {
               <SimpleObjectCard />
               <SimpleObjectCard />
               <SimpleObjectCard />
-            </SimpleGrid>
+            </Slider>
           </Container>
         </Box>
         <Box mt={"6"}>
@@ -733,7 +742,22 @@ const HomePage = () => {
             Определенно рекомендуем
           </Heading>
           <Container maxW="container.xl">
-            <SimpleGrid columns={[1, 2, 2, 3]} spacing={5} mt={5}>
+            <Slider
+              slidesPerView={4}
+              breakpoint={{
+                "@1.00": {
+                  slidesPerView: 4,
+                },
+
+                "@0.50": {
+                  slidesPerView: 2,
+                },
+
+                "@0.00": {
+                  slidesPerView: 1,
+                },
+              }}
+            >
               <SimpleObjectCard />
               <SimpleObjectCard />
               <SimpleObjectCard />
@@ -744,7 +768,7 @@ const HomePage = () => {
               <SimpleObjectCard />
               <SimpleObjectCard />
               <SimpleObjectCard />
-            </SimpleGrid>
+            </Slider>
           </Container>
         </Box>
         <Box>
