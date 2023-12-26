@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { CleaningFeeType, CreateRoomState } from "./types/createRoomTypes";
 
 const initialState = {
-  anObjectId: 1071,
+  anObjectId: 0,
   categoryType: 1,
   categoryCount: 1,
   createRoomForm: {

@@ -7,7 +7,8 @@ import {
   useGetFromBookingToCheckInQuery,
   useGetInstantBookingValidQuery,
   useGetRoomCategoriesQuery,
-  useGetRoomNameTypesQuery,
+  useGetFloorTypeQuery,
+  useGetRoomTypeNamesQuery,
 } from "@entites/CommonReference";
 import {
   BookingSettingForm,
@@ -16,6 +17,7 @@ import {
   FacilitiesForm,
   GeneralRoomInformationForm,
   HowGuestBookForm,
+  ImageUploadForm,
   PostingRulesForm,
   PriceForm,
   RoomOptionalServiceForm,
@@ -23,12 +25,14 @@ import {
   useCreateRoom,
   useCreateRoomsMutation,
 } from "@entites/Object";
+import { CreateRoomType } from "@entites/Object/model/types/createRoomTypes";
 import { FormStepper } from "@shared/ui/FormSteppter";
 import { PageLoader } from "@shared/ui/PageLoader";
-import { Suspense } from "react";
-import { useNavigate } from "react-router-dom";
+import { Suspense, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const CreateRoom = () => {
+  const { hotelId } = useParams();
   const navigate = useNavigate();
   const {
     data: currencies,
@@ -69,13 +73,13 @@ export const CreateRoom = () => {
     data: roomNameTypes,
     isLoading: roomNameTypesIsLoading,
     isSuccess: roomNameTypesIsSuccess,
-  } = useGetRoomNameTypesQuery("");
+  } = useGetRoomTypeNamesQuery(30);
+
   const {
     data: floorTypes,
     isLoading: floorTypesIsLoading,
     isSuccess: floorTypeIsSuccesss,
   } = useGetFloorTypeQuery();
-
   const [createRooms, { isLoading }] = useCreateRoomsMutation();
 
   const {
@@ -84,7 +88,7 @@ export const CreateRoom = () => {
     categoryType,
     categoryCount,
     setAnObjectRoomBathroom,
-    setAnObjectRoomBed,
+    setAnObjectRoomBeds,
     setAnObjectRoomDescription,
     setAnObjectRoomEquipment,
     setAnObjectRoomAvailability,
@@ -100,23 +104,25 @@ export const CreateRoom = () => {
     setAnObjectRoomInsuranceDeposit,
     setAnObjectRoomPostingRule,
     setAnObjectRoomBookingSettings,
-
+    setAnObjectId,
     setCategoryType,
     setCategoryCount,
+    setAnObjectRoomMaximumGuests,
     clearForm: clearRoomForm,
   } = useCreateRoom();
+
   const {
     anObjectRoomDescription: {
       area,
       count,
-      floor,
+      floorType,
       floorsInTheBuilding,
       ownName,
       uniqueName,
-      roomNameType,
+      roomNameTypeId,
     },
     anObjectRoomBathroom,
-    anObjectRoomBed,
+    anObjectRoomBeds,
     anObjectRoomEquipment,
     anObjectRoomAvailability,
     anObjectRoomAmenities,
@@ -132,8 +138,14 @@ export const CreateRoom = () => {
     description,
     anObjectRoomPostingRule,
     anObjectRoomBookingSettings,
+    maximumGuests,
   } = createRoomForm;
 
+  useEffect(() => {
+    if (hotelId) {
+      setAnObjectId(Number(hotelId));
+    }
+  }, [hotelId]);
   return (
     <>
       <FormStepper
@@ -180,7 +192,7 @@ export const CreateRoom = () => {
                     numberOfSeparateToilets,
                     ...othersBathroomForm
                   } = anObjectRoomBathroom;
-                  const { beds, maximumGuests } = anObjectRoomBed;
+
                   return (
                     <>
                       {bedTypesIsSuccess &&
@@ -214,13 +226,21 @@ export const CreateRoom = () => {
                                   maximumGuests,
                                   area,
                                   count,
-                                  floor,
+                                  floorType,
                                   floorsInTheBuilding,
                                   numberOfBathroomsWithToilet,
                                   ownName,
-                                  roomNameType,
                                   uniqueName,
+                                  roomNameTypeId,
                                 } = data;
+                                const roomBeds = beds.map(
+                                  ({ bedType, count }) => ({
+                                    bedType,
+                                    count,
+                                    anObjectRoomId: 0,
+                                  })
+                                );
+                                setAnObjectRoomBeds(roomBeds);
                                 setAnObjectRoomBathroom({
                                   additionalBathroom,
                                   additionalToilet,
@@ -241,21 +261,17 @@ export const CreateRoom = () => {
                                   toiletries,
                                   towels,
                                 });
-                                setAnObjectRoomBed({
-                                  beds,
-                                  maximumGuests,
-                                });
+
                                 setAnObjectRoomDescription({
                                   area,
                                   count,
-                                  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                  //@ts-ignore
-                                  floor,
+                                  floorType,
                                   floorsInTheBuilding,
                                   ownName,
-                                  roomNameType,
+                                  roomNameTypeId,
                                   uniqueName,
                                 });
+                                setAnObjectRoomMaximumGuests(maximumGuests);
                               }}
                               value={{
                                 additionalBathroom,
@@ -265,16 +281,14 @@ export const CreateRoom = () => {
                                 numberOfSeparateToilets,
                                 ...othersBathroomForm,
                                 area,
-                                beds,
+                                beds: anObjectRoomBeds,
                                 count,
-                                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                                //@ts-ignore
-                                floor,
                                 floorsInTheBuilding,
                                 maximumGuests,
                                 ownName,
-                                roomNameType,
+                                floorType,
                                 uniqueName,
+                                roomNameTypeId,
                               }}
                               {...props}
                             />
@@ -347,29 +361,16 @@ export const CreateRoom = () => {
                   );
                 },
               },
-              // {
-              //   id: "ImageUploadForm",
-              //   render(props) {
-              //     return (
-              //       <Suspense fallback={<PageLoader />}>
-              //         <ImageUploadForm
-              //           stateValue={files}
-              //           changeState={(data) => {
-              //             const files = data as { files: File[] };
-              //             dispatch(
-              //               addObjectStepActions.setForm({
-              //                 step: 0,
-              //                 screen: 4,
-              //                 data: files,
-              //               })
-              //             );
-              //           }}
-              //           {...props}
-              //         />
-              //       </Suspense>
-              //     );
-              //   },
-              // },
+              {
+                id: "ImageUploadForm",
+                render(props) {
+                  return (
+                    <Suspense fallback={<PageLoader />}>
+                      <ImageUploadForm {...props} />
+                    </Suspense>
+                  );
+                },
+              },
             ],
           },
           {
@@ -526,7 +527,9 @@ export const CreateRoom = () => {
                               setAnObjectRoomInsuranceDeposit({
                                 amount: depositAmount,
                               });
-                              const rooms = Array(categoryCount)
+                              const rooms: CreateRoomType[] = Array(
+                                categoryCount
+                              )
                                 .fill(0)
                                 .map(() => ({
                                   anObjectId,
@@ -534,11 +537,7 @@ export const CreateRoom = () => {
                                   anObjectRoomAvailability,
                                   anObjectRoomBaseCost,
                                   anObjectRoomBathroom,
-                                  anObjectRoomBed: {
-                                    maximumGuests: 10,
-                                    bedType: 1,
-                                    count: 1,
-                                  },
+                                  anObjectRoomBeds,
                                   anObjectRoomCleaningFee: {
                                     amount: cleaningAmount || 0,
                                     cleaningFeeType,
@@ -547,11 +546,14 @@ export const CreateRoom = () => {
                                   anObjectRoomDescription: {
                                     area,
                                     count,
-                                    floor,
+                                    floorType,
                                     floorsInTheBuilding,
                                     ownName,
-                                    roomNameType: 1,
+                                    roomNameTypeId,
                                     uniqueName,
+                                    kitchenType: 1,
+                                    repairType: 1,
+                                    numberOfIsolatedBedroom: 1,
                                   },
                                   anObjectRoomEquipment,
                                   anObjectRoomForChildren,
@@ -563,23 +565,21 @@ export const CreateRoom = () => {
                                   ],
                                   anObjectRoomIndoorRelaxation,
                                   anObjectRoomInfrastructureLeisureNearby,
-                                  anObjectRoomInsuranceDeposit: {
-                                    amount: depositAmount,
-                                  },
+                                  anObjectRoomInsuranceDeposit,
                                   anObjectRoomKitchenEquipment,
                                   anObjectRoomOutsideRelaxation,
                                   anObjectRoomViewFromWindow,
                                   categoryType,
+                                  description,
                                   anObjectRoomBookingSettings,
                                   anObjectRoomPostingRule,
-                                  description,
+                                  maximumGuests,
                                 }));
-                              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                              //@ts-ignore
+
                               createRooms(rooms)
                                 .unwrap()
                                 .then(() => {
-                                  navigate(RouteName.ADD_OBJECT);
+                                  navigate(RouteName.MY_OBJECTS);
                                   clearRoomForm();
                                 });
                             }}
