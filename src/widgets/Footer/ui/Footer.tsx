@@ -1,17 +1,14 @@
-import AppStore from "@assets/images/AppStore.png";
-import GooglePlay from "@assets/images/GooglePlay.png";
 import {
   Box,
+  Button,
   Container,
+  Divider,
+  HStack,
   IconButton,
   SimpleGrid,
   Stack,
   Text,
   useColorModeValue,
-  Image,
-  HStack,
-  Divider,
-  Button,
 } from "@chakra-ui/react";
 import { ReactNode, memo } from "react";
 import { BsInstagram, BsTelegram, BsWhatsapp, BsYoutube } from "react-icons/bs";
@@ -45,13 +42,13 @@ export const Footer = memo(() => {
               </HStack>
             </Box>
             <Text fontSize={"sm"}>
-              Turak.kg — сервис бронирования жилья: отели, квартиры посуточно,
-              гостевые дома, коттеджи в частном секторе
+              Turak.kg - Сервис по поиску отелей, квартир посуточно, гостевых
+              домов, коттеджи в частном секторе
             </Text>
-            <Stack direction={"row"} spacing={6}>
+            {/* <Stack direction={"row"} spacing={6}>
               <Image alt="AppStore" src={AppStore} />
               <Image alt="GooglePlay" src={GooglePlay} />
-            </Stack>
+            </Stack> */}
           </Stack>
           <Stack>
             <ListHeader>Компания</ListHeader>
@@ -85,7 +82,6 @@ export const Footer = memo(() => {
                   <Text as="a" href="tel:+996222999338">
                     +996 (222) 999-338
                   </Text>
-               
                 </Stack>
               </Box>
             </Stack>

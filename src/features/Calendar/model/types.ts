@@ -79,6 +79,7 @@ export interface CalendarObject {
   address: string;
   checkIn: string;
   checkOut: string;
+  currency: string;
 }
 
 export interface CalendarAvailability {

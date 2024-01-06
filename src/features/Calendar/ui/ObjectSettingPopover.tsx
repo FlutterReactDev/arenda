@@ -10,9 +10,14 @@ import {
   Stack,
 } from "@chakra-ui/react";
 import { FC, PropsWithChildren } from "react";
-
-export const ObjectSettingPopover: FC<PropsWithChildren> = (props) => {
-  const { children } = props;
+interface ObjectSettingPopoverProps {
+  roomId: number;
+  isHotel: boolean;
+}
+export const ObjectSettingPopover: FC<
+  PropsWithChildren<ObjectSettingPopoverProps>
+> = (props) => {
+  const { children, isHotel, roomId } = props;
   return (
     <Popover isLazy strategy="fixed">
       <PopoverTrigger>{children}</PopoverTrigger>

@@ -1,11 +1,11 @@
-import { Box, Button, Center, HStack, Stack, useToast } from "@chakra-ui/react";
+import { Button, HStack, Stack, useToast } from "@chakra-ui/react";
 import {
   useGetBedTypesQuery,
   useGetCleaningFeeTypesQuery,
   useGetCurrenciesQuery,
+  useGetFloorTypeQuery,
   useGetRoomCategoriesQuery,
   useGetRoomTypeNamesQuery,
-  useGetFloorTypeQuery,
 } from "@entites/CommonReference";
 
 import {
@@ -23,6 +23,7 @@ import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
 import { CollapseFormCard } from "@shared/ui/CollapseFormCard";
 import { Loader } from "@shared/ui/Loader";
+import { PageLoader } from "@shared/ui/PageLoader";
 import { useEditRoom } from "../model/useEditRoom";
 
 export const EditRoom = () => {
@@ -604,36 +605,8 @@ export const EditRoom = () => {
           />
         </Stack>
       )}
-      {roomEditIsLoading && (
-        <Box
-          position={"fixed"}
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          zIndex={"popover"}
-          bgColor={"blackAlpha.500"}
-        >
-          <Center w="full" h="full">
-            <Loader />
-          </Center>
-        </Box>
-      )}
-      {roomIsLoading && (
-        <Box
-          position={"fixed"}
-          top={0}
-          left={0}
-          right={0}
-          bottom={0}
-          zIndex={"popover"}
-          bgColor={"blackAlpha.500"}
-        >
-          <Center w="full" h="full">
-            <Loader />
-          </Center>
-        </Box>
-      )}
+      {roomEditIsLoading && <PageLoader />}
+      {roomIsLoading && <PageLoader />}
     </>
   );
 };

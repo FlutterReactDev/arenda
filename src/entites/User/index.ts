@@ -9,6 +9,8 @@ export type {
   UserLoginData,
   UserErrorResponse,
 } from "./model/types/UserType";
+
+export type { RegisterType } from "./model/schemas/RegisterSchema";
 export { useAuth } from "./model/useAuth";
 export { useAuthModal } from "./model/useAuthModal";
 export { useUser } from "./model/useUser";

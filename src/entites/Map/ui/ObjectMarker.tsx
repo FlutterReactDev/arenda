@@ -1,28 +1,30 @@
 import { TriangleDownIcon } from "@chakra-ui/icons";
 import { Box, Card, HStack, Text } from "@chakra-ui/react";
 
-import { getCurrencySymbol } from "@shared/utils/getCurrencySymbol";
-import { FC } from "react";
+import { FC, memo } from "react";
+import { Link } from "react-router-dom";
 import { useSearchMap } from "..";
+import { MarkerItem } from "../model/types";
 
-interface ObjectMarker {
-  text: number;
-  coordinates: number[];
+interface ObjectMarker extends MarkerItem {
+  isHovered: boolean;
 }
-export const ObjectMarker: FC<ObjectMarker> = (props) => {
-  const { text, coordinates } = props;
+export const ObjectMarker: FC<ObjectMarker> = memo((props) => {
+  const { isHovered, lon, lat, id, context } = props;
   const { onHover, clearHover } = useSearchMap();
 
   const onHoverMarker = () => {
     onHover({
-      latitude: coordinates[1],
-      longitude: coordinates[0],
+      latitude: lat,
+      longitude: lon,
     });
   };
 
   return (
     <Card
-      bgColor={"red.400"}
+      as={Link}
+      to={`/${id.split("_")[0]}/object-detail`}
+      bgColor={"facebook.500"}
       color={"white"}
       userSelect={"none"}
       transform={"translate(-50%, -150%)"}
@@ -33,21 +35,26 @@ export const ObjectMarker: FC<ObjectMarker> = (props) => {
       onMouseLeave={clearHover}
       pos={"relative"}
       transformOrigin={"center"}
-      _hover={{
+      {...(isHovered && {
         transform: "scale(1.1)  translate(-50%, -150%)",
-      }}
+        bgColor: "red.500",
+      })}
       rounded={"lg"}
     >
       <HStack spacing={0} fontSize={"12px"}>
         <Text>
-          {text.toLocaleString().replace(/,/g, " ")}{" "}
-          {getCurrencySymbol("RU-ru", "KGS")}
+          {context.stop_factors &&
+            context.stop_factors[0].name.match(/\d/g)?.join("")}{" "}
+          сом
         </Text>
       </HStack>
 
       <Box
         as="span"
-        color="red.400"
+        color="facebook.500"
+        {...(isHovered && {
+          color: "red.500",
+        })}
         position={"absolute"}
         top={"50%"}
         left={"50%"}
@@ -57,4 +64,4 @@ export const ObjectMarker: FC<ObjectMarker> = (props) => {
       </Box>
     </Card>
   );
-};
+});

@@ -4,6 +4,7 @@ import { FC, memo } from "react";
 import { getCommonSettings } from "../model/selectors";
 
 import { SmallAddIcon } from "@chakra-ui/icons";
+import { getRelativeCurrencySymbol } from "@shared/utils/getCurrencySymbol";
 import { isEqual, isSaturday, isSunday, isToday } from "date-fns";
 
 interface ObjectCellProps {
@@ -16,7 +17,7 @@ interface ObjectCellProps {
   onMouseMove: (date: Date) => void;
   onMouseDown: (date: Date) => void;
   onMouseUp: () => void;
-
+  currency: string;
   date: Date;
 }
 export const ObjectCell: FC<ObjectCellProps> = memo(
@@ -32,6 +33,7 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
       onMouseMove,
       onMouseDown,
       onMouseUp,
+      currency,
     } = props;
     const { currentWidth } = useAppSelector(getCommonSettings);
 
@@ -116,7 +118,7 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
             color: "white",
           })}
         >
-          {cost}$
+          {cost} {getRelativeCurrencySymbol(currency)}
         </Text>
         <Text
           fontSize={"sm"}
@@ -204,5 +206,6 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
     isEqual(oldProps.date, newProps.date) &&
     oldProps.onMouseDown == newProps.onMouseDown &&
     oldProps.onMouseMove == newProps.onMouseMove &&
-    oldProps.onMouseUp == newProps.onMouseUp
+    oldProps.onMouseUp == newProps.onMouseUp &&
+    oldProps.currency == newProps.currency
 );

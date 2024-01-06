@@ -1,13 +1,15 @@
 import { PageLoader } from "@shared/ui/PageLoader";
 import { ReactNode, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
-import { routeConfig } from "../config/routeConfig";
+import { RouteName, routeConfig } from "../config/routeConfig";
 import { PrivateRoute } from "./PrivateRoute";
 import { BaseLayout } from "./BaseLayout";
 import { Header } from "@widgets/Header";
 import { Footer } from "@widgets/Footer";
+import { useUser } from "@entites/User";
 
 export const Routing = () => {
+  const { currentUser } = useUser();
   const routeElement = (element: ReactNode) => {
     return <Suspense fallback={<PageLoader />}>{element}</Suspense>;
   };
@@ -50,7 +52,7 @@ export const Routing = () => {
               key={route.path}
               element={
                 route.private ? (
-                  <PrivateRoute>
+                  <PrivateRoute requiredVerify={route.requiredVerify}>
                     {withLayout(routeElement(route.element), route.layout)}
                   </PrivateRoute>
                 ) : (
@@ -65,7 +67,7 @@ export const Routing = () => {
                     key={route.path}
                     element={
                       route.private ? (
-                        <PrivateRoute>
+                        <PrivateRoute requiredVerify={route.requiredVerify}>
                           {withLayout(
                             routeElement(route.element),
                             route.layout
@@ -81,13 +83,21 @@ export const Routing = () => {
             </Route>
           );
         }
+
+        if (
+          route.path == RouteName.VERIFY_PAGE &&
+          currentUser?.emaiIsVerified
+        ) {
+          return;
+        }
+
         return (
           <Route
             path={route.path}
             key={route.path}
             element={
               route.private ? (
-                <PrivateRoute>
+                <PrivateRoute requiredVerify={route.requiredVerify}>
                   {withLayout(routeElement(route.element), route.layout)}
                 </PrivateRoute>
               ) : (

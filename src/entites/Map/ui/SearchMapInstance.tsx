@@ -3,12 +3,15 @@ import { useEffect } from "react";
 import { useSearchMap } from "..";
 
 export const SearchMapInstance = () => {
-  const { setMapInstance } = useSearchMap();
-  const { mapInstance } = useMapContext();
+  const { setMapInstance, setMapGlBundle } = useSearchMap();
+  const { mapInstance, mapGLBundle } = useMapContext();
 
   useEffect(() => {
     if (mapInstance) {
       setMapInstance(mapInstance);
+    }
+    if (mapGLBundle) {
+      setMapGlBundle(mapGLBundle);
     }
   }, [mapInstance]);
 

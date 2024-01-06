@@ -10,12 +10,20 @@ import { dragObjectReducer } from "@features/DragObject";
 import { searchMapReducer, selectMapReducer } from "@entites/Map";
 import { bookingFormReducer } from "@widgets/BookingForm";
 import { headerReducer } from "@widgets/Header";
+import { base2GISReviewApi } from "@shared/api/2GISReviewApi";
+import { base2GISPhotoApi3V } from "@shared/api/2GISPhotoApi3V";
+import { base2GISProductApi } from "@shared/api/2GISProductApi";
+import { base2GISPhotoApi2V } from "@shared/api/2GISPhotoApi2V";
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     [baseApiWithReAuth.reducerPath]: baseApiWithReAuth.reducer,
     [base2GISApi.reducerPath]: base2GISApi.reducer,
+    [base2GISReviewApi.reducerPath]: base2GISReviewApi.reducer,
+    [base2GISPhotoApi3V.reducerPath]: base2GISPhotoApi3V.reducer,
+    [base2GISProductApi.reducerPath]: base2GISProductApi.reducer,
+    [base2GISPhotoApi2V.reducerPath]: base2GISPhotoApi2V.reducer,
     header: headerReducer,
     bookingForm: bookingFormReducer,
     searchObject: searchObjectReducer,
@@ -36,6 +44,10 @@ export const store = configureStore({
       baseApiWithReAuth.middleware,
       baseApi.middleware,
       base2GISApi.middleware,
+      base2GISReviewApi.middleware,
+      base2GISPhotoApi3V.middleware,
+      base2GISProductApi.middleware,
+      base2GISPhotoApi2V.middleware,
     ]);
   },
 });

@@ -51,8 +51,8 @@ export const ObjectInfo: FC<ObjectInfoProps> = memo((props) => {
           cursor={"pointer"}
         >
           <Image
-            w="full"
-            h="full"
+            minW="50px"
+            minH="50px"
             rounded={"lg"}
             objectFit={"cover"}
             src="https://i.sutochno.ru/punx_8k4IWvahS61jB4zYKxq8Q949HNdirT3YZH9SQo/fit/400/300/no/1/czM6Ly9zdGF0aWMuc3V0b2Nobm8ucnUvZG9jL2ZpbGVzL29iamVjdHMvMS82MzcvMjU0LzY1MmViYzM3ZDI3YTIuanBn.webp"
@@ -75,10 +75,23 @@ export const ObjectInfo: FC<ObjectInfoProps> = memo((props) => {
           )}
         </Box>
         {!isLessThan968 && (
-          <Stack spacing={0} lineHeight={"18px"}>
+          <Stack
+            spacing={0}
+            lineHeight={"18px"}
+            w="full"
+            overflow={"hidden"}
+            textOverflow={"ellipsis"}
+            whiteSpace={"nowrap"}
+          >
             <Text fontSize={"sm"}>ID {objectId}</Text>
             <ObjectSettingPopover>
-              <Button colorScheme="teal" fontSize={"sm"} variant={"link"} textAlign={"left"} justifyContent={"flex-start"} w="max-content">
+              <Button
+                colorScheme="teal"
+                fontSize={"sm"}
+                variant={"link"}
+                textAlign={"left"}
+                justifyContent={"flex-start"}
+              >
                 {name}
               </Button>
             </ObjectSettingPopover>

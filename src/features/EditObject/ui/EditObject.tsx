@@ -758,22 +758,7 @@ export const EditObject = () => {
             />
           </Stack>
         )}
-      {objectIsLoading ||
-        (roomIsLoading && (
-          <Box
-            position={"fixed"}
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            zIndex={"popover"}
-            bgColor={"blackAlpha.500"}
-          >
-            <Center w="full" h="full">
-              <Loader />
-            </Center>
-          </Box>
-        ))}
+      {objectIsLoading || (roomIsLoading && <PageLoader />)}
       {roomEditIsLoading && (
         <Box
           position={"fixed"}

@@ -19,7 +19,7 @@ export interface HtmlMarker2GISProps extends HtmlMarkerOptionsWithoutHtml {
 }
 
 const HtmlMarker2GISComponent: FC<HtmlMarker2GISProps> = (props) => {
-  const { coordinates, children, className, zIndex } = props;
+  const { coordinates, children, className } = props;
 
   const htmlMarkerOptionsRef = useRef<HtmlMarkerOptionsWithoutHtml>({
     coordinates,
@@ -73,7 +73,7 @@ const HtmlMarker2GISComponent: FC<HtmlMarker2GISProps> = (props) => {
         instance.destroy();
       }
     };
-  }, [mapGLBundle, mapInstance, setInstance, forceReCreateInstance, zIndex]);
+  }, [mapGLBundle, mapInstance, setInstance, forceReCreateInstance]);
 
   // Обновляем класс на контейнере при изменениях класса
   useEffect(() => {

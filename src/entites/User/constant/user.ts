@@ -1,1 +1,1 @@
-export const USER_CURRENCY = 'USER_CURRENCY'
+export const USER_CURRENCY = "USER_CURRENCY";

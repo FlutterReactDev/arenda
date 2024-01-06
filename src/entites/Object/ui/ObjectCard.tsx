@@ -1,53 +1,45 @@
 import { StarIcon } from "@chakra-ui/icons";
 import {
   Box,
-  Text,
   Center,
-  Heading,
-  Stack,
-  HStack,
-  Tag,
   CircularProgress,
   Divider,
-  Icon,
   Grid,
   GridItem,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverHeader,
-  PopoverBody,
-  Progress,
+  HStack,
+  Heading,
+  Icon,
+  Stack,
+  Text,
 } from "@chakra-ui/react";
-import { Suspense, lazy, memo } from "react";
+import { FC, Suspense, lazy, memo } from "react";
 
 import { FaHeart } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
-import { BiSolidLike } from "react-icons/bi";
 import { Link } from "react-router-dom";
-const Slider = lazy(() => import("./ObjectSlider"));
-export const ObjectCard = memo(() => {
-  const IMAGE =
-    "https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80";
+import { Item3 } from "../model/types/objectDetail";
+import { Photo } from "../model/types/photos";
+import { getWordByNum } from "@shared/utils/getWordByNum";
 
-  const images = [
-    {
-      src: "https://bit.ly/2Z4KKcF",
-      id: 1,
-    },
-    {
-      src: IMAGE,
-      id: 2,
-    },
-    {
-      src: "https://bit.ly/2Z4KKcF",
-      id: 3,
-    },
-    {
-      src: IMAGE,
-      id: 4,
-    },
-  ];
+interface ObjectCardProps extends Item3 {
+  images: Photo[];
+  onHover?: (id: string) => void;
+  onHoverOut?: () => void;
+}
+const Slider = lazy(() => import("./ObjectSlider"));
+export const ObjectCard: FC<ObjectCardProps> = memo((props) => {
+  const {
+    reviews,
+    images,
+    id,
+    name,
+    address_name,
+    purpose_name,
+    context,
+    onHover,
+    onHoverOut,
+  } = props;
+
   return (
     <Grid
       role={"group"}
@@ -58,16 +50,18 @@ export const ObjectCard = memo(() => {
       rounded={"lg"}
       pos={"relative"}
       gridTemplateRows={"180px"}
-      gridTemplateColumns={"260px 1fr 2.5px 199px"}
+      gridTemplateColumns={"260px 1fr 2.5px 149px"}
       gap={2}
       as={Link}
-      to={"/object-detail"}
+      to={`/${id.split("_")[0]}/object-detail`}
       transition={"0.3s all"}
       _hover={{
         boxShadow: "xl",
       }}
+      onMouseEnter={() => onHover && onHover(id)}
+      onMouseLeave={onHoverOut}
     >
-      <HStack
+      {/* <HStack
         position={"absolute"}
         top={0}
         left={"10px"}
@@ -77,7 +71,7 @@ export const ObjectCard = memo(() => {
         <Tag bgColor={"red.600"} color="white" rounded="full">
           ТОП-10
         </Tag>
-      </HStack>
+      </HStack> */}
 
       <GridItem mr={"40px"} pos={"relative"}>
         <Suspense
@@ -114,27 +108,31 @@ export const ObjectCard = memo(() => {
         <Stack justifyContent={"space-between"} h={"full"}>
           <Box>
             <Box fontWeight={"medium"} fontSize={"sm"}>
-              <Box as="span" color={"gray.500"} mr={2}>
-                3{" "}
-                <sup>
-                  <StarIcon />
-                </sup>
-              </Box>
               <Box as="span" color={"gray.500"}>
-                Апарт-отель {`"`}Хороший отель{`"`}
+                {purpose_name}
               </Box>
             </Box>
             <Heading size={"sm"} fontWeight={"medium"}>
-              Уютный дом с площадкой для барбекю
+              {name}
             </Heading>
 
-            <Box color="gray.500" fontWeight={"medium"} fontSize={"sm"} mt={1}>
-              2 гостя &bull; 2 кровати &bull; 1 спальня &bull; 30 м<sup>2</sup>
+            <Box
+              color="gray.500"
+              fontWeight={"medium"}
+              fontSize={"smaller"}
+              mt={1}
+            >
+              {context?.stop_factors?.map(({ name }, idx, arr) => {
+                if (arr.length - 1 != idx) {
+                  return <>{name} &bull; </>;
+                }
+                return <>{name}</>;
+              })}
             </Box>
           </Box>
           <Box>
             <Text color={"gray.500"} fontSize={"sm"} fontWeight={"medium"}>
-              Бостери, Казак Тукуму, 75а/10
+              {address_name}
             </Text>
           </Box>
         </Stack>
@@ -149,105 +147,20 @@ export const ObjectCard = memo(() => {
           textAlign={"right"}
           h={"full"}
         >
-          <Popover
-            trigger="hover"
-            openDelay={0}
-            closeDelay={0}
-            placement="bottom-end"
-          >
-            <PopoverTrigger>
-              <HStack fontSize={"sm"} cursor={"pointer"}>
-                <Text color={"gray.500"} fontWeight={"medium"}>
-                  1028 отзывов
-                </Text>
-                <HStack spacing={1}>
-                  <StarIcon color={"red.500"} />
-                  <Text fontWeight={"medium"}>9,5</Text>
-                </HStack>
-              </HStack>
-            </PopoverTrigger>
-            <PopoverContent w={"420px"}>
-              <PopoverHeader>
-                <HStack justifyContent={"space-between"}>
-                  <Text
-                    fontSize={"sm"}
-                    fontWeight={"bold"}
-                    color={"blackAlpha.800"}
-                  >
-                    Гости рекомендуют
-                  </Text>
-                  <Center bgColor={"red.500"} rounded={"full"} p={2}>
-                    <Icon as={BiSolidLike} color={"white"} />
-                  </Center>
-                </HStack>
-              </PopoverHeader>
-              <PopoverBody p={2}>
-                <Box fontSize={"sm"}>
-                  <Box as="span" fontWeight={"bold"}>
-                    1028
-                  </Box>{" "}
-                  отзывов о проживании со средней оценкой{" "}
-                  <Box as="span" fontWeight={"bold"}>
-                    9,5
-                  </Box>{" "}
-                  из{" "}
-                  <Box as="span" fontWeight={"bold"}>
-                    10,0
-                  </Box>
-                </Box>
-                <HStack spacing={0} mt={4} flexWrap={"wrap"} fontSize={"small"}>
-                  <HStack w="50%" gap={2}>
-                    <Text> Цена - качество</Text>
-                    <Progress
-                      value={93}
-                      size="xs"
-                      colorScheme="red"
-                      rounded={"full"}
-                      maxW={"16"}
-                      w="full"
-                    />
-                    <Text>9,3</Text>
-                  </HStack>
-                  <HStack w="50%">
-                    <Text> Цена - качество</Text>
-                    <Progress
-                      value={93}
-                      size="xs"
-                      colorScheme="red"
-                      rounded={"full"}
-                      maxW={"16"}
-                      w="full"
-                    />
-                    <Text>9,3</Text>
-                  </HStack>
-                  <HStack w="50%">
-                    <Text> Цена - качество</Text>
-                    <Progress
-                      value={93}
-                      size="xs"
-                      colorScheme="red"
-                      rounded={"full"}
-                      maxW={"16"}
-                      w="full"
-                    />
-                    <Text>9,3</Text>
-                  </HStack>
-                  <HStack w="50%">
-                    <Text> Цена - качество</Text>
-                    <Progress
-                      value={93}
-                      size="xs"
-                      colorScheme="red"
-                      rounded={"full"}
-                      maxW={"16"}
-                      w="full"
-                    />
-                    <Text>9,3</Text>
-                  </HStack>
-                </HStack>
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
+          <HStack fontSize={"sm"} cursor={"pointer"}>
+            <Text color={"gray.500"} fontWeight={"medium"}>
+              {reviews.general_review_count}{" "}
+              {getWordByNum(reviews.general_review_count, [
+                "отзыв",
+                "отзыва",
+                "отзывов",
+              ])}
+            </Text>
+            <HStack spacing={1}>
+              <StarIcon color={"red.500"} />
+              <Text fontWeight={"medium"}>{reviews.general_rating}</Text>
+            </HStack>
+          </HStack>
 
           <Box>
             <HStack spacing={1} justifyContent={"center"} alignItems={"center"}>
@@ -269,143 +182,3 @@ export const ObjectCard = memo(() => {
     </Grid>
   );
 });
-{
-  /* <div data-v-af99fcc6="" data-v-683af460="" class="avg-rating-wrapp">
-  <div data-v-af99fcc6="" class="avg-rating">
-    <div data-v-af99fcc6="" class="avg-rating__recommend-box">
-      <p data-v-af99fcc6="" class="avg-rating__recommend-box__text">
-        Гости рекомендуют
-      </p>
-      <span
-        data-v-4d973a4f=""
-        data-v-af99fcc6=""
-        class="sutochno-icon icon-app-finger-like-alt"
-        style="--b4d6d1cc: #f51449; --5b894a9e: 28px; --6e548142: white; --6dfd750d: 14px;"
-      ></span>
-    </div>
-    <div data-v-af99fcc6="" class="avg-rating__container">
-      <p data-v-af99fcc6="" class="avg-rating__text">
-        <span data-v-af99fcc6="" class="avg-rating__text-b">
-          1028 отзывов
-        </span>
-        <span data-v-af99fcc6=""> о проживании со средней оценкой </span>
-        <span data-v-af99fcc6="" class="avg-rating__text-b">
-          9,5
-        </span>
-        <span data-v-af99fcc6=""> из </span>
-        <span data-v-af99fcc6="" class="avg-rating__text-b">
-          10,0
-        </span>
-      </p>
-      <div data-v-af99fcc6="" class="reviews__rating loading_primary">
-        <div data-v-af99fcc6="" class="rating__calc">
-          <div data-v-af99fcc6="" class="calc__range">
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Чистота
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 90.8485%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,1
-                </div>
-              </div>
-            </div>
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Цена - качество
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 93.0509%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,3
-                </div>
-              </div>
-            </div>
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Качество обслуживания
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 93.78%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,4
-                </div>
-              </div>
-            </div>
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Расположение
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 94.9376%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,5
-                </div>
-              </div>
-            </div>
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Своевременность заселения
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 98.4901%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,8
-                </div>
-              </div>
-            </div>
-            <div data-v-af99fcc6="" class="range__item">
-              <div data-v-af99fcc6="" class="range__text">
-                Соответствие фото
-              </div>
-              <div data-v-af99fcc6="" class="range__line">
-                <div data-v-af99fcc6="" class="line">
-                  <div
-                    data-v-af99fcc6=""
-                    class="line_complete"
-                    style="width: 96.7782%; background-color: rgb(245, 20, 73);"
-                  ></div>
-                </div>
-                <div data-v-af99fcc6="" class="range__rating">
-                  9,7
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>; */
-}

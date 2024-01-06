@@ -28,9 +28,8 @@ import {
   useDisclosure,
   useMediaQuery,
 } from "@chakra-ui/react";
-import { ObjectCard, SimpleObjectCard } from "@entites/Object";
 
-import { SearchMap, useSearchMap } from "@entites/Map";
+import { useSearchMap } from "@entites/Map";
 
 import { CalendarIcon, SearchIcon } from "@chakra-ui/icons";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
@@ -57,71 +56,24 @@ import { BsGeoAlt } from "react-icons/bs";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import { ObjectSearchList } from "./ObjectSearchList";
+import { ObjectSearchMap } from "./ObjectSearchMap";
 export const ObjectSearchLayout = () => {
   const { headerHeight } = useHeader();
-
+  const [mapIsLoaded, setMapIsLoaded] = useState(false);
   const {
-    addMarkers,
     setUserGeolocation,
     setCenter,
     userGeolocation,
     setZoom,
+    mapInstance,
   } = useSearchMap();
 
-  const markers = [
-    {
-      longitude: 77.1757361557851,
-      latitude: 42.64472838750217,
-      price: 1000,
-    },
-    {
-      latitude: 42.645238409366385,
-      longitude: 77.17437800783786,
-      price: 2000,
-    },
-    {
-      latitude: 42.645017610523716,
-      longitude: 77.17292784537554,
-      price: 1450,
-    },
-
-    {
-      latitude: 42.658896258910474,
-      longitude: 77.1981040743652,
-      price: 1850,
-    },
-    {
-      latitude: 42.872791,
-      longitude: 74.597399,
-      price: 17080,
-    },
-    { latitude: 42.880191, longitude: 74.621265, price: 1200 },
-    { latitude: 42.880218, longitude: 74.620338, price: 1900 },
-    {
-      latitude: 41.413604,
-      longitude: 75.054927,
-      price: 1700,
-    },
-
-    { latitude: 42.517291, longitude: 72.239297, price: 6900 },
-    { latitude: 40.265527, longitude: 72.616967, price: 8150 },
-    { latitude: 39.466743, longitude: 75.984931, price: 7900 },
-    {
-      latitude: 42.117053,
-      longitude: 76.995835,
-      price: 2670,
-    },
-    {
-      latitude: 42.489932,
-      longitude: 78.392196,
-      price: 5600,
-    },
-    {
-      latitude: 42.642381,
-      longitude: 77.100584,
-      price: 1250,
-    },
-  ];
+  useEffect(() => {
+    if (mapInstance) {
+      setMapIsLoaded(true);
+    }
+  }, [mapInstance]);
 
   const {
     isOpen: mapIsOpen,
@@ -179,10 +131,6 @@ export const ObjectSearchLayout = () => {
       });
     }
   }, [calendarDates]);
-
-  useEffect(() => {
-    addMarkers(markers);
-  }, []);
 
   const findMe = () => {
     navigator.geolocation.watchPosition(
@@ -329,35 +277,14 @@ export const ObjectSearchLayout = () => {
           <GridItem area={"main"}>
             <VStack spacing={5} pb={4}>
               <Hide below="xl">
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
-                <ObjectCard />
+                <ObjectSearchList mapIsLoaded={mapIsLoaded} />
               </Hide>
 
               <Show below="xl">
                 <SimpleGrid columns={[1]} spacing={5}>
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
-                  <SimpleObjectCard />
+                  <ObjectSearchList isMobile mapIsLoaded={mapIsLoaded} />
                 </SimpleGrid>
               </Show>
-              <Pagination
-                defaultCurrent={5}
-                total={500}
-                paginationProps={{
-                  display: "flex",
-                }}
-                pageNeighbours={2}
-                colorScheme="red"
-              />
             </VStack>
           </GridItem>
           <GridItem
@@ -388,7 +315,7 @@ export const ObjectSearchLayout = () => {
                 </Button>
               </HStack>
 
-              <SearchMap onMove={mapOnOpen} />
+              <ObjectSearchMap mapIsLoaded={mapIsLoaded} />
             </Box>
           </GridItem>
         </Grid>
@@ -419,7 +346,7 @@ export const ObjectSearchLayout = () => {
             </Button>
           </HStack>
 
-          <SearchMap />
+          <ObjectSearchMap mapIsLoaded={mapIsLoaded} />
           <DraggbleDrawer
             header={
               <>
@@ -527,13 +454,7 @@ export const ObjectSearchLayout = () => {
                 spacing={5}
                 pt={5}
               >
-                <SimpleObjectCard />
-                <SimpleObjectCard />
-                <SimpleObjectCard />
-                <SimpleObjectCard />
-                <SimpleObjectCard />
-                <SimpleObjectCard />
-                <SimpleObjectCard />
+                <ObjectSearchList isMobile mapIsLoaded={mapIsLoaded} />
               </SimpleGrid>
               <HStack pt={3} justifyContent={"center"} w="full">
                 <Pagination

@@ -1,3 +1,4 @@
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import {
   Box,
   Button,
@@ -15,18 +16,29 @@ import {
   Gender,
   PhoneSchema,
   RegisterSchema,
+  UserErrorResponse,
+  useAuth,
   useAuthModal,
+  useUser,
 } from "@entites/User";
-import { useRegisterMutation } from "@entites/User/model/api/userApi";
+import {
+  useLoginMutation,
+  useRegisterMutation,
+} from "@entites/User/model/api/userApi";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { useForm, useFieldArray } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const userAuth = useAuth();
+  const { getMe } = useUser();
   const toast = useToast();
   const [userRegister, { isLoading }] = useRegisterMutation();
+  const [userLogin, { isLoading: loginIsLoading }] = useLoginMutation();
   const {
     handleSubmit,
     register,
@@ -64,13 +76,50 @@ const RegisterForm = () => {
     await userRegister({
       ...data,
       phoneNumbers: data.phoneNumbers?.map((phone) => ({
-        phoneNumber: phone.phoneNumber.replace(/ /g, ""),
+        ...phone,
         ...(phone.isMain && { isMain: true }),
         ...(!phone.isMain && { isMain: false }),
       })),
+      emaiIsVerified: false,
     })
       .unwrap()
-      .then(() => onClose())
+      .then(async () => {
+        if (data.phoneNumbers) {
+          await userLogin({
+            password: data.password,
+            phoneNumber: data.phoneNumbers.filter(({ isMain }) => isMain)[0]
+              .phoneNumber,
+          })
+            .unwrap()
+            .then((data) => {
+              userAuth.login(data);
+              getMe()
+                ?.unwrap()
+                .then(() => {
+                  onClose();
+                  navigate(RouteName.VERIFY_PAGE);
+                });
+            })
+            .catch((error: FetchBaseQueryError) => {
+              const data = error.data as UserErrorResponse;
+              toast({
+                isClosable: true,
+                duration: 3000,
+                position: "top-right",
+                render({ onClose }) {
+                  return (
+                    <ErrorAlert
+                      title="Ошибка авторизации"
+                      description={data.message}
+                      onClose={onClose}
+                    />
+                  );
+                },
+              });
+            });
+        }
+        onClose();
+      })
       .catch((error: FetchBaseQueryError) => {
         const data = error.data as string;
         toast({
@@ -144,14 +193,12 @@ const RegisterForm = () => {
               placeholder="Дата рождения"
             />
           </FormControl>
-          <FormControl isInvalid={!!errors.country?.message}>
+          <FormControl isInvalid={!!errors.countryId?.message}>
             <FormLabel>Страна</FormLabel>
-            <Input
-              placeholder="Укажите страну"
-              {...register("country")}
-              type={"text"}
-            />
-            <FormErrorMessage>{errors.country?.message}</FormErrorMessage>
+            <Select placeholder="Укажите страну" {...register("countryId")}>
+              <option value={1}>Кыргызстан</option>
+            </Select>
+            <FormErrorMessage>{errors.countryId?.message}</FormErrorMessage>
           </FormControl>
           <FormControl isInvalid={!!errors.languageID?.message}>
             <FormLabel>Язык</FormLabel>
@@ -209,7 +256,7 @@ const RegisterForm = () => {
             type="submit"
             w="full"
             colorScheme="red"
-            isLoading={isLoading}
+            isLoading={isLoading || loginIsLoading}
           >
             Зарегистрироваться
           </Button>

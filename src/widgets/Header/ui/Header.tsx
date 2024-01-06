@@ -21,7 +21,7 @@ import { Suspense, memo, useEffect, useState } from "react";
 import { ModalType } from "../model/types/HeaderTypes";
 
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
-import { useAuth, useAuthModal } from "@entites/User";
+import { useAuthModal, useUser } from "@entites/User";
 import { UserAccount } from "@entites/User/ui/UserAccount";
 import { CurrencySwitcher } from "@features/CurrencySwitcher";
 import { useInView } from "react-intersection-observer";
@@ -39,7 +39,8 @@ export const Header = memo(() => {
     },
   });
 
-  const { isLoggin } = useAuth();
+  const { currentUser } = useUser();
+
   const { isOpen, onClose, onOpen } = useAuthModal();
   const [modalType, setModalType] = useState<ModalType>(ModalType.LOGIN);
 
@@ -84,7 +85,7 @@ export const Header = memo(() => {
               </HStack>
             </Flex>
             <HStack spacing={4}>
-              {isLoggin && (
+              {currentUser && (
                 <HStack
                   spacing="2"
                   display={{
@@ -137,23 +138,26 @@ export const Header = memo(() => {
                 </HStack>
               )}
 
-              {!isLoggin && (
+              {!currentUser && (
                 <Button colorScheme="red" onClick={onOpen}>
                   Войти
                 </Button>
               )}
-              {isLoggin && (
+              {currentUser && (
                 <Box
                   display={{
                     base: "none",
                     md: "block",
                   }}
                 >
-                  <UserAccount />
+                  <UserAccount
+                    userName={`${currentUser.name} ${currentUser.surname}`}
+                    email={`${currentUser.email}`}
+                  />
                 </Box>
               )}
               <CurrencySwitcher />
-              {isLoggin && (
+              {currentUser && (
                 <Box
                   display={{
                     base: "block",

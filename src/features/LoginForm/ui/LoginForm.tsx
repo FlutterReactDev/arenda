@@ -17,6 +17,7 @@ import {
   UserErrorResponse,
   useAuth,
   useAuthModal,
+  useUser,
 } from "@entites/User";
 import { useLoginMutation } from "@entites/User/model/api/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -38,6 +39,7 @@ const LoginForm = () => {
     resolver: yupResolver(LoginSchema),
   });
   const userAuth = useAuth();
+  const { getMe } = useUser();
   const [login, { isLoading }] = useLoginMutation();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -47,18 +49,22 @@ const LoginForm = () => {
   const location = useLocation();
 
   const onSubmit = async (data: Yup.InferType<typeof LoginSchema>) => {
-    await login({ ...data, phoneNumber: data.phoneNumber.replace(/ /g, "") })
+    await login(data)
       .unwrap()
       .then((data) => {
         userAuth.login(data);
-        onClose();
-        if (location.state?.from) {
-          return navigate(location.state?.from, {
-            replace: true,
-          });
-        }
+        getMe()
+          ?.unwrap()
+          .then(() => {
+            onClose();
+            if (location.state?.from) {
+              return navigate(location.state?.from, {
+                replace: true,
+              });
+            }
 
-        navigate(RouteName.MAIN_PAGE);
+            navigate(RouteName.MAIN_PAGE);
+          });
       })
       .catch((error: FetchBaseQueryError) => {
         const data = error.data as UserErrorResponse;

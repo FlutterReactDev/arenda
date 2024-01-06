@@ -6,21 +6,15 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/dist/query";
 
-import { USER_TOKEN } from "@shared/constants/user";
 import { UserLoginData, userAction } from "@entites/User";
+import { USER_TOKEN } from "@shared/constants/user";
 import { Mutex } from "async-mutex";
 const mutex = new Mutex();
 const baseQuery = fetchBaseQuery({
   baseUrl: _BASE_API_URL_,
-
-  prepareHeaders(headers) {
-    const token = localStorage.getItem(USER_TOKEN.ACCESS_TOKEN);
-    if (token) {
-      headers.append("Authorization", `Bearer ${token}`);
-    }
-    return headers;
-  },
+  credentials: "include",
 });
+
 export const baseQueryWithReauth: BaseQueryFn<
   string | FetchArgs,
   unknown,
@@ -33,26 +27,26 @@ export const baseQueryWithReauth: BaseQueryFn<
     if (!mutex.isLocked()) {
       const release = await mutex.acquire();
       try {
-        const refreshResult = await baseQuery(
-          {
-            url: "/RefreshToken",
-            body: {
-              refreshToken: localStorage.getItem(USER_TOKEN.REFRESH_TOKEN),
+        if (localStorage.getItem(USER_TOKEN.REFRESH_TOKEN)) {
+          const refreshResult = await baseQuery(
+            {
+              url: "/RefreshToken",
+              body: {
+                refreshToken: localStorage.getItem(USER_TOKEN.REFRESH_TOKEN),
+              },
+              method: "POST",
             },
-            method: "POST",
-          },
-          api,
-          extraOptions
-        );
-
-        if (refreshResult.data) {
-          api.dispatch(
-            userAction.setAuthData(refreshResult.data as UserLoginData)
+            api,
+            extraOptions
           );
-          result = await baseQuery(args, api, extraOptions);
-        } else {
-          api.dispatch(userAction.logout());
-          api.dispatch(userAction.setIsLoggin(false));
+          if (refreshResult.data) {
+            api.dispatch(
+              userAction.setAuthData(refreshResult.data as UserLoginData)
+            );
+            result = await baseQuery(args, api, extraOptions);
+          } else {
+            api.dispatch(userAction.logout());
+          }
         }
       } finally {
         release();

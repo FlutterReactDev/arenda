@@ -38,7 +38,7 @@ export const ErrorAlert: FC<AlertProps> = (props) => {
         >
           <CloseIcon />
         </IconButton>
-        <Flex justifyContent="center" alignItems="center" w={20} bg="red.500">
+        <Flex justifyContent="center" alignItems="center" w={20} bg="red.500" p={4}>
           <Icon as={MdErrorOutline} color="white" boxSize={6} />
         </Flex>
 

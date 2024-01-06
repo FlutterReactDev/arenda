@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { Routing, ScrollToTop } from "./providers/RouterProvier";
+import { AboutMe } from "@entites/User/ui/AboutMe";
 
 export const App = () => {
   return (
@@ -28,8 +29,10 @@ export const App = () => {
           content="Поможем найти и забронировать жильё посуточно в Кыгызстане. Более 1 тысяч вариантов во всех популярных направлениях для путешествий: Бишкек, Наарын, Талас, Ош, Каракол"
         />
       </Helmet>
-      <ScrollToTop />
-      <Routing />
+      <AboutMe>
+        <ScrollToTop />
+        <Routing />
+      </AboutMe>
     </>
   );
 };

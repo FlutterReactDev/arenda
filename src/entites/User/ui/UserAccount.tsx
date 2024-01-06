@@ -12,15 +12,19 @@ import {
 
 import { useAuth } from "..";
 import { useLogoutMutation } from "../model/api/userApi";
-import { ChevronDownIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, SettingsIcon } from "@chakra-ui/icons";
 import { FC } from "react";
 import { Link } from "react-router-dom";
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
+import { BiHeart } from "react-icons/bi";
 interface UserAccountProps {
   onLogout?: () => void;
+  userName: string;
+  email: string;
 }
 export const UserAccount: FC<UserAccountProps> = (props) => {
-  const { onLogout } = props;
+  const { onLogout, userName, email } = props;
+
   const { logout } = useAuth();
   const [logoutApi, { isLoading }] = useLogoutMutation();
 
@@ -48,10 +52,10 @@ export const UserAccount: FC<UserAccountProps> = (props) => {
         >
           <Stack alignItems={"flex-start"} spacing={1}>
             <Text fontWeight={"medium"} lineHeight={"12px"}>
-              DEnchik
+              {userName}
             </Text>
             <Text fontSize={"sm"} color={"gray.500"}>
-              личный кабинет
+              {email}
             </Text>
           </Stack>
         </Button>
@@ -59,10 +63,15 @@ export const UserAccount: FC<UserAccountProps> = (props) => {
       <PopoverContent>
         <PopoverBody rounded={"xl"} mt={1} color="white" p={4}>
           <Stack>
-            <Button>Профиль</Button>
-            <Button>Редактировать профиль</Button>
-            <Button as={Link} to={RouteName.RESET_PAGE}>
-              Изменить пароль
+            <Button
+              as={Link}
+              to={RouteName.PROFILE_PAGE}
+              leftIcon={<SettingsIcon />}
+            >
+              Настройки
+            </Button>
+            <Button as={Link} leftIcon={<BiHeart />}>
+              Избраноое
             </Button>
             <Divider />
             <Button

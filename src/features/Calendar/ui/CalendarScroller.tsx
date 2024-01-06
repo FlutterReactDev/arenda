@@ -50,7 +50,7 @@ export const CalendarScroller = memo(() => {
           allDays[Math.floor((allDays.length * left) / 100)]
         )
       ),
-    50
+    100
   );
 
   const allMonyhs = eachMonthOfInterval({
@@ -149,7 +149,7 @@ export const CalendarScroller = memo(() => {
       }}
       position={"sticky"}
       bottom={0}
-      zIndex={9}
+      zIndex={8}
     >
       <a.div
         style={{

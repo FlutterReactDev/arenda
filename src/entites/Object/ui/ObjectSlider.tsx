@@ -1,16 +1,14 @@
-import { EffectCards, Pagination } from "swiper/modules";
-import { SwiperSlide, Swiper } from "swiper/react";
 import { Image } from "@chakra-ui/react";
+import { FC } from "react";
 import "swiper/css";
 import "swiper/css/effect-cards";
 import "swiper/css/pagination";
-import { FC } from "react";
+import { EffectCards, Navigation, Pagination } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Photo } from "../model/types/photos";
 
 interface ObjectSliderProps {
-  images: {
-    src: string;
-    id: number;
-  }[];
+  images: Photo[];
 }
 const ObjectSlider: FC<ObjectSliderProps> = (props) => {
   const { images } = props;
@@ -20,15 +18,17 @@ const ObjectSlider: FC<ObjectSliderProps> = (props) => {
       grabCursor={true}
       pagination={{
         clickable: true,
+        dynamicBullets: true,
       }}
-      modules={[EffectCards, Pagination]}
+      modules={[EffectCards, Pagination, Navigation]}
       className="mySwiper"
       style={{
         width: "100%",
         height: "100%",
       }}
+      navigation={true}
     >
-      {images.map((image) => {
+      {images?.map(({ id, preview_urls }) => {
         return (
           <SwiperSlide
             style={{
@@ -36,8 +36,14 @@ const ObjectSlider: FC<ObjectSliderProps> = (props) => {
               width: "100%",
               height: "100%",
             }}
+            key={id}
           >
-            <Image h="full" w="full" objectFit={"cover"} src={image.src} />
+            <Image
+              h="full"
+              w="full"
+              objectFit={"cover"}
+              src={preview_urls["656x340"]}
+            />
           </SwiperSlide>
         );
       })}

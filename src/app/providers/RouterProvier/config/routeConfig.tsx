@@ -1,10 +1,8 @@
 import { AddObjectPage } from "@pages/AddObjectPage";
 
 import { CalendarBookingPage } from "@pages/CalendarBookingPage";
-import { CalendarCashBoxPage } from "@pages/CalendarCashBoxPage";
 import { CalendarDetailPage } from "@pages/CalendarDetailPage";
 import { CalendarPage } from "@pages/CalendarPage";
-import { CalendarStatPage } from "@pages/CalendarStatPage";
 import { CreateHotelPage } from "@pages/CreateHotelPage";
 import { CreateObjectPage } from "@pages/CreateObjectPage";
 import { CreateRoomPage } from "@pages/CreateRoomPage";
@@ -17,6 +15,9 @@ import { LoginPage } from "@pages/LoginPage";
 import { MyObjectsPage } from "@pages/MyObjectsPage";
 import { NotFoundPage } from "@pages/NotFoundPage";
 import { ObjectDetailPage } from "@pages/ObjectDetailPage";
+import { ProfileEditPage } from "@pages/ProfileEditPage";
+import { ProfilePage } from "@pages/ProfilePage";
+import { ProfilePasswordPage } from "@pages/ProfilePasswordPage";
 import { RegisterPage } from "@pages/RegisterPage";
 import { ResetPage } from "@pages/ResetPage";
 import { SearchResultPage } from "@pages/SearchResultPage";
@@ -24,18 +25,23 @@ import { VerifyPage } from "@pages/VerifyPage";
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
 import { ObjectSecureRoute } from "../ui/ObjectSecureRoute";
+import { ResetPasswordPage } from "@pages/ResetPasswordPage";
 
 export enum RouteName {
   MAIN_PAGE = "/",
   SEARCH_PAGE = "/search-result",
   ADD_OBJECT = "/add-object",
-  DETAIL_PAGE = "/object-detail",
+  DETAIL_PAGE = "/:objectId/object-detail",
 
   LOGIN_PAGE = "/login",
   REGISTER_PAGE = "/register",
-  RESET_PAGE = "/reset",
+  RESET_PAGE = "/reset-password",
   FORGOT_PAGE = "/forgot",
   VERIFY_PAGE = "/verify",
+
+  PROFILE_PAGE = "/profile",
+  PROFILE_EDIT_PAGE = "/edit",
+  PROFILE_PASSWORD_PAGE = "/password",
 
   MY_OBJECTS = "/my-objects",
   CABINET = "/cabinet",
@@ -63,6 +69,7 @@ export interface Route {
   element: ReactNode;
   layout: boolean | "header" | "footer";
   children?: Route[];
+  requiredVerify: boolean;
 }
 
 export const routeConfig: Route[] = [
@@ -71,18 +78,21 @@ export const routeConfig: Route[] = [
     element: <HomePage />,
     private: false,
     layout: true,
+    requiredVerify: false,
   },
   {
     path: RouteName.SEARCH_PAGE,
     element: <SearchResultPage />,
     private: false,
     layout: "header",
+    requiredVerify: false,
   },
   {
     path: RouteName.ADD_OBJECT,
     element: <AddObjectPage />,
     private: true,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.CREATE_OBJECT,
@@ -91,8 +101,9 @@ export const routeConfig: Route[] = [
         <CreateObjectPage />
       </ObjectSecureRoute>
     ),
-    private: false,
+    private: true,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.CREATE_HOTEL,
@@ -101,69 +112,78 @@ export const routeConfig: Route[] = [
         <CreateHotelPage />
       </ObjectSecureRoute>
     ),
-    private: false,
+    private: true,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.EDIT_HOTEL,
     element: <EditHotelPage />,
     layout: true,
     private: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.CREATE_ROOM,
     element: <CreateRoomPage />,
-    private: false,
+    private: true,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.EDIT_ROOM,
     element: <EditRoomPage />,
     layout: true,
     private: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.EDIT_OBJECT,
     element: <EdtiObjectPage />,
     layout: true,
     private: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.CALENDAR_PAGE,
     element: <CalendarPage />,
-    private: false,
+    private: true,
     layout: "header",
+    requiredVerify: true,
     children: [
       {
         element: <Navigate to={RouteName.CALENDAR_BOOKING.replace("/", "")} />,
         layout: false,
-        private: false,
+        private: true,
         path: "",
+        requiredVerify: true,
       },
       {
         element: <CalendarBookingPage />,
         path: RouteName.CALENDAR_BOOKING.replace("/", ""),
         layout: false,
-        private: false,
+        private: true,
+        requiredVerify: true,
       },
       {
         path: RouteName.CALENDAR_BOOKING.replace("/", "") + "/:id",
         element: <CalendarDetailPage />,
-        private: false,
+        private: true,
         layout: false,
+        requiredVerify: true,
       },
-      {
-        element: <CalendarStatPage />,
-        path: RouteName.CALENDAR_STAT.replace("/", ""),
-        layout: false,
-        private: false,
-      },
-      {
-        element: <CalendarCashBoxPage />,
-        path: RouteName.CALENDAR_CASHBOX.replace("/", ""),
-        layout: false,
-        private: false,
-      },
+      // {
+      //   element: <CalendarStatPage />,
+      //   path: RouteName.CALENDAR_STAT.replace("/", ""),
+      //   layout: true,
+      //   private: false,
+      // },
+      // {
+      //   element: <CalendarCashBoxPage />,
+      //   path: RouteName.CALENDAR_CASHBOX.replace("/", ""),
+      //   layout: true,
+      //   private: false,
+      // },
     ],
   },
   {
@@ -171,36 +191,80 @@ export const routeConfig: Route[] = [
     layout: true,
     path: RouteName.MY_OBJECTS,
     private: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.LOGIN_PAGE,
     element: <LoginPage />,
     private: false,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.REGISTER_PAGE,
     element: <RegisterPage />,
     private: false,
     layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.RESET_PAGE,
     element: <ResetPage />,
     private: false,
     layout: true,
+    requiredVerify: true,
+  },
+  {
+    path: RouteName.RESET_PAGE + "/:token",
+    element: <ResetPasswordPage />,
+    private: false,
+    layout: true,
+    requiredVerify: true,
   },
   {
     path: RouteName.FORGOT_PAGE,
     element: <ForgotPage />,
     private: false,
     layout: true,
+    requiredVerify: true,
   },
+
   {
     path: RouteName.VERIFY_PAGE,
     element: <VerifyPage />,
     private: false,
     layout: true,
+    requiredVerify: true,
+  },
+  {
+    path: RouteName.PROFILE_PAGE,
+    element: <ProfilePage />,
+    layout: true,
+    private: true,
+    requiredVerify: false,
+    children: [
+      {
+        element: <Navigate to={RouteName.PROFILE_EDIT_PAGE.replace("/", "")} />,
+        layout: false,
+        private: true,
+        path: "",
+        requiredVerify: false,
+      },
+      {
+        element: <ProfileEditPage />,
+        layout: false,
+        private: true,
+        path: RouteName.PROFILE_EDIT_PAGE.replace("/", ""),
+        requiredVerify: false,
+      },
+      {
+        element: <ProfilePasswordPage />,
+        layout: false,
+        private: true,
+        path: RouteName.PROFILE_PASSWORD_PAGE.replace("/", ""),
+        requiredVerify: true,
+      },
+    ],
   },
   // {
   //   path: RouteName.SELECTION,
@@ -213,11 +277,13 @@ export const routeConfig: Route[] = [
     element: <ObjectDetailPage />,
     private: false,
     layout: true,
+    requiredVerify: false,
   },
   {
     path: "*",
     element: <NotFoundPage />,
     layout: true,
     private: false,
+    requiredVerify: false,
   },
 ];

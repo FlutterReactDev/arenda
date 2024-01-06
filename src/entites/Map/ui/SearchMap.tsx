@@ -3,40 +3,35 @@ import { HtmlMarker2GIS, Map2GIS } from "@shared/ui/2GIS";
 import { FC, PropsWithChildren, memo } from "react";
 
 import { Box } from "@chakra-ui/react";
+import { MarkerItem } from "../model/types";
 import { useSearchMap } from "../model/useSearchMap";
 import { ObjectMarker } from "./ObjectMarker";
 import { SearchMapInstance } from "./SearchMapInstance";
 
 interface SearchMapProps {
   onMove?: () => void;
+  markers: MarkerItem[];
 }
 
 export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
   (props) => {
-    const { onMove, children } = props;
-    const {
-      markers,
-      isHoveredMarker,
-      zoom,
-      center,
+    const { onMove, children, markers } = props;
+    console.log(markers);
 
-      userGeolocation,
-      mapInstance,
-      setBounds,
-    } = useSearchMap();
+    const { isHoveredMarker, userGeolocation, mapInstance, setBounds } =
+      useSearchMap();
 
     return (
       <Map2GIS
         initialMapOptions={{
-          center,
-          zoom,
           key: _2GIS_KEY_,
           scaleControl: true,
-          minZoom: 5,
           trafficControl: true,
           zoomControl: true,
           floorControl: true,
           lang: "ru",
+          center: [77.057089, 42.649861],
+          zoom: 10,
         }}
         onMousedown={() => {
           onMove && onMove();
@@ -51,19 +46,25 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
         {markers.map((marker) => {
           return (
             <HtmlMarker2GIS
-              coordinates={[marker.longitude, marker.latitude]}
+              coordinates={[...[marker.lon, marker.lat]]}
+              userData={{ ...marker }}
+              interactive={true}
+              key={marker.id}
               zIndex={
                 (isHoveredMarker({
-                  longitude: marker.longitude,
-                  latitude: marker.latitude,
+                  longitude: marker.lon,
+                  latitude: marker.lat,
                 }) &&
                   100) ||
                 undefined
               }
             >
               <ObjectMarker
-                coordinates={[marker.longitude, marker.latitude]}
-                text={marker.price}
+                {...marker}
+                isHovered={isHoveredMarker({
+                  longitude: marker.lon,
+                  latitude: marker.lat,
+                })}
               />
             </HtmlMarker2GIS>
           );
@@ -86,6 +87,7 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
             ></Box>
           </HtmlMarker2GIS>
         )}
+
         {children}
       </Map2GIS>
     );

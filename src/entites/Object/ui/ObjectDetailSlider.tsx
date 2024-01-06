@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -7,7 +7,12 @@ import "swiper/css/thumbs";
 import { FreeMode, Navigation, Thumbs } from "swiper/modules";
 import { Box, Image } from "@chakra-ui/react";
 import { Swiper as SwiperType } from "swiper/types";
-const ObjectDetailSlider = () => {
+import { Item } from "../model/types/photo";
+interface ObjectDetailSliderProps {
+  images: Item[];
+}
+const ObjectDetailSlider: FC<ObjectDetailSliderProps> = (props) => {
+  const { images } = props;
   const [thumbsSwiper, setThumbsSwiper] = useState<SwiperType>();
 
   return (
@@ -23,19 +28,22 @@ const ObjectDetailSlider = () => {
           borderRadius: "20px",
         }}
       >
-        <SwiperSlide
-          style={{
-            borderRadius: "20px",
-          }}
-        >
-          <Image
-            h={"96"}
-            src="https://swiperjs.com/demos/images/nature-1.jpg"
-            rounded={"20px"}
-            w="full"
-            objectFit={"cover"}
-          />
-        </SwiperSlide>
+        {images.map(({ id, url }) => (
+          <SwiperSlide
+            key={id}
+            style={{
+              borderRadius: "20px",
+            }}
+          >
+            <Image
+              h={"lg"}
+              src={url}
+              rounded={"20px"}
+              w="full"
+              objectFit={"cover"}
+            />
+          </SwiperSlide>
+        ))}
       </Swiper>
       <Box mt={2}>
         <Swiper
@@ -51,114 +59,22 @@ const ObjectDetailSlider = () => {
             console.log("change");
           }}
         >
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-1.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-2.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-3.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-1.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-2.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-3.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-1.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-2.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
-          <SwiperSlide
-            style={{
-              width: "auto",
-            }}
-          >
-            <Image
-              h={"60px"}
-              src="https://swiperjs.com/demos/images/nature-3.jpg"
-              rounded={"2xl"}
-              w={"100px"}
-            />
-          </SwiperSlide>
+          {images.map(({ id, url }) => (
+            <SwiperSlide
+              key={id}
+              style={{
+                width: "auto",
+              }}
+            >
+              <Image
+                h={"60px"}
+                src={url}
+                objectFit={"cover"}
+                rounded={"2xl"}
+                w={"100px"}
+              />
+            </SwiperSlide>
+          ))}
         </Swiper>
       </Box>
     </Box>

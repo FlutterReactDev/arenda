@@ -7,37 +7,23 @@ import {
   Heading,
   Icon,
   Stack,
-  Tag,
   Text,
 } from "@chakra-ui/react";
-import { Suspense, lazy, memo } from "react";
+import { getWordByNum } from "@shared/utils/getWordByNum";
+import { FC, Suspense, lazy, memo } from "react";
 import { FaHeart } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
 import { Link } from "react-router-dom";
+import { Item3 } from "../model/types/objectDetail";
+import { Photo } from "../model/types/photos";
+const Slider = lazy(() => import("./SimpleObjectSlider"));
+interface SimpleObjectCardProps extends Item3 {
+  images: Photo[];
+}
+export const SimpleObjectCard: FC<SimpleObjectCardProps> = memo((props) => {
+  const { reviews, images, id, name, address_name, purpose_name, context } =
+    props;
 
-export const SimpleObjectCard = memo(() => {
-  const Slider = lazy(() => import("./SimpleObjectSlider"));
-  const IMAGE =
-    "https://images.unsplash.com/photo-1518051870910-a46e30d9db16?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1350&q=80";
-
-  const images = [
-    {
-      src: "https://bit.ly/2Z4KKcF",
-      id: 1,
-    },
-    {
-      src: IMAGE,
-      id: 2,
-    },
-    {
-      src: "https://bit.ly/2Z4KKcF",
-      id: 3,
-    },
-    {
-      src: IMAGE,
-      id: 4,
-    },
-  ];
   return (
     <Stack
       role={"group"}
@@ -48,23 +34,12 @@ export const SimpleObjectCard = memo(() => {
       rounded={"lg"}
       pos={"relative"}
       as={Link}
-      to={"/object-detail"}
+      to={`/${id.split("_")[0]}/object-detail`}
       transition={"0.3s all"}
       _hover={{
         boxShadow: "xl",
       }}
     >
-      <HStack
-        position={"absolute"}
-        top={0}
-        left={"10px"}
-        transform={"translateY(-50%)"}
-        spacing={2}
-      >
-        <Tag bgColor={"red.600"} color="white" rounded="full">
-          ТОП-10
-        </Tag>
-      </HStack>
       <Box position={"relative"} h={"48"} w={"full"}>
         <Suspense
           fallback={
@@ -99,26 +74,25 @@ export const SimpleObjectCard = memo(() => {
       </Box>
       <Box>
         <Box fontWeight={"medium"} fontSize={"sm"}>
-          <Box as="span" color={"gray.500"} mr={2}>
-            3{" "}
-            <sup>
-              <StarIcon />
-            </sup>
-          </Box>
           <Box as="span" color={"gray.500"}>
-            Апарт-отель {`"`}Хороший отель{`"`}
+            {purpose_name}
           </Box>
         </Box>
         <Heading size={"sm"} fontWeight={"medium"}>
-          Уютный дом с площадкой для барбекю
+          {name}
         </Heading>
         <Box>
           <Text color={"gray.500"} fontSize={"sm"} fontWeight={"medium"}>
-            Бостери, Казак Тукуму, 75а/10
+            {address_name}
           </Text>
         </Box>
         <Box color="gray.500" fontWeight={"medium"} fontSize={"sm"} mt={1}>
-          2 гостя &bull; 2 кровати &bull; 1 спальня &bull; 30 м<sup>2</sup>
+          {context?.stop_factors?.map(({ name }, idx, arr) => {
+            if (arr.length - 1 != idx) {
+              return <>{name} &bull; </>;
+            }
+            return <>{name}</>;
+          })}
         </Box>
       </Box>
       <HStack justifyContent={"space-between"}>
@@ -135,9 +109,14 @@ export const SimpleObjectCard = memo(() => {
         <HStack spacing={1}>
           <StarIcon color={"red.500"} />
           <Text fontWeight={"medium"}>
-            9,5{" "}
+            {reviews.general_rating}{" "}
             <Box as="span" color={"gray.500"} fontWeight={"normal"}>
-              (267)
+              {reviews.general_review_count}{" "}
+              {getWordByNum(reviews.general_review_count, [
+                "отзыв",
+                "отзыва",
+                "отзывов",
+              ])}
             </Box>
           </Text>
         </HStack>

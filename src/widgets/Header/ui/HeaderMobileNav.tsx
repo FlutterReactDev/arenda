@@ -12,6 +12,7 @@ import {
   Stack,
   useDisclosure,
 } from "@chakra-ui/react";
+import { useUser } from "@entites/User";
 import { UserAccount } from "@entites/User/ui/UserAccount";
 import { BsPlusLg } from "react-icons/bs";
 import { IoMdMenu } from "react-icons/io";
@@ -20,6 +21,7 @@ import { Link as RouterLink, useLocation } from "react-router-dom";
 export const HeaderMobileNav = () => {
   const { pathname } = useLocation();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const { currentUser } = useUser();
   return (
     <>
       <IconButton
@@ -36,7 +38,10 @@ export const HeaderMobileNav = () => {
 
             <DrawerBody p="0">
               <Stack spacing={4} alignItems={"flex-start"}>
-                <UserAccount onLogout={onClose} />
+                <UserAccount
+                  userName={`${currentUser?.name} ${currentUser?.surname}`}
+                  onLogout={onClose}
+                />
                 <Button
                   bg={"white"}
                   color="gray.500"

@@ -7,9 +7,8 @@ import {
   HStack,
   Hide,
   IconButton,
-  Select,
   Stack,
-  useMediaQuery,
+  useMediaQuery
 } from "@chakra-ui/react";
 
 import { calendarActions } from "..";
@@ -27,6 +26,7 @@ import { Day } from "./Day";
 import { ActionTop } from "./ActionTop";
 import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 import { CalendarScroller } from "./CalendarScroller";
+import { ChangeObjectRoom } from "./ChangeObjectRoom";
 import { ModalDeleteAvailibility } from "./ModalDeleteAvailibility";
 import { ObjectItem } from "./ObjectItem";
 import { SearchAvailibilityRoomsBtn } from "./SearchAvailibilityRoomsBtn";
@@ -94,9 +94,7 @@ export const Calendar = memo(() => {
       >
         <GridItem area={"filter"}>
           <Stack alignItems={"center"} h="full" spacing={3}>
-            <Select bgColor={"white"}>
-              <option>Дом, коттедж</option>
-            </Select>
+            <ChangeObjectRoom />
             <Hide breakpoint="(max-width: 968px)">
               <SearchAvailibilityRoomsBtn />
               <SearchObject />

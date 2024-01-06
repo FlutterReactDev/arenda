@@ -5,11 +5,9 @@ import { FC } from "react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { Photo } from "../model/types/photos";
 interface SimpleObjectSliderProps {
-  images: {
-    src: string;
-    id: number;
-  }[];
+  images: Photo[];
 }
 const SimpleObjectSlider: FC<SimpleObjectSliderProps> = (props) => {
   const { images } = props;
@@ -37,7 +35,7 @@ const SimpleObjectSlider: FC<SimpleObjectSliderProps> = (props) => {
       }}
       navigation={true}
     >
-      {images.map((image) => {
+      {images?.map(({ preview_urls, id }) => {
         return (
           <SwiperSlide
             style={{
@@ -45,8 +43,14 @@ const SimpleObjectSlider: FC<SimpleObjectSliderProps> = (props) => {
               height: "100%",
               width: "100%",
             }}
+            key={id}
           >
-            <Image h={"full"} w={"full"} objectFit={"cover"} src={image.src} />
+            <Image
+              h={"full"}
+              w={"full"}
+              objectFit={"cover"}
+              src={preview_urls["328x170"]}
+            />
           </SwiperSlide>
         );
       })}

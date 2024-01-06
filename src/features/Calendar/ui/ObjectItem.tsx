@@ -37,6 +37,7 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
     address,
     name,
     setRangeObjectId,
+    currency,
   } = props;
   const dispatch = useAppDispatch();
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
@@ -280,6 +281,7 @@ export const ObjectItem: FC<ObjectItemProps> = memo((props) => {
                     ?.cost || objectDefaultPerDayCost
                 }
                 key={index}
+                currency={currency}
               />
             );
           })}

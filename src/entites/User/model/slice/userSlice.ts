@@ -13,10 +13,10 @@ const initialState = {
   userAuthModal: {
     isOpen: false,
   },
-  isLoggin: false,
   userCurrency:
     JSON.parse(localStorage.getItem(USER_CURRENCY) as string) ||
     defaultCurrency,
+  isLoaded: false,
 } as UserState;
 
 const userSlice = createSlice({
@@ -25,15 +25,15 @@ const userSlice = createSlice({
   reducers: {
     setAuthData(state, action: PayloadAction<UserLoginData>) {
       state.userAuthData = action.payload;
-      localStorage.setItem(USER_TOKEN.ACCESS_TOKEN, action.payload.accessToken);
-      localStorage.setItem(
-        USER_TOKEN.REFRESH_TOKEN,
-        action.payload.refreshToken.tokenString
-      );
     },
+    setUserData(state, action) {
+      state.userData = action.payload;
+      state.isLoaded = true;
+    },
+
     logout(state) {
       state.userAuthData = undefined;
-      localStorage.removeItem(USER_TOKEN.ACCESS_TOKEN);
+      state.userData = undefined;
       localStorage.removeItem(USER_TOKEN.REFRESH_TOKEN);
     },
 
@@ -43,10 +43,6 @@ const userSlice = createSlice({
 
     setOnClose(state) {
       state.userAuthModal.isOpen = false;
-    },
-
-    setIsLoggin(state, action) {
-      state.isLoggin = action.payload;
     },
 
     setCurrency(state, action) {

@@ -759,21 +759,34 @@ export const CreateObject = () => {
           },
         ]}
       />
-      {createRoomIsLoading ||
-        (createObjectIsLoading && (
-          <Box
-            pos={"fixed"}
-            top={0}
-            left={0}
-            right={0}
-            bottom={0}
-            bgColor={"blackAlpha.500"}
-          >
-            <Center w="full" h="full">
-              <PageLoader />
-            </Center>
-          </Box>
-        ))}
+      {createRoomIsLoading && (
+        <Box
+          pos={"fixed"}    
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bgColor={"blackAlpha.500"}
+        >
+          <Center w="full" h="full">
+            <PageLoader />
+          </Center>
+        </Box>
+      )}
+      {createObjectIsLoading && (
+        <Box
+          pos={"fixed"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+          bgColor={"blackAlpha.500"}
+        >
+          <Center w="full" h="full">
+            <PageLoader />
+          </Center>
+        </Box>
+      )}
     </>
   );
 };

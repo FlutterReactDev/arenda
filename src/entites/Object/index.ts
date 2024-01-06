@@ -1,5 +1,6 @@
 export { ObjectSelectList } from "./ui/ObjectSelectList";
 export { ObjectCard } from "./ui/ObjectCard";
+
 export { ObjectDetailCard } from "./ui/ObjectDetailCard";
 export { SimpleObjectCard } from "./ui/SimpleObjectCard";
 export { AddressForm } from "./ui/Forms/AddressForm";
@@ -40,10 +41,19 @@ export {
   useDeleteObjectMutation,
   useGetRoomByIdQuery,
   useEditRoomMutation,
+  useGetObjectImageQuery,
+  useGet2GISObjectInfoQuery,
+  useGetObjectProductQuery,
+  useGet2GISObjectsInfoQuery,
+  useGetObjectsImagesQuery,
+  useGetObjectRoomsQuery,
+  useGetObjectsWithRoomsQuery,
 } from "./model/api/objectApi";
 export { SelectionObjectSlider } from "./ui/SelectionObjectSlider";
 export { useCreateObject } from "./model/useCreateObject";
 export { useCreateRoom } from "./model/useCreateRoom";
+export type { Album, Item, ObjectPhoto } from "./model/types/photo";
+export type { Meta, ObjectProduct, Result } from "./model/types/objectProduct";
 export type {
   AdditionalServices,
   AddressData,
@@ -81,3 +91,9 @@ export type {
   AnObjectMealResponse,
   ObjectResponse,
 } from "./model/types/object";
+export type { ObjectDetail } from "./model/types/objectDetail";
+export { ContactTypes } from "./model/types/objectDetail";
+import ObjectSlider from "./ui/ObjectSlider";
+export { ObjectSlider };
+
+export { ObjectDetailApi, ObjectPhotoApi, ObjectProductApi } from "./ui/API";

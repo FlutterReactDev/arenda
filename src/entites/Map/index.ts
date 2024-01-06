@@ -5,4 +5,11 @@ export { searchMapActions, searchMapReducer } from "./model/searchMapSlice";
 export { selectMapActions, selectMapReducer } from "./model/selectMapSlice";
 export { useSearchMap } from "./model/useSearchMap";
 export { useSelectMap } from "./model/useSelectMap";
-export { getBoundsOfCoords,distance } from "./model/utils";
+export { getBoundsOfCoords, distance } from "./model/utils";
+
+export {
+  useGetCoordinateByAddressQuery,
+  useGetMarkersQuery,
+  useGetObjectByCoordinatesQuery,
+  useGetRegionByAddressQuery,
+} from "./model/api";

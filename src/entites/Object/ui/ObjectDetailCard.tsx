@@ -1,31 +1,26 @@
-import { QuestionOutlineIcon, StarIcon } from "@chakra-ui/icons";
+import { QuestionOutlineIcon } from "@chakra-ui/icons";
 import {
-  Box,
-  Heading,
-  HStack,
-  Button,
-  Text,
-  Center,
-  CircularProgress,
-  Tag,
-  TagLabel,
-  Collapse,
-  useDisclosure,
-  Stack,
-  List,
-  ListItem,
-  ListIcon,
   Alert,
+  Box,
+  Button,
+  Collapse,
+  HStack,
+  Heading,
+  List,
+  ListIcon,
+  ListItem,
+  Stack,
+  Text,
   Tooltip,
-  Progress,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { Suspense, lazy } from "react";
-import { ObjectDetailInfoCard } from "./ObjectDetailInfoCard";
-import { CommentItem, CommentOwner } from "@entites/Comments";
+
+import { ImageLoader } from "@features/ImageLoader";
+import { ReviewLoader } from "@features/ReviewLoader";
 import { Map2GIS } from "@shared/ui/2GIS";
 import { Marker2GIS } from "@shared/ui/2GIS/Marker2GIS";
+import { ObjectDetailInfoCard } from "./ObjectDetailInfoCard";
 
-const Slider = lazy(() => import("./ObjectDetailSlider"));
 export const ObjectDetailCard = () => {
   const { isOpen: descriptionTextIsOpen, onToggle: descriptionTextOnToggle } =
     useDisclosure();
@@ -37,35 +32,14 @@ export const ObjectDetailCard = () => {
         Просторные апартаменты Веста на Спасском переулке
       </Heading>
       <HStack spacing={4} mt={2}>
-        <HStack fontSize={"md"} cursor={"pointer"}>
-          <HStack spacing={1}>
-            <StarIcon color={"red.500"} />
-            <Text fontSize={"14px"} fontWeight={"medium"}>
-              9,5
-            </Text>
-          </HStack>
-          <Text fontSize={"14px"} color={"gray.500"} fontWeight={"medium"}>
-            1028 отзывов
-          </Text>
-        </HStack>
         <Text color={"gray.500"} fontSize={"14px"} fontWeight={"medium"}>
           Бостери, Казак Тукуму, 75а/10
         </Text>
         <Button variant={"link"} colorScheme="red">
-          Показать на карте
+          Показать расположение 2GIS
         </Button>
       </HStack>
-      <Box mt={4} w={"100%"}>
-        <Suspense
-          fallback={
-            <Center>
-              <CircularProgress isIndeterminate color="red.600" />
-            </Center>
-          }
-        >
-          <Slider />
-        </Suspense>
-      </Box>
+      <ImageLoader id="70000001027831704" />
       <Stack mt={5} spacing={5}>
         <ObjectDetailInfoCard
           title={
@@ -79,9 +53,6 @@ export const ObjectDetailCard = () => {
             &bull; этаж 3 из 4.
           </Box>
 
-          <Tag borderRadius="full" variant="solid" colorScheme="blue" mt={2}>
-            <TagLabel>Гости рекомендуют</TagLabel>
-          </Tag>
           <Text mt={2}>
             <Collapse
               in={descriptionTextIsOpen}
@@ -132,6 +103,7 @@ export const ObjectDetailCard = () => {
           </Text>
           <Text>3 двуспальных кровати</Text>
         </ObjectDetailInfoCard>
+        <ReviewLoader id="70000001027831704" />
         <ObjectDetailInfoCard title={"Правила объекта размещения"}>
           <HStack justifyContent={"space-between"}>
             <HStack w="full" maxW={"96"} justifyContent={"space-between"}>
@@ -291,90 +263,6 @@ export const ObjectDetailCard = () => {
             {facilitiesIsOpen && "Скрыть все удобства"}
           </Button>
         </ObjectDetailInfoCard>
-        <ObjectDetailInfoCard
-          title={
-            <HStack alignItems={"center"} spacing={12}>
-              <Text>Оценка гостей</Text>
-              <HStack fontSize={"xl"} cursor={"pointer"}>
-                <HStack spacing={1}>
-                  <StarIcon color={"red.500"} />
-                  <Text fontWeight={"medium"}>9,5</Text>
-                </HStack>
-                <Text
-                  mt={1}
-                  color={"gray.500"}
-                  fontSize={"sm"}
-                  fontWeight={"medium"}
-                >
-                  37 отзывов
-                </Text>
-              </HStack>
-            </HStack>
-          }
-        >
-          <HStack mt={4} flexWrap={"wrap"}>
-            <HStack w="calc(50% - 0.5rem)" spacing={0}>
-              <Text maxW="50%" w="50%">
-                Цена - качество
-              </Text>
-              <HStack maxW="50%" w="50%" spacing={4}>
-                <Progress
-                  value={93}
-                  size="xs"
-                  colorScheme="red"
-                  rounded={"full"}
-                  w={"full"}
-                  h={2}
-                />
-                <Text>9,3</Text>
-              </HStack>
-            </HStack>
-            <HStack w="calc(50% - 0.5rem)" spacing={0}>
-              <Text maxW="50%" w="50%">
-                Цена - качество
-              </Text>
-              <HStack maxW="50%" w="50%" spacing={4}>
-                <Progress
-                  value={93}
-                  size="xs"
-                  colorScheme="red"
-                  rounded={"full"}
-                  w={"full"}
-                  h={2}
-                />
-                <Text>9,3</Text>
-              </HStack>
-            </HStack>
-            <HStack w="calc(50% - 0.5rem)" spacing={0}>
-              <Text maxW="50%" w="50%">
-                Цена - качество
-              </Text>
-              <HStack maxW="50%" w="50%" spacing={4}>
-                <Progress
-                  value={93}
-                  size="xs"
-                  colorScheme="red"
-                  rounded={"full"}
-                  w={"full"}
-                  h={2}
-                />
-                <Text>9,3</Text>
-              </HStack>
-            </HStack>
-          </HStack>
-          <Stack spacing={4} mt={20}>
-            <CommentItem>
-              <CommentOwner />
-            </CommentItem>
-            <CommentItem>
-              <CommentOwner />
-            </CommentItem>
-            <CommentItem>
-              <CommentOwner />
-            </CommentItem>
-            <Button variant={"outline"}>Показать еще 5</Button>
-          </Stack>
-        </ObjectDetailInfoCard>
         <ObjectDetailInfoCard title={"Бостери, Казак Тукуму, 75а/10"}>
           <Box h={"96"}>
             <Map2GIS
@@ -385,6 +273,11 @@ export const ObjectDetailCard = () => {
 
                 scaleControl: true,
                 minZoom: 5,
+              }}
+              onClick={(e) => {
+                if (e.target?.id) {
+                  window.location.href = `https://2gis.kg/bishkek/geo/${e.target.id}`;
+                }
               }}
             >
               <Marker2GIS coordinates={[77.1757361557851, 42.64472838750217]} />

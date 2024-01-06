@@ -1,5 +1,5 @@
 import { Box, HStack, IconButton, Stack } from "@chakra-ui/react";
-import { CommentItem, CommentOwner } from "@entites/Comments";
+import { CommentItem } from "@entites/Comments";
 import { useSpring, a, config } from "@react-spring/web";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
@@ -177,15 +177,9 @@ export const DragObjectReviews = () => {
             e.stopPropagation();
           }}
         >
-          <CommentItem>
-            <CommentOwner />
-          </CommentItem>
-          <CommentItem>
-            <CommentOwner />
-          </CommentItem>
-          <CommentItem>
-            <CommentOwner />
-          </CommentItem>
+          <CommentItem></CommentItem>
+          <CommentItem></CommentItem>
+          <CommentItem></CommentItem>
         </Stack>
       </a.div>
       {commentIsOpen && (

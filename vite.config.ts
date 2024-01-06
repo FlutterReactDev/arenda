@@ -4,7 +4,7 @@ import path from "path";
 import { VitePWA, VitePWAOptions } from "vite-plugin-pwa";
 const manifestForPlugIn: Partial<VitePWAOptions> = {
   registerType: "prompt",
-  includeAssets: ["favicon.ico", "apple-touc-icon.png", "masked-icon.svg"],
+  includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.svg"],
   manifest: {
     name: "Turak.kg",
     short_name: "turak.kg",
@@ -52,8 +52,20 @@ export default defineConfig({
     _2GIS_KEY_: JSON.stringify("10153539-2026-4a0c-b7a3-52ddb3fed411"),
     _2GIS_API_URL_: JSON.stringify("https://catalog.api.2gis.com/3.0"),
     _2GIS_VALID_KEY_: JSON.stringify("demo"),
-    _MOCK_API_URL_: JSON.stringify("http://192.168.0.109:8000"),
+
+    _2GIS_REVIEW_API_URL_: JSON.stringify(
+      `https://public-api.reviews.2gis.com/2.0`
+    ),
+    _2GIS_REVIEW_KEY_: JSON.stringify("37c04fe6-a560-4549-b459-02309cf643ad"),
+
+    _2GIS_PHOTO_3V_API_: JSON.stringify("https://api.photo.2gis.com/3.0"),
+    _2GIS_PHOTO_2V_API_: JSON.stringify("https://api.photo.2gis.com/2.0"),
+    _2GIS_PHOTO_KEY_: JSON.stringify("gYu1s9N1wP"),
+    _2GIS_PRODUCT_API_: JSON.stringify(
+      " https://market-backend.api.2gis.ru/5.0/product"
+    ),
   },
+
   resolve: {
     alias: {
       "@app": path.resolve(__dirname, "src/app"),

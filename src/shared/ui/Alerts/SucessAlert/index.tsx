@@ -14,7 +14,6 @@ export const SucessAlert: FC<AlertProps> = (props) => {
       shadow="md"
       alignItems="center"
       justifyContent="center"
-     
     >
       <Flex
         maxW="sm"
@@ -39,7 +38,13 @@ export const SucessAlert: FC<AlertProps> = (props) => {
         >
           <CloseIcon />
         </IconButton>
-        <Flex justifyContent="center" alignItems="center" w={12} bg="green.500">
+        <Flex
+          justifyContent="center"
+          alignItems="center"
+          w={12}
+          bg="green.500"
+          p={4}
+        >
           <Icon as={IoMdCheckmarkCircle} color="white" boxSize={6} />
         </Flex>
 

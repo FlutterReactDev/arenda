@@ -1,11 +1,9 @@
 import {
   Box,
-  Button,
   FormControl,
   FormErrorMessage,
   FormHelperText,
   FormLabel,
-  HStack,
   Input,
   InputGroup,
   InputRightElement,
@@ -41,13 +39,13 @@ const RoomOptionalServiceForm: FC<FormProps & RoomOptionalServiceFormProps> = (
   props
 ) => {
   const {
-    onPrev,
     onNext,
     onChange,
     value,
     cleaningFeeTypes,
     currencies,
     currentCurrencyId,
+    navigation,
   } = props;
 
   const {
@@ -128,14 +126,7 @@ const RoomOptionalServiceForm: FC<FormProps & RoomOptionalServiceFormProps> = (
           </FormControl>
         </FormCard>
 
-        <HStack p={3} w="full" rounded={"lg"} bgColor={"white"}>
-          <Button onClick={onPrev} w="30%">
-            Назад
-          </Button>
-          <Button colorScheme="red" w="70%" type="submit">
-            Создать комнату
-          </Button>
-        </HStack>
+        {navigation}
       </FormContainer>
     </Box>
   );

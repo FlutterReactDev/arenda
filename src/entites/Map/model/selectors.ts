@@ -19,3 +19,5 @@ export const getFitBounds = (state: RootState) => state.searchMap.fitBounds;
 export const getUserGeolocation = (state: RootState) =>
   state.searchMap.userGeolocation;
 export const getMapInstance = (state: RootState) => state.searchMap.mapInstance;
+
+export const getMapGLBundle = (state: RootState) => state.searchMap.mapGLBundle;

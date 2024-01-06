@@ -127,6 +127,7 @@ const Map2GISComponent: FC<Map2GISProps> = (props) => {
       containerRef.current,
       initialMapOptionsRef.current
     );
+
     setMapInstance(instance);
 
     if (typeof onMountRef.current === "function") {

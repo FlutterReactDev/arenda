@@ -1,22 +1,18 @@
 import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
-import { Box, Center, Portal } from "@chakra-ui/react";
+import { Box, Button, Center, HStack, Portal } from "@chakra-ui/react";
 import {
   useGetBedTypesQuery,
   useGetCleaningFeeTypesQuery,
   useGetCurrenciesQuery,
-  useGetFromBookingToCheckInQuery,
-  useGetInstantBookingValidQuery,
-  useGetRoomCategoriesQuery,
   useGetFloorTypeQuery,
+  useGetRoomCategoriesQuery,
   useGetRoomTypeNamesQuery,
 } from "@entites/CommonReference";
 import {
-  BookingSettingForm,
   CalendarInfoForm,
   CheckInCheckOutForm,
   FacilitiesForm,
   GeneralRoomInformationForm,
-  HowGuestBookForm,
   ImageUploadForm,
   PostingRulesForm,
   PriceForm,
@@ -57,17 +53,17 @@ export const CreateRoom = () => {
     isLoading: roomCategoriesIsLoading,
     isSuccess: roomCategoriesIsSuccess,
   } = useGetRoomCategoriesQuery("");
-  const {
-    data: fromBookingToCheckInOptions,
-    isLoading: fromBookingToCheckInIsLoading,
-    isSuccess: fromBookingToCheckInIsSuccess,
-  } = useGetFromBookingToCheckInQuery("");
+  // const {
+  //   data: fromBookingToCheckInOptions,
+  //   isLoading: fromBookingToCheckInIsLoading,
+  //   isSuccess: fromBookingToCheckInIsSuccess,
+  // } = useGetFromBookingToCheckInQuery("");
 
-  const {
-    data: instantBookingValid,
-    isSuccess: instantBookingValidIsSuccess,
-    isLoading: instantBookingValidIsLoading,
-  } = useGetInstantBookingValidQuery("");
+  // const {
+  //   data: instantBookingValid,
+  //   isSuccess: instantBookingValidIsSuccess,
+  //   isLoading: instantBookingValidIsLoading,
+  // } = useGetInstantBookingValidQuery("");
 
   const {
     data: roomNameTypes,
@@ -409,54 +405,54 @@ export const CreateRoom = () => {
                   );
                 },
               },
-              {
-                id: "HowGuestBookForm",
-                render(props) {
-                  return (
-                    <Suspense fallback={<PageLoader />}>
-                      <HowGuestBookForm
-                        value={{
-                          bookingType: "bookInstantly",
-                        }}
-                        onChange={() => {}}
-                        {...props}
-                      />
-                    </Suspense>
-                  );
-                },
-              },
-              {
-                id: "BookingSettingForm",
-                render(props) {
-                  const {
-                    prepaymentPercent,
-                    instantBookingStart,
-                    fromBookingToCheckIn,
-                  } = anObjectRoomBookingSettings;
-                  return (
-                    <>
-                      {fromBookingToCheckInIsSuccess &&
-                        instantBookingValidIsSuccess && (
-                          <Suspense fallback={<PageLoader />}>
-                            <BookingSettingForm
-                              value={{
-                                prepaymentPercent,
-                                instantBookingStart,
-                                fromBookingToCheckIn,
-                              }}
-                              fromBookingToCheckIn={fromBookingToCheckInOptions}
-                              instantBookingValid={instantBookingValid}
-                              onChange={setAnObjectRoomBookingSettings}
-                              {...props}
-                            />
-                          </Suspense>
-                        )}
-                      {fromBookingToCheckInIsLoading &&
-                        instantBookingValidIsLoading && <PageLoader />}
-                    </>
-                  );
-                },
-              },
+              // {
+              //   id: "HowGuestBookForm",
+              //   render(props) {
+              //     return (
+              //       <Suspense fallback={<PageLoader />}>
+              //         <HowGuestBookForm
+              //           value={{
+              //             bookingType: "bookInstantly",
+              //           }}
+              //           onChange={() => {}}
+              //           {...props}
+              //         />
+              //       </Suspense>
+              //     );
+              //   },
+              // },
+              // {
+              //   id: "BookingSettingForm",
+              //   render(props) {
+              //     const {
+              //       prepaymentPercent,
+              //       instantBookingStart,
+              //       fromBookingToCheckIn,
+              //     } = anObjectRoomBookingSettings;
+              //     return (
+              //       <>
+              //         {fromBookingToCheckInIsSuccess &&
+              //           instantBookingValidIsSuccess && (
+              //             <Suspense fallback={<PageLoader />}>
+              //               <BookingSettingForm
+              //                 value={{
+              //                   prepaymentPercent,
+              //                   instantBookingStart,
+              //                   fromBookingToCheckIn,
+              //                 }}
+              //                 fromBookingToCheckIn={fromBookingToCheckInOptions}
+              //                 instantBookingValid={instantBookingValid}
+              //                 onChange={setAnObjectRoomBookingSettings}
+              //                 {...props}
+              //               />
+              //             </Suspense>
+              //           )}
+              //         {fromBookingToCheckInIsLoading &&
+              //           instantBookingValidIsLoading && <PageLoader />}
+              //       </>
+              //     );
+              //   },
+              // },
               {
                 id: "CalendarInfoForm",
                 render(props) {
@@ -524,6 +520,7 @@ export const CreateRoom = () => {
                                 amount: cleaningAmount,
                                 cleaningFeeType: cleaningFeeType,
                               });
+
                               setAnObjectRoomInsuranceDeposit({
                                 amount: depositAmount,
                               });
@@ -585,6 +582,21 @@ export const CreateRoom = () => {
                             }}
                             cleaningFeeTypes={cleaningFeeTypes}
                             {...props}
+                            navigation={
+                              <HStack
+                                p={3}
+                                w="full"
+                                rounded={"lg"}
+                                bgColor={"white"}
+                              >
+                                <Button onClick={props.onPrev} w="30%">
+                                  Назад
+                                </Button>
+                                <Button colorScheme="red" w="70%" type="submit">
+                                  Создать комнату
+                                </Button>
+                              </HStack>
+                            }
                           />
                         </Suspense>
                       )}

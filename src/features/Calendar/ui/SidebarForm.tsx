@@ -49,7 +49,14 @@ import {
 import { ru } from "date-fns/locale";
 
 import { PhoneInput } from "@entites/Phone";
+import {
+  useCreateAvailabilityMutation,
+  useEditAvailabilityMutation,
+} from "@entites/RoomCalendar";
 import { yupResolver } from "@hookform/resolvers/yup";
+import {
+  getRelativeCurrencySymbol
+} from "@shared/utils/getCurrencySymbol";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import {
@@ -81,6 +88,8 @@ import { isOverlaping } from "../utils/isOverlaping";
 import { toDay } from "../utils/toDay";
 
 export const SidebarForm = memo(() => {
+  const [createAvailability] = useCreateAvailabilityMutation();
+  const [editAvailability] = useEditAvailabilityMutation();
   const dispatch = useAppDispatch();
   const availabilityIdx = useId();
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
@@ -260,26 +269,42 @@ export const SidebarForm = memo(() => {
 
     if (isCanSelect.length == 0) {
       objectId != undefined &&
-        dispatch(
-          calendarActions.createAvailability({
-            id,
-            minDate: setHours(minDate, convertToHour(checkIn) || 0),
-            maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
-            objectId,
+        createAvailability({
+          roomId: objectId,
+          availability: {
+            id: 0,
+            anObjectRoomId: objectId,
             comment,
-            color,
             createdDate: new Date(),
-            totalSum: selectedDatesForCost.reduce(
-              (acc, cur) => acc + cur.cost,
-              0
-            ),
-            phoneNumber: phoneNumber || "",
-            clientFullname: clientFullname || "",
-          })
-        );
-      reset();
-      onClose();
-      dispatch(calendarActions.setClearRange());
+            startDate: minDate,
+            endDate: maxDate,
+            guestPhone: phoneNumber || "",
+            gusetName: clientFullname || "",
+          },
+        })
+          .unwrap()
+          .then(() => {
+            dispatch(
+              calendarActions.createAvailability({
+                id,
+                minDate: setHours(minDate, convertToHour(checkIn) || 0),
+                maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
+                objectId,
+                comment,
+                color,
+                createdDate: new Date(),
+                totalSum: selectedDatesForCost.reduce(
+                  (acc, cur) => acc + cur.cost,
+                  0
+                ),
+                phoneNumber: phoneNumber || "",
+                clientFullname: clientFullname || "",
+              })
+            );
+            reset();
+            onClose();
+            dispatch(calendarActions.setClearRange());
+          });
     } else {
       alertModalOnOpen();
     }
@@ -346,21 +371,37 @@ export const SidebarForm = memo(() => {
 
     if (isCanSelect.length == 0) {
       objectId != undefined &&
-        dispatch(
-          calendarActions.editAvailability({
-            color,
+        editAvailability({
+          roomId: objectId,
+          availability: {
+            id: objectId,
+            anObjectRoomId: objectId,
             comment,
-            minDate: setHours(minDate, convertToHour(checkIn) || 0),
-            maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
-            id,
-            objectId,
-            phoneNumber: phoneNumber || "",
-            clientFullname: clientFullname || "",
-          })
-        );
-      reset();
-      onClose();
-      dispatch(calendarActions.setClearRange());
+            createdDate: new Date(),
+            startDate: minDate,
+            endDate: maxDate,
+            guestPhone: phoneNumber || "",
+            gusetName: clientFullname || "",
+          },
+        })
+          .unwrap()
+          .then(() => {
+            dispatch(
+              calendarActions.editAvailability({
+                color,
+                comment,
+                minDate: setHours(minDate, convertToHour(checkIn) || 0),
+                maxDate: setHours(maxDate, convertToHour(checkOut) || 0),
+                id,
+                objectId,
+                phoneNumber: phoneNumber || "",
+                clientFullname: clientFullname || "",
+              })
+            );
+            reset();
+            onClose();
+            dispatch(calendarActions.setClearRange());
+          });
     } else {
       alertModalOnOpen();
     }
@@ -635,7 +676,10 @@ export const SidebarForm = memo(() => {
                         )}$`,
                       })}
                   />
-                  <InputRightElement>$</InputRightElement>
+                  <InputRightElement>
+                    {object?.currency &&
+                      getRelativeCurrencySymbol(object.currency)}
+                  </InputRightElement>
                 </InputGroup>
                 <FormErrorMessage>
                   {errors.costPerDay?.message}

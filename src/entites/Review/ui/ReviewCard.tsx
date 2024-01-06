@@ -1,45 +1,76 @@
-import { Avatar, Flex, Text } from "@chakra-ui/react";
-
-interface TestimonialCardProps {
-  name: string;
-  role: string;
-  content: string;
-  avatar: string;
-  index: number;
+import { StarIcon } from "@chakra-ui/icons";
+import {
+  AspectRatio,
+  Avatar,
+  HStack,
+  Image,
+  SimpleGrid,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
+import { FC, PropsWithChildren, memo } from "react";
+import { Photo } from "../model/types/review";
+interface ReviewCardProps {
+  userName: string;
+  text: string;
+  rating: number;
+  userImg: string;
+  createdDate: string;
+  photos: Photo[];
 }
+export const ReviewCard: FC<PropsWithChildren<ReviewCardProps>> = memo(
+  (props) => {
+    const { children, text, userName, rating, userImg, createdDate, photos } =
+      props;
 
-export const ReviewCard = (props: TestimonialCardProps) => {
-  const { name, content, avatar } = props;
-  return (
-    <Flex
-      maxW={"640px"}
-      direction={{ base: "column-reverse", md: "row" }}
-      width={"full"}
-      rounded={"xl"}
-      p={10}
-      justifyContent={"space-between"}
-      position={"relative"}
-      bg={"white"}
-    >
-      <Flex
-        direction={"column"}
-        textAlign={"left"}
-        justifyContent={"space-between"}
-      >
-        <Text fontWeight={"medium"} fontSize={"15px"} pb={4}>
-          {content}
-        </Text>
-        <Text fontWeight={"bold"} fontSize={14}>
-          {name}
-        </Text>
-      </Flex>
-      <Avatar
-        src={avatar}
-        height={"80px"}
-        width={"80px"}
-        alignSelf={"center"}
-        m={{ base: "0 0 35px 0", md: "0 0 0 50px" }}
-      />
-    </Flex>
-  );
-};
+    return (
+      <HStack alignItems={"flex-start"} position={"relative"}>
+        <Avatar src={userImg} size={["sm", "md"]} />
+        <Stack spacing={3} w="full">
+          <HStack
+            justifyContent={"space-between"}
+            alignItems={"flex-start"}
+            spacing={0}
+          >
+            <Stack spacing={0}>
+              <Text fontSize={["small", "sm", "md"]} fontWeight={"medium"}>
+                {userName}
+              </Text>
+              <Text color={"gray.500"} fontSize={["small", "sm", "md"]}>
+                {format(Date.parse(createdDate), "d MMMM yyyy", {
+                  locale: ru,
+                })}{" "}
+                г
+              </Text>
+            </Stack>
+            <Stack spacing={0}>
+              <HStack spacing={1} justifyContent={"flex-end"}>
+                <StarIcon color={"red.500"} />
+                <Text fontWeight={"medium"} fontSize={["sm", "md"]}>
+                  {rating}
+                </Text>
+              </HStack>
+            </Stack>
+          </HStack>
+          <SimpleGrid columns={{ base: 1, sm: 2, md: 2, lg: 3 }} spacing={2}>
+            {photos.map(({ preview_urls, id }) => (
+              <AspectRatio
+                key={id}
+                h={{ base: "200px", md: "auto" }}
+                maxW="full"
+                ratio={1}
+              >
+                <Image rounded={"lg"} src={preview_urls.url} />
+              </AspectRatio>
+            ))}
+          </SimpleGrid>
+
+          <Text position={"relative"}>{text}</Text>
+          {children}
+        </Stack>
+      </HStack>
+    );
+  }
+);

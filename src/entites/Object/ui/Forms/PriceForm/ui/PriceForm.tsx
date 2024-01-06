@@ -143,7 +143,7 @@ const PriceForm: FC<FormProps & PriceFormProps> = (props) => {
                 <InputGroup>
                   <Input {...register("pricePerDay")} type="number" />
                   <InputRightElement>
-                    {getCurrencySymbol("ru-RU", currencySymbol)}
+                    {getCurrencySymbol("ru-KG", currencySymbol)}
                   </InputRightElement>
                 </InputGroup>
                 <FormErrorMessage>

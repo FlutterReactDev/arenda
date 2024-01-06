@@ -7,9 +7,13 @@ export const RegisterSchema = Yup.object({
     .required("Необходимо указать пол")
     .oneOf([Gender.MALE, Gender.FEMALE]),
   dateOfBirth: Yup.date().required("Необходимо указать дату рождения"),
-  country: Yup.string().required("Необходимо указать страну"),
+  countryId: Yup.number()
+    .typeError("Необходимо указать страну")
+    .required("Необходимо указать страну"),
   languageID: Yup.number().required("Необходимо выбрать язык"),
-  email: Yup.string().email().required("Необходимо указать почту"),
+  email: Yup.string()
+    .email("Необходимо указать почту")
+    .required("Необходимо указать почту"),
   password: Yup.string()
     .min(6, "Необходимо указать пaроль не меньше 6 символов")
     .required("Необходимо указать пaроль"),
@@ -29,3 +33,5 @@ export const RegisterSchema = Yup.object({
       return phones?.some((phone) => phone.isMain);
     }),
 });
+
+export type RegisterType = Yup.InferType<typeof RegisterSchema>;

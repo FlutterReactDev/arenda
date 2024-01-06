@@ -1,76 +1,28 @@
 import { PayloadAction, createSlice } from "@reduxjs/toolkit";
-import { LatLong, Marker, SearchMapState, UserGeolocation } from "./types";
+import { LatLong, MarkerItem, SearchMapState, UserGeolocation } from "./types";
 
 const initialState = {
   markers: [],
   hoverMarker: null,
-  center: [77.17531854453188, 42.6445241832498],
-  zoom: 15,
+
   bounds: null,
   isMove: false,
   fitBounds: null,
   userGeolocation: null,
   mapInstance: null,
+  mapGLBundle: null,
 } as SearchMapState;
 
 const searchMapSlice = createSlice({
   name: "searchMapSlice",
   initialState,
   reducers: {
-    addMarker(state, action: PayloadAction<Marker>) {
-      state.markers.push(action.payload);
-    },
-
     setUserGeolocation(state, action: PayloadAction<UserGeolocation>) {
       state.userGeolocation = action.payload;
     },
-    removeMarker(state, action: PayloadAction<LatLong>) {
-      state.markers = state.markers.filter(
-        (marker) =>
-          marker.latitude != action.payload.latitude &&
-          marker.longitude != action.payload.longitude
-      );
-    },
 
-    removeMarkers(state, action: PayloadAction<LatLong[]>) {
-      state.markers = state.markers.filter((marker) => {
-        return (
-          marker.latitude !=
-            action.payload.filter(
-              (payloadMarker) =>
-                payloadMarker.latitude == marker.latitude &&
-                payloadMarker.longitude == marker.longitude
-            )[0].latitude &&
-          marker.longitude !=
-            action.payload.filter(
-              (payloadMarker) =>
-                payloadMarker.latitude == marker.latitude &&
-                payloadMarker.longitude == marker.longitude
-            )[0].longitude
-        );
-      });
-    },
-
-    addMarkers(state, action: PayloadAction<Marker[]>) {
-      state.markers = [
-        ...state.markers.filter((marker) => {
-          return (
-            marker.latitude !=
-              action.payload.filter(
-                (payloadMarker) =>
-                  payloadMarker.latitude == marker.latitude &&
-                  payloadMarker.longitude == marker.longitude
-              )[0].latitude &&
-            marker.longitude !=
-              action.payload.filter(
-                (payloadMarker) =>
-                  payloadMarker.latitude == marker.latitude &&
-                  payloadMarker.longitude == marker.longitude
-              )[0].longitude
-          );
-        }),
-        ...action.payload,
-      ];
+    addMarkers(state, action: PayloadAction<MarkerItem[]>) {
+      state.markers = [...action.payload];
     },
 
     clearMarkers(state) {
@@ -117,6 +69,9 @@ const searchMapSlice = createSlice({
 
     setMapInstance(state, action) {
       state.mapInstance = action.payload;
+    },
+    setMapGlBundle(state, action) {
+      state.mapGLBundle = action.payload;
     },
   },
 });

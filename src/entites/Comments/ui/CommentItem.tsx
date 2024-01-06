@@ -1,74 +1,63 @@
-import { CalendarIcon, StarIcon } from "@chakra-ui/icons";
-import { Avatar, HStack, Icon, Stack, Text } from "@chakra-ui/react";
+import { StarIcon } from "@chakra-ui/icons";
+import {
+  AspectRatio,
+  Avatar,
+  HStack,
+  Image,
+  Stack,
+  Text,
+} from "@chakra-ui/react";
+import { format } from "date-fns";
+import { ru } from "date-fns/locale";
 import { FC, PropsWithChildren } from "react";
-import { BiUserCircle, BiLike, BiDislike } from "react-icons/bi";
-export const CommentItem: FC<PropsWithChildren> = (props) => {
-  const { children } = props;
+interface CommentItemProps {
+  userName: string;
+  text: string;
+  rating: number;
+  userImg: string;
+  createdDate: string;
+  photos: string[];
+}
+export const CommentItem: FC<PropsWithChildren<CommentItemProps>> = (props) => {
+  const { children, text, userName, rating, userImg, createdDate, photos } =
+    props;
+
   return (
     <HStack alignItems={"flex-start"} position={"relative"}>
-      <Avatar src="https://bit.ly/broken-link" size={["sm", "md"]} />
-      <Stack spacing={3}>
-        <HStack justifyContent={"space-between"} spacing={0}>
+      <Avatar src={userImg} size={["sm", "md"]} />
+      <Stack spacing={3} w="full">
+        <HStack
+          justifyContent={"space-between"}
+          alignItems={"flex-start"}
+          spacing={0}
+        >
           <Stack spacing={0}>
             <Text fontSize={["small", "sm", "md"]} fontWeight={"medium"}>
-              Jane Doe
+              {userName}
             </Text>
-            <HStack
-              color={"gray.500"}
-              flexDirection={["column", "column", "row"]}
-              alignItems={["flex-start", "flex-start", "center"]}
-              spacing={[0, 0, 2]}
-            >
-              <HStack>
-                <CalendarIcon />
-                <Text fontSize={["small", "sm", "md"]}>
-                  Сентябрь 2023, 4 суток
-                </Text>
-              </HStack>
-              <HStack>
-                <Icon as={BiUserCircle} />
-                <Text fontSize={["small", "sm", "md"]}>6 гостей</Text>
-              </HStack>
-            </HStack>
+            <Text color={"gray.500"} fontSize={["small", "sm", "md"]}>
+              {format(Date.parse(createdDate), "d MMMM yyyy", {
+                locale: ru,
+              })}{" "}
+              г
+            </Text>
           </Stack>
           <Stack spacing={0}>
             <HStack spacing={1} justifyContent={"flex-end"}>
               <StarIcon color={"red.500"} />
               <Text fontWeight={"medium"} fontSize={["sm", "md"]}>
-                9,5
+                {rating}
               </Text>
             </HStack>
-            <Text color={"gray.500"} fontSize={["small", "sm", "md"]}>
-              15 февраля 2023 г
-            </Text>
           </Stack>
         </HStack>
-        <Text position={"relative"}>
-          Отличная квартира в самом центре. Всё в пешей доступности. В квартире
-          всё есть, что необходимо для комфортного проживания. Все возникающие
-          вопросы решают оперативно (заменили плохо работающий ключ от подъезда
-          <Icon
-            as={BiLike}
-            fontSize={"20px"}
-            color={"green.500"}
-            position={"absolute"}
-            left={"-10"}
-            top={0}
-          />
-        </Text>
-        <Text position={"relative"}>
-          Отличная квартира в самом центре. Всё в пешей доступности. В квартире
-          всё есть, что необходимо для комфортного проживания. Все возникающие
-          вопросы решают оперативно (заменили плохо работающий ключ от подъезда
-          <Icon
-            as={BiDislike}
-            fontSize={"20px"}
-            color={"red.500"}
-            position={"absolute"}
-            left={"-10"}
-            top={0}
-          />
-        </Text>
+
+        {photos.map((image) => (
+          <AspectRatio maxW="560px" ratio={1}>
+            <Image rounded={"lg"} src={image} />
+          </AspectRatio>
+        ))}
+        <Text position={"relative"}>{text}</Text>
         {children}
       </Stack>
     </HStack>

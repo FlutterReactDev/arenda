@@ -12,7 +12,6 @@ const initialState = {
       floorType: 1,
       floorsInTheBuilding: 1,
       ownName: "",
-
       uniqueName: "",
       kitchenType: 1,
       numberOfIsolatedBedroom: 1,
@@ -249,19 +248,19 @@ const initialState = {
     anObjectRoomBookingSettings: {
       checkInAfter: "12:00",
       checkOutAfter: "14:00",
-      fromBookingToCheckIn: 1,
+      fromBookingToCheckIn: 11,
       howCanBook: 1,
-      instantBookingStart: 1,
+      instantBookingStart: 8,
       prepaymentPercent: 10,
       reportingDocuments: 1,
     },
 
     anObjectRoomPostingRule: {
       childsAge: 0,
-      partiesAllowed: true,
-      petsAllowed: true,
-      possibleWithChildren: true,
-      smokingAllowed: true,
+      partiesAllowed: false,
+      petsAllowed: false,
+      possibleWithChildren: false,
+      smokingAllowed: false,
     },
 
     description: "",

@@ -1,4 +1,8 @@
+import { Map } from "@2gis/mapgl/global";
+import { MapGLBundle } from "@shared/ui/2GIS/models";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
+import { searchMapActions } from "..";
 import {
   getBounds,
   getCenter,
@@ -6,21 +10,18 @@ import {
   getHover,
   getIsMoving,
   getMakers,
+  getMapGLBundle,
   getMapInstance,
   getUserGeolocation,
   getZoom,
 } from "./selectors";
 import {
   LatLong,
-  Marker,
+  MarkerItem,
   NorthEast,
   SouthWest,
   UserGeolocation,
 } from "./types";
-import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { searchMapActions } from "..";
-import { getBoundsOfCoords } from "./utils";
-import { Map } from "@2gis/mapgl/global";
 
 export const useSearchMap = () => {
   const markers = useAppSelector(getMakers);
@@ -32,21 +33,11 @@ export const useSearchMap = () => {
   const fitBounds = useAppSelector(getFitBounds);
   const userGeolocation = useAppSelector(getUserGeolocation);
   const mapInstance = useAppSelector(getMapInstance);
+  const mapGLBundle = useAppSelector(getMapGLBundle);
   const dispatch = useAppDispatch();
 
-  const addMarkers = (data: Marker[]) => {
+  const addMarkers = (data: MarkerItem[]) => {
     dispatch(searchMapActions.addMarkers(data));
-  };
-  const removeMarkers = (data: LatLong[]) => {
-    dispatch(searchMapActions.removeMarkers(data));
-  };
-
-  const addMarker = (data: Marker) => {
-    dispatch(searchMapActions.addMarker(data));
-  };
-
-  const removeMarker = (data: LatLong) => {
-    dispatch(searchMapActions.removeMarker(data));
   };
 
   const clearMarkers = () => {
@@ -58,10 +49,13 @@ export const useSearchMap = () => {
   };
 
   const isHoveredMarker = (data: LatLong) => {
-    return (
-      data.latitude == hoverMarker?.latitude &&
-      data.longitude == hoverMarker?.longitude
-    );
+    if (hoverMarker) {
+      return (
+        data.latitude == hoverMarker.latitude &&
+        data.longitude == hoverMarker.longitude
+      );
+    }
+    return false;
   };
 
   const clearHover = () => {
@@ -101,43 +95,6 @@ export const useSearchMap = () => {
     dispatch(searchMapActions.setFitBounds(data));
   };
 
-  const setMarkerBounds = () => {
-    const bounds = getBoundsOfCoords(
-      markers.map((marker) => [marker.latitude, marker.longitude])
-    );
-
-    const northEast = [
-      markers[bounds.northEast[1]].longitude,
-      markers[bounds.northEast[0]].latitude,
-    ];
-
-    const southWest = [
-      markers[bounds.southWest[1]].longitude,
-      markers[bounds.southWest[0]].latitude,
-    ];
-
-    mapInstance?.fitBounds(
-      {
-        northEast,
-        southWest,
-      },
-      {
-        padding: {
-          bottom: 60,
-          top: 60,
-          left: 60,
-          right: 60,
-        },
-      }
-    );
-    dispatch(
-      searchMapActions.setFitBounds({
-        northEast,
-        southWest,
-      })
-    );
-  };
-
   const clearFitBounds = () => {
     dispatch(searchMapActions.clearFitBounds());
   };
@@ -150,13 +107,15 @@ export const useSearchMap = () => {
     dispatch(searchMapActions.setMapInstance(data));
   };
 
+  const setMapGlBundle = (bundle: MapGLBundle) => {
+    dispatch(searchMapActions.setMapGlBundle(bundle));
+  };
+
   return {
     markers,
     hoverMarker,
     addMarkers,
-    addMarker,
-    removeMarkers,
-    removeMarker,
+
     clearMarkers,
     onHover,
     isHoveredMarker,
@@ -178,6 +137,8 @@ export const useSearchMap = () => {
     userGeolocation,
     setMapInstance,
     mapInstance,
-    setMarkerBounds,
+
+    setMapGlBundle,
+    mapGLBundle,
   };
 };
