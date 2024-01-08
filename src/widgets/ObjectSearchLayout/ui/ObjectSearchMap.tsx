@@ -134,7 +134,11 @@ export const ObjectSearchMap: FC<ObjectSearchMapProps> = memo((props) => {
 
   return (
     <>
-      <SearchMap onMapMove={onMapMove} markers={data?.result?.items || []} />
+      <SearchMap
+        center={[74.603605, 42.876452]}
+        onMapMove={onMapMove}
+        markers={data?.result?.items || []}
+      />
       <HStack position={"absolute"} top={2} left={2} zIndex={"9"}>
         <IconButton
           rounded={"full"}
