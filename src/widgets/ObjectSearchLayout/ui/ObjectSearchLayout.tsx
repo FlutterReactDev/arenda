@@ -232,7 +232,7 @@ export const ObjectSearchLayout = memo(() => {
             isOpen={searchResultIsOpen}
           >
             <DrawerOverlay />
-            <DrawerContent h={"90dvh"} roundedTop={"2xl"}>
+            <DrawerContent h={"95dvh"} roundedTop={"2xl"}>
               <DrawerCloseButton />
               <DrawerHeader
                 px={2}
