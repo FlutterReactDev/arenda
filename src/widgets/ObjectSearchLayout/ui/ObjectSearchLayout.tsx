@@ -30,7 +30,6 @@ import {
 import { useSearchMap } from "@entites/Map";
 
 import { CalendarIcon, SearchIcon } from "@chakra-ui/icons";
-import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
 import { memo, useCallback, useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import { MdApartment, MdBookmarkBorder } from "react-icons/md";
@@ -89,6 +88,11 @@ export const ObjectSearchLayout = memo(() => {
     isOpen: searchIsOpen,
     onClose: searchOnClose,
     onOpen: searchOnOpen,
+  } = useDisclosure();
+  const {
+    isOpen: searchResultIsOpen,
+    onClose: searchResultOnClose,
+    onOpen: searchResultOnOpen,
   } = useDisclosure();
 
   const { guests, dates, setGuestData, setDates } = useSearchObjects();
@@ -204,9 +208,38 @@ export const ObjectSearchLayout = memo(() => {
             mapOnToggle={mapOnToggle}
             mapIsLoaded={mapIsLoaded}
           />
-          <DraggbleDrawer
-            header={
-              <>
+          <Box
+            pos="fixed"
+            textAlign={"center"}
+            bottom={10}
+            left={0}
+            right={0}
+            zIndex={"dropdown"}
+          >
+            <Button
+              colorScheme="blue"
+              onClick={searchResultOnOpen}
+              rounded={"full"}
+              leftIcon={<SearchIcon />}
+            >
+              Показать обекты
+            </Button>
+          </Box>
+
+          <Drawer
+            placement="bottom"
+            onClose={searchResultOnClose}
+            isOpen={searchResultIsOpen}
+          >
+            <DrawerOverlay />
+            <DrawerContent h={"90dvh"} roundedTop={"2xl"}>
+              <DrawerCloseButton />
+              <DrawerHeader
+                px={2}
+                pt="14"
+                bgColor={"gray.200"}
+                roundedTop={"2xl"}
+              >
                 <HStack w={"full"}>
                   <FormControl w={"full"}>
                     <InputGroup w={"full"}>
@@ -296,13 +329,19 @@ export const ObjectSearchLayout = memo(() => {
                     </SwiperSlide>
                   </Swiper>
                 </Box>
-              </>
-            }
-          >
-            <Box py={4} w="full">
-              <ObjectSearchList withGrid isMobile mapIsLoaded={mapIsLoaded} />
-            </Box>
-          </DraggbleDrawer>
+              </DrawerHeader>
+
+              <DrawerBody p="0" bgColor={"gray.100"}>
+                <Box mt={"4"} p="2">
+                  <ObjectSearchList
+                    withGrid
+                    isMobile
+                    mapIsLoaded={mapIsLoaded}
+                  />
+                </Box>
+              </DrawerBody>
+            </DrawerContent>
+          </Drawer>
         </Box>
         <Drawer
           isOpen={mobileFilterIsOpen}
