@@ -110,7 +110,7 @@ export const ObjectSearchLayout = memo(() => {
       });
     }
   }, [calendarDates]);
- 
+
   return (
     <>
       <Show breakpoint="(min-width: 901px)">
@@ -198,7 +198,7 @@ export const ObjectSearchLayout = memo(() => {
         </Grid>
       </Show>
       <Show breakpoint="(max-width: 900px)">
-        <Box h="calc(100dvh - 80px)" position={"relative"}>
+        <Box h="calc(100dvh - 80px)" position={"relative"} overflow={"hidden"}>
           <ObjectSearchMap
             mapIsOpen={mapIsOpen}
             mapOnToggle={mapOnToggle}

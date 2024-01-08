@@ -1,27 +1,26 @@
 import { Portal, Stack } from "@chakra-ui/react";
 
-import { useSpring, a, config } from "@react-spring/web";
+import { a, config, useSpring } from "@react-spring/web";
 
 import { findClosestNumber } from "@shared/utils/findClosestNumber";
 
 import { useDrag } from "@use-gesture/react";
 import {
+  FC,
   LegacyRef,
   MutableRefObject,
+  PropsWithChildren,
+  ReactNode,
   UIEvent,
   useEffect,
   useRef,
   useState,
-  ReactNode,
-  PropsWithChildren,
-  FC,
 } from "react";
 import { DraggbleDrawerHeader } from "./ui/DraggbleDrawerHeader";
 
-export const height = window.innerHeight;
-export const CLOSE_DRAWER = height - 90;
-export const HALF_DRAWER = height * 0.5;
-export const FULL_DRAWER = height * 0.05;
+export const CLOSE_DRAWER = window.innerHeight - 90;
+export const HALF_DRAWER = window.innerHeight * 0.5;
+export const FULL_DRAWER = window.innerHeight * 0.05;
 export interface DraggbleDrawerProps {
   header: ReactNode;
 }
@@ -30,6 +29,7 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
   props
 ) => {
   const { header, children } = props;
+  const [height, setHeight] = useState(window.innerHeight);
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -44,6 +44,10 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
     return () => {
       document.removeEventListener("touchmove", preventBehavior);
     };
+  }, []);
+
+  useEffect(() => {
+    setHeight(window.innerHeight);
   }, []);
 
   const [currentHeight, setCurrentHeight] = useState(CLOSE_DRAWER);

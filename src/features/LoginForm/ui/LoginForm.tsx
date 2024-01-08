@@ -76,7 +76,7 @@ const LoginForm = () => {
             return (
               <ErrorAlert
                 title="Ошибка авторизации"
-                description={data.message}
+                description={JSON.stringify(data?.message)}
                 onClose={onClose}
               />
             );
