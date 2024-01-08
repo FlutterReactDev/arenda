@@ -5,7 +5,7 @@ export const MapLoader = () => {
     <Box
       w={"20"}
       h={"20"}
-      bgColor={"blackAlpha.50"}
+      bgColor={"blackAlpha.300"}
       p={2}
       rounded={"full"}
       boxShadow={"2xl"}

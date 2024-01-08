@@ -101,7 +101,7 @@ export const DragPopover: FC<PropsWithChildren<DragPopoverProps>> = (props) => {
     });
     scrollRef.current.scrollTo({
       top: 0,
-      behavior: "smooth",
+      behavior: "auto",
     });
     onClose();
   };
@@ -216,7 +216,7 @@ export const DragPopover: FC<PropsWithChildren<DragPopoverProps>> = (props) => {
           top={0}
           bottom={0}
           bgColor={"blackAlpha.500"}
-          zIndex={10}
+          zIndex={100}
           onClick={onClose}
         ></Box>
       )}

@@ -1,20 +1,25 @@
+import { HStack, SimpleGrid, useMediaQuery } from "@chakra-ui/react";
 import Pagination from "@choc-ui/paginator";
 import { useSearchMap } from "@entites/Map";
 import {
   ObjectCard,
+  ObjectCardSkeleton,
   SimpleObjectCard,
+  SimpleObjectCardSkeleton,
   useGet2GISObjectsInfoQuery,
   useGetObjectsImagesQuery,
 } from "@entites/Object";
-import { Loader } from "@shared/ui/Loader";
 import { FC, memo, useState } from "react";
 interface ObjectSearchListProps {
   mapIsLoaded: boolean;
   isMobile?: boolean;
+  withGrid?: boolean;
 }
 export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
-  const { mapIsLoaded, isMobile = false } = props;
-  const { mapInstance, bounds, onHover, clearHover } = useSearchMap();
+  const { mapIsLoaded, isMobile = false, withGrid } = props;
+  const { mapInstance, bounds } = useSearchMap();
+  const [isLessThan630] = useMediaQuery("(max-width: 630px)");
+  const [isLessThen900] = useMediaQuery("(max-width: 900px)");
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -51,9 +56,97 @@ export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
     }
   );
 
+  if (withGrid) {
+    return (
+      <>
+        <SimpleGrid
+          columns={{
+            ...(isLessThan630
+              ? {
+                  base: 1,
+                }
+              : { base: 1, sm: 2 }),
+          }}
+          alignItems={"center"}
+          justifyContent={"center"}
+          spacing={5}
+          pt={5}
+        >
+          {objectsIsSuccess &&
+            !objectIsLoading &&
+            objects?.result?.items?.map((object) => {
+              return (
+                <>
+                  {!isMobile && (
+                    <ObjectCard
+                      {...object}
+                      key={object.id}
+                      images={
+                        objectImages?.result.items[object.id.split("_")[0]] ||
+                        []
+                      }
+                    />
+                  )}
+
+                  {isMobile && (
+                    <SimpleObjectCard
+                      {...object}
+                      images={
+                        objectImages?.result.items[object.id.split("_")[0]] ||
+                        []
+                      }
+                      key={object.id}
+                    />
+                  )}
+                </>
+              );
+            })}
+
+          {objectIsLoading && (
+            <>
+              <SimpleObjectCardSkeleton />
+              <SimpleObjectCardSkeleton />
+              <SimpleObjectCardSkeleton />
+              <SimpleObjectCardSkeleton />
+              <SimpleObjectCardSkeleton />
+              <SimpleObjectCardSkeleton />
+            </>
+          )}
+        </SimpleGrid>
+        {objectsIsSuccess && (
+          <HStack pt={3} justifyContent={"center"} w="full">
+            <Pagination
+              pageSize={12}
+              current={currentPage}
+              total={objects.result?.total}
+              onChange={(currentPage) => {
+                if (currentPage) {
+                  setCurrentPage(currentPage);
+                }
+              }}
+              {...(isLessThen900 && {
+                size: "sm",
+                pageNeighbours: 2,
+              })}
+              {...(isLessThan630 && {
+                size: "sm",
+                pageNeighbours: 0,
+              })}
+              colorScheme="red"
+              paginationProps={{
+                display: "flex",
+              }}
+            />
+          </HStack>
+        )}
+      </>
+    );
+  }
+
   return (
     <>
       {objectsIsSuccess &&
+        !objectIsLoading &&
         objects?.result?.items?.map((object) => {
           return (
             <>
@@ -64,16 +157,6 @@ export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
                   images={
                     objectImages?.result.items[object.id.split("_")[0]] || []
                   }
-                  onHover={(objectId) => {
-                    const point = objects.result.items.filter(
-                      ({ id }) => id == objectId
-                    )[0].point;
-                    onHover({
-                      latitude: point.lat,
-                      longitude: point.lon,
-                    });
-                  }}
-                  onHoverOut={clearHover}
                 />
               )}
 
@@ -89,26 +172,48 @@ export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
             </>
           );
         })}
-      {objectsIsSuccess && (
-        <Pagination
-          pageSize={12}
-          current={currentPage}
-          total={objects.result.total}
-          onChange={(currentPage) => {
-            console.log(currentPage);
-
-            if (currentPage) {
-              setCurrentPage(currentPage);
-            }
-          }}
-          pageNeighbours={2}
-          colorScheme="red"
-          paginationProps={{
-            display: "flex",
-          }}
-        />
+      {objectIsLoading && !isMobile && (
+        <>
+          <ObjectCardSkeleton />
+          <ObjectCardSkeleton />
+          <ObjectCardSkeleton />
+          <ObjectCardSkeleton />
+        </>
       )}
-      {objectIsLoading && <Loader />}
+      {objectIsLoading && isMobile && (
+        <>
+          <SimpleObjectCardSkeleton />
+          <SimpleObjectCardSkeleton />
+          <SimpleObjectCardSkeleton />
+          <SimpleObjectCardSkeleton />
+        </>
+      )}
+      {objectsIsSuccess && (
+        <HStack pt={3} justifyContent={"center"} w="full">
+          <Pagination
+            pageSize={12}
+            current={currentPage}
+            total={objects.result?.total}
+            onChange={(currentPage) => {
+              if (currentPage) {
+                setCurrentPage(currentPage);
+              }
+            }}
+            {...(isLessThen900 && {
+              size: "sm",
+              pageNeighbours: 2,
+            })}
+            {...(isLessThan630 && {
+              size: "sm",
+              pageNeighbours: 0,
+            })}
+            colorScheme="red"
+            paginationProps={{
+              display: "flex",
+            }}
+          />
+        </HStack>
+      )}
     </>
   );
 });

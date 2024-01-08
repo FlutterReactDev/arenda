@@ -21,19 +21,17 @@ import {
   List,
   ListIcon,
   Show,
-  SimpleGrid,
   Stack,
   Text,
   VStack,
   useDisclosure,
-  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { useSearchMap } from "@entites/Map";
 
 import { CalendarIcon, SearchIcon } from "@chakra-ui/icons";
 import { DraggbleDrawer } from "@shared/ui/DraggbleDrawer";
-import { useCallback, useEffect, useState } from "react";
+import { memo, useCallback, useEffect, useState } from "react";
 import { FaUsers } from "react-icons/fa";
 import { MdApartment, MdBookmarkBorder } from "react-icons/md";
 import { VscSettings } from "react-icons/vsc";
@@ -42,32 +40,24 @@ import { FreeMode } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 // Import Swiper styles
 import { GuestsModal } from "@entites/Object/ui/GuestsModal";
-import { ResultSearch, useSearchObjects } from "@features/SearchObjects";
+import { useSearchObjects } from "@features/SearchObjects";
 import { MobileCalendarDrawer } from "@shared/ui/MobileCalendarDrawer";
 import { getWordByNum } from "@shared/utils/getWordByNum";
 
-import Pagination from "@choc-ui/paginator";
 import { FilterObjects } from "@features/FilterObjects";
 import { useHeader } from "@widgets/Header";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
-import { BiCollapse, BiExpand } from "react-icons/bi";
-import { BsGeoAlt } from "react-icons/bs";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import { ObjectSearchHeader } from "./ObjectSearchHeader";
 import { ObjectSearchList } from "./ObjectSearchList";
 import { ObjectSearchMap } from "./ObjectSearchMap";
-export const ObjectSearchLayout = () => {
+export const ObjectSearchLayout = memo(() => {
   const { headerHeight } = useHeader();
   const [mapIsLoaded, setMapIsLoaded] = useState(false);
-  const {
-    setUserGeolocation,
-    setCenter,
-    userGeolocation,
-    setZoom,
-    mapInstance,
-  } = useSearchMap();
+  const { mapInstance } = useSearchMap();
 
   useEffect(() => {
     if (mapInstance) {
@@ -75,27 +65,18 @@ export const ObjectSearchLayout = () => {
     }
   }, [mapInstance]);
 
-  const {
-    isOpen: mapIsOpen,
-    onToggle: mapOnToggle,
-    onOpen: mapOnOpen,
-  } = useDisclosure();
-
-  const {
-    isOpen: desktopFilterIsOpen,
-    onOpen: desktopFilterOnOpen,
-    onClose: desktopFilterOnClose,
-  } = useDisclosure();
-  const {
-    isOpen: mobileFilterIsOpen,
-    onOpen: mobileFilterOnOpen,
-    onClose: mobileFilterOnClose,
-  } = useDisclosure();
+  const { isOpen: mapIsOpen, onToggle: mapOnToggle } = useDisclosure();
 
   const {
     isOpen: datepickerIsOpen,
     onOpen: datepickerOnOpen,
     onClose: datepickerOnClose,
+  } = useDisclosure();
+
+  const {
+    isOpen: mobileFilterIsOpen,
+    onOpen: mobileFilterOnOpen,
+    onClose: mobileFilterOnClose,
   } = useDisclosure();
 
   const {
@@ -110,8 +91,6 @@ export const ObjectSearchLayout = () => {
     onOpen: searchOnOpen,
   } = useDisclosure();
 
-  const [isLessThan630] = useMediaQuery("(max-width: 630px)");
-  const [isLessThen900] = useMediaQuery("(max-width: 900px)");
   const { guests, dates, setGuestData, setDates } = useSearchObjects();
 
   const [calendarDates, setCalendarDates] = useState<Date[]>([
@@ -131,67 +110,7 @@ export const ObjectSearchLayout = () => {
       });
     }
   }, [calendarDates]);
-
-  const findMe = () => {
-    navigator.geolocation.watchPosition(
-      function (position) {
-        // Successfully obtained the current position
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        setUserGeolocation({
-          latitude,
-          longitude,
-        });
-      },
-      function (error) {
-        // Handle any errors that occurred while getting the position
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            console.error("User denied the request for geolocation.");
-            break;
-          case error.POSITION_UNAVAILABLE:
-            console.error("Location information is unavailable.");
-            break;
-          case error.TIMEOUT:
-            console.error("The request to get user location timed out.");
-            break;
-        }
-      }
-    );
-
-    navigator.geolocation.getCurrentPosition(
-      function (position) {
-        // Successfully obtained the current position
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
-
-        setCenter([longitude, latitude]);
-        setZoom(18);
-      },
-      function (error) {
-        // Handle any errors that occurred while getting the position
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            console.error("User denied the request for geolocation.");
-            break;
-          case error.POSITION_UNAVAILABLE:
-            console.error("Location information is unavailable.");
-            break;
-          case error.TIMEOUT:
-            console.error("The request to get user location timed out.");
-            break;
-        }
-      }
-    );
-
-    if (userGeolocation) {
-      const { latitude, longitude } = userGeolocation;
-      setCenter([longitude, latitude]);
-      setZoom(18);
-    }
-  };
-
+ 
   return (
     <>
       <Show breakpoint="(min-width: 901px)">
@@ -233,31 +152,7 @@ export const ObjectSearchLayout = () => {
             boxShadow={"md"}
             bg="gray.50"
           >
-            <HStack
-              justifyContent={{
-                base: "space-between",
-                "2xl": "center",
-              }}
-              w="full"
-              h={"full"}
-              px={4}
-            >
-              <Show below="2xl">
-                <IconButton
-                  aria-label="open filter drawer button"
-                  colorScheme="red"
-                  size={"lg"}
-                  onClick={desktopFilterOnOpen}
-                >
-                  <Icon as={VscSettings} />
-                </IconButton>
-              </Show>
-
-              <ResultSearch
-                maxW={{ base: "5xl", xl: "5xl", "2xl": "7xl" }}
-                w={"full"}
-              />
-            </HStack>
+            <ObjectSearchHeader />
           </GridItem>
           {!mapIsOpen && (
             <Hide below="2xl">
@@ -281,9 +176,7 @@ export const ObjectSearchLayout = () => {
               </Hide>
 
               <Show below="xl">
-                <SimpleGrid columns={[1]} spacing={5}>
-                  <ObjectSearchList isMobile mapIsLoaded={mapIsLoaded} />
-                </SimpleGrid>
+                <ObjectSearchList isMobile mapIsLoaded={mapIsLoaded} />
               </Show>
             </VStack>
           </GridItem>
@@ -295,58 +188,22 @@ export const ObjectSearchLayout = () => {
             h={`calc(100dvh - 112px - ${headerHeight}px)`}
           >
             <Box w="full" h="full" position={"relative"}>
-              <HStack position={"absolute"} top={2} left={2} zIndex={"popover"}>
-                <IconButton
-                  rounded={"full"}
-                  colorScheme="red"
-                  aria-label="asdas"
-                  size={"lg"}
-                  onClick={mapOnToggle}
-                  icon={
-                    <>
-                      {!mapIsOpen && <Icon as={BiExpand} h={6} w={6} />}
-                      {mapIsOpen && <Icon as={BiCollapse} h={6} w={6} />}
-                    </>
-                  }
-                />
-
-                <Button colorScheme="blue" onClick={findMe}>
-                  <Icon as={BsGeoAlt} />
-                </Button>
-              </HStack>
-
-              <ObjectSearchMap mapIsLoaded={mapIsLoaded} />
+              <ObjectSearchMap
+                mapIsLoaded={mapIsLoaded}
+                mapIsOpen={mapIsOpen}
+                mapOnToggle={mapOnToggle}
+              />
             </Box>
           </GridItem>
         </Grid>
-
-        <Show below="2xl">
-          <Drawer
-            isOpen={desktopFilterIsOpen}
-            placement="left"
-            onClose={desktopFilterOnClose}
-          >
-            <DrawerOverlay />
-            <DrawerContent bgColor={"none"}>
-              <DrawerCloseButton />
-              <DrawerHeader p={2}>Фильтры</DrawerHeader>
-
-              <DrawerBody p={0} bgColor={"white"}>
-                <FilterObjects />
-              </DrawerBody>
-            </DrawerContent>
-          </Drawer>
-        </Show>
       </Show>
       <Show breakpoint="(max-width: 900px)">
         <Box h="calc(100dvh - 80px)" position={"relative"}>
-          <HStack position={"absolute"} top={2} left={2} zIndex={"docked"}>
-            <Button colorScheme="blue" onClick={findMe}>
-              <Icon as={BsGeoAlt} />
-            </Button>
-          </HStack>
-
-          <ObjectSearchMap mapIsLoaded={mapIsLoaded} />
+          <ObjectSearchMap
+            mapIsOpen={mapIsOpen}
+            mapOnToggle={mapOnToggle}
+            mapIsLoaded={mapIsLoaded}
+          />
           <DraggbleDrawer
             header={
               <>
@@ -443,37 +300,7 @@ export const ObjectSearchLayout = () => {
             }
           >
             <Box py={4} w="full">
-              <SimpleGrid
-                columns={{
-                  ...(isLessThan630
-                    ? {
-                        base: 1,
-                      }
-                    : { base: 1, sm: 2 }),
-                }}
-                spacing={5}
-                pt={5}
-              >
-                <ObjectSearchList isMobile mapIsLoaded={mapIsLoaded} />
-              </SimpleGrid>
-              <HStack pt={3} justifyContent={"center"} w="full">
-                <Pagination
-                  pageSize={1}
-                  total={10}
-                  {...(isLessThen900 && {
-                    size: "sm",
-                    pageNeighbours: 2,
-                  })}
-                  {...(isLessThan630 && {
-                    size: "sm",
-                    pageNeighbours: 0,
-                  })}
-                  colorScheme="red"
-                  paginationProps={{
-                    display: "flex",
-                  }}
-                />
-              </HStack>
+              <ObjectSearchList withGrid isMobile mapIsLoaded={mapIsLoaded} />
             </Box>
           </DraggbleDrawer>
         </Box>
@@ -568,4 +395,4 @@ export const ObjectSearchLayout = () => {
       </Show>
     </>
   );
-};
+});

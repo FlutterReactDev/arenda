@@ -46,7 +46,6 @@ const roomCalendarApi = baseApiWithReAuth.injectEndpoints({
       }),
 
 
-      
     };
   },
 });

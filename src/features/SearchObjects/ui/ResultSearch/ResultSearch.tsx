@@ -6,14 +6,14 @@ import {
   SearchSchemaType,
 } from "@features/SearchObjects/model/schema";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { FC, MutableRefObject, useRef } from "react";
+import { FC, MutableRefObject, memo, useRef } from "react";
 import { Controller, FormProvider, useForm } from "react-hook-form";
 import { ResultSearchDatepicker } from "./ResultSearchDatepicker";
 import { ResultSearchGuest } from "./ResultSearchGuest";
 import { ResultSearchInput } from "./ResultSearchInput";
 
 interface ResultSearch extends StackProps {}
-export const ResultSearch: FC<ResultSearch> = (props) => {
+export const ResultSearch: FC<ResultSearch> = memo((props) => {
   const containerRef = useRef() as MutableRefObject<HTMLDivElement>;
 
   const { dates, guests, term, setSearchData } = useSearchObjects();
@@ -108,4 +108,4 @@ export const ResultSearch: FC<ResultSearch> = (props) => {
       </HStack>
     </FormProvider>
   );
-};
+});

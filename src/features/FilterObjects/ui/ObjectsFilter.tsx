@@ -19,11 +19,11 @@ import {
 } from "@chakra-ui/react";
 import { CheckboxList } from "@shared/ui/CheckboxList";
 import { FormCard } from "@shared/ui/FormCard";
-import { useState } from "react";
+import { memo, useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import { HiLightningBolt } from "react-icons/hi";
 
-export const FilterObjects = () => {
+export const FilterObjects = memo(() => {
   const [windowView, setWindowView] = useState<(string | number)[]>([]);
   const [floor, setFloor] = useState<(string | number)[]>([]);
   return (
@@ -434,4 +434,4 @@ export const FilterObjects = () => {
       </Center>
     </Stack>
   );
-};
+});

@@ -52,8 +52,6 @@ export const ObjectCard: FC<ObjectCardProps> = memo((props) => {
       gridTemplateRows={"180px"}
       gridTemplateColumns={"260px 1fr 2.5px 149px"}
       gap={2}
-      as={Link}
-      to={`/${id.split("_")[0]}/object-detail`}
       transition={"0.3s all"}
       _hover={{
         boxShadow: "xl",
@@ -98,13 +96,16 @@ export const ObjectCard: FC<ObjectCardProps> = memo((props) => {
           _hover={{
             color: "red.600",
           }}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
         >
           <Center h="full" w="full">
             <FaHeart />
           </Center>
         </Box>
       </GridItem>
-      <GridItem>
+      <GridItem as={Link} to={`/${id.split("_")[0]}/object-detail`}>
         <Stack justifyContent={"space-between"} h={"full"}>
           <Box>
             <Box fontWeight={"medium"} fontSize={"sm"}>
@@ -140,7 +141,7 @@ export const ObjectCard: FC<ObjectCardProps> = memo((props) => {
       <GridItem>
         <Divider orientation="vertical" h={"full"} borderColor={"gray.500"} />
       </GridItem>
-      <GridItem>
+      <GridItem as={Link} to={`/${id.split("_")[0]}/object-detail`}>
         <Stack
           justifyContent={"space-between"}
           alignItems={"flex-end"}

@@ -33,12 +33,11 @@ export const SimpleObjectCard: FC<SimpleObjectCardProps> = memo((props) => {
       bg={"white"}
       rounded={"lg"}
       pos={"relative"}
-      as={Link}
-      to={`/${id.split("_")[0]}/object-detail`}
       transition={"0.3s all"}
       _hover={{
         boxShadow: "xl",
       }}
+      spacing={0}
     >
       <Box position={"relative"} h={"48"} w={"full"}>
         <Suspense
@@ -72,55 +71,57 @@ export const SimpleObjectCard: FC<SimpleObjectCardProps> = memo((props) => {
           </Center>
         </Box>
       </Box>
-      <Box>
-        <Box fontWeight={"medium"} fontSize={"sm"}>
-          <Box as="span" color={"gray.500"}>
-            {purpose_name}
+      <Box as={Link} to={`/${id.split("_")[0]}/object-detail`}>
+        <Box>
+          <Box fontWeight={"medium"} fontSize={"sm"}>
+            <Box as="span" color={"gray.500"}>
+              {purpose_name}
+            </Box>
+          </Box>
+          <Heading size={"sm"} fontWeight={"medium"}>
+            {name}
+          </Heading>
+          <Box>
+            <Text color={"gray.500"} fontSize={"sm"} fontWeight={"medium"}>
+              {address_name}
+            </Text>
+          </Box>
+          <Box color="gray.500" fontWeight={"medium"} fontSize={"sm"} mt={1}>
+            {context?.stop_factors?.map(({ name }, idx, arr) => {
+              if (arr.length - 1 != idx) {
+                return <>{name} &bull; </>;
+              }
+              return <>{name}</>;
+            })}
           </Box>
         </Box>
-        <Heading size={"sm"} fontWeight={"medium"}>
-          {name}
-        </Heading>
-        <Box>
-          <Text color={"gray.500"} fontSize={"sm"} fontWeight={"medium"}>
-            {address_name}
-          </Text>
-        </Box>
-        <Box color="gray.500" fontWeight={"medium"} fontSize={"sm"} mt={1}>
-          {context?.stop_factors?.map(({ name }, idx, arr) => {
-            if (arr.length - 1 != idx) {
-              return <>{name} &bull; </>;
-            }
-            return <>{name}</>;
-          })}
-        </Box>
-      </Box>
-      <HStack justifyContent={"space-between"}>
-        <Box>
-          <HStack spacing={1} justifyContent={"flex-end"}>
-            <Icon as={HiLightningBolt} color={"red.500"} />
-            <Text fontWeight={"bold"}>1000 $</Text>
-            <Text>за сутки</Text>
+        <HStack justifyContent={"space-between"}>
+          <Box>
+            <HStack spacing={1} justifyContent={"flex-end"}>
+              <Icon as={HiLightningBolt} color={"red.500"} />
+              <Text fontWeight={"bold"}>1000 $</Text>
+              <Text>за сутки</Text>
+            </HStack>
+            <Text color={"gray.500"} fontWeight={"medium"}>
+              Всего 8000$
+            </Text>
+          </Box>
+          <HStack spacing={1}>
+            <StarIcon color={"red.500"} />
+            <Text fontWeight={"medium"}>
+              {reviews.general_rating}{" "}
+              <Box as="span" color={"gray.500"} fontWeight={"normal"}>
+                {reviews.general_review_count}{" "}
+                {getWordByNum(reviews.general_review_count, [
+                  "отзыв",
+                  "отзыва",
+                  "отзывов",
+                ])}
+              </Box>
+            </Text>
           </HStack>
-          <Text color={"gray.500"} fontWeight={"medium"}>
-            Всего 8000$
-          </Text>
-        </Box>
-        <HStack spacing={1}>
-          <StarIcon color={"red.500"} />
-          <Text fontWeight={"medium"}>
-            {reviews.general_rating}{" "}
-            <Box as="span" color={"gray.500"} fontWeight={"normal"}>
-              {reviews.general_review_count}{" "}
-              {getWordByNum(reviews.general_review_count, [
-                "отзыв",
-                "отзыва",
-                "отзывов",
-              ])}
-            </Box>
-          </Text>
         </HStack>
-      </HStack>
+      </Box>
     </Stack>
   );
 });

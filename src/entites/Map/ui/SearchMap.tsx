@@ -5,21 +5,22 @@ import { FC, PropsWithChildren, memo } from "react";
 import { Box } from "@chakra-ui/react";
 import { MarkerItem } from "../model/types";
 import { useSearchMap } from "../model/useSearchMap";
-import { ObjectMarker } from "./ObjectMarker";
-import { SearchMapInstance } from "./SearchMapInstance";
 
+import { SearchMapInstance } from "./SearchMapInstance";
+import { Marker2GIS } from "@shared/ui/2GIS/Marker2GIS";
+import pricePopover from "@assets/pricePopover.svg";
 interface SearchMapProps {
   onMove?: () => void;
   markers: MarkerItem[];
+  onMapMove?: () => void;
+  center?: number[];
 }
 
 export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
   (props) => {
-    const { onMove, children, markers } = props;
-    console.log(markers);
+    const { onMove, children, markers, onMapMove, center } = props;
 
-    const { isHoveredMarker, userGeolocation, mapInstance, setBounds } =
-      useSearchMap();
+    const { userGeolocation, mapInstance, setBounds } = useSearchMap();
 
     return (
       <Map2GIS
@@ -30,7 +31,9 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
           zoomControl: true,
           floorControl: true,
           lang: "ru",
-          center: [77.057089, 42.649861],
+          ...(center && {
+            center,
+          }),
           zoom: 10,
         }}
         onMousedown={() => {
@@ -39,34 +42,33 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
         onMoveend={() => {
           if (mapInstance) {
             setBounds(mapInstance.getBounds());
+            onMapMove && onMapMove();
           }
         }}
       >
         <SearchMapInstance />
         {markers.map((marker) => {
           return (
-            <HtmlMarker2GIS
-              coordinates={[...[marker.lon, marker.lat]]}
-              userData={{ ...marker }}
-              interactive={true}
+            <Marker2GIS
+              coordinates={[marker.lon, marker.lat]}
               key={marker.id}
-              zIndex={
-                (isHoveredMarker({
-                  longitude: marker.lon,
-                  latitude: marker.lat,
-                }) &&
-                  100) ||
-                undefined
-              }
-            >
-              <ObjectMarker
-                {...marker}
-                isHovered={isHoveredMarker({
-                  longitude: marker.lon,
-                  latitude: marker.lat,
-                })}
-              />
-            </HtmlMarker2GIS>
+              size={[0, 0]}
+              label={{
+                offset: [0, -15],
+                text: `${
+                  marker.context.stop_factors &&
+                  marker.context.stop_factors[0].name.match(/\d/g)?.join("")
+                } сом`,
+                fontSize: 12,
+                color: "#fff",
+                image: {
+                  url: pricePopover,
+                  size: [100, 100],
+                  padding: [5, 10, 5, 10],
+                  pixelRatio: 20,
+                },
+              }}
+            />
           );
         })}
 

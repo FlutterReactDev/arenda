@@ -137,6 +137,13 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
     }
   );
 
+  useEffect(() => {
+    scrollRef.current?.scrollTo({
+      top: 0,
+      behavior: "instant",
+    });
+  }, [currentHeight]);
+
   return (
     <Portal>
       <a.div
@@ -230,7 +237,7 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
               }
             }}
           >
-            {children}
+            {currentHeight != CLOSE_DRAWER && children}
           </Stack>
         </Stack>
       </a.div>

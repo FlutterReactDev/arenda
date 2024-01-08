@@ -27,7 +27,7 @@ export const PhonesList: FC<PhonesListProps> = (props) => {
     if (fields.length == 1) {
       return fields[0]?.phoneNumber;
     } else if (fields.length > 1) {
-      return fields.filter(({ isMain }) => isMain)[0].phoneNumber;
+      return fields.filter(({ isMain }) => isMain)[0]?.phoneNumber;
     }
   };
   const { getRadioProps } = useRadioGroup({

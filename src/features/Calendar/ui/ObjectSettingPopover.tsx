@@ -1,4 +1,4 @@
-import { DeleteIcon, EditIcon, LockIcon, Search2Icon } from "@chakra-ui/icons";
+import { EditIcon } from "@chakra-ui/icons";
 import {
   Button,
   Popover,
@@ -27,9 +27,6 @@ export const ObjectSettingPopover: FC<
         <PopoverCloseButton />
         <Stack>
           <Button leftIcon={<EditIcon />}>Настройки</Button>
-          <Button leftIcon={<LockIcon />}>Закрыть</Button>
-          <Button leftIcon={<Search2Icon />}>Все брони</Button>
-          <Button leftIcon={<DeleteIcon />}>Удалить</Button>
         </Stack>
       </PopoverContent>
     </Popover>

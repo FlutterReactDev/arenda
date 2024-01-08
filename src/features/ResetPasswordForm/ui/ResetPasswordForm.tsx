@@ -1,3 +1,4 @@
+import { RouteName } from "@app/providers/RouterProvier/config/routeConfig";
 import {
   Box,
   Button,
@@ -7,7 +8,11 @@ import {
   Stack,
   useToast,
 } from "@chakra-ui/react";
-import { useResetPasswordMutation } from "@entites/User/model/api/userApi";
+import { useAuth } from "@entites/User";
+import {
+  useLogoutMutation,
+  useResetPasswordMutation,
+} from "@entites/User/model/api/userApi";
 import {
   ResetPasswordSchema,
   ResetPasswordType,
@@ -18,12 +23,15 @@ import { BaseResponse } from "@shared/type";
 import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export const ResetPasswordForm = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   const { token } = useParams();
+  const user = useAuth();
   const [resetPassword, { isLoading }] = useResetPasswordMutation();
+  const [logout] = useLogoutMutation();
   const {
     handleSubmit,
     register,
@@ -52,6 +60,10 @@ export const ResetPasswordForm = () => {
               />
             );
           },
+        });
+        logout().then(() => {
+          user.logout();
+          navigate(RouteName.LOGIN_PAGE);
         });
       })
       .catch((error: FetchBaseQueryError) => {
