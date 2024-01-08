@@ -35,6 +35,7 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
             center,
           }),
           zoom: 10,
+          style: "26015706-6204-4b41-bae9-c84dcd126160",
         }}
         onMousedown={() => {
           onMove && onMove();

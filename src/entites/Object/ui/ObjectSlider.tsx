@@ -38,7 +38,7 @@ const ObjectSlider: FC<ObjectSliderProps> = memo((props) => {
           top={"50%"}
           transform={"translateY(-50%)"}
           left={"2"}
-          zIndex={"popover"}
+          zIndex={"8"}
           size={"sm"}
           icon={<ChevronLeftIcon boxSize={"8"} />}
           isRound
@@ -54,7 +54,7 @@ const ObjectSlider: FC<ObjectSliderProps> = memo((props) => {
           }}
           top={"50%"}
           transform={"translateY(-50%)"}
-          zIndex={"popover"}
+          zIndex={"8"}
           size={"sm"}
           right={"2"}
           icon={<ChevronRightIcon boxSize={"8"} />}

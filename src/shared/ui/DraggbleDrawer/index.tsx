@@ -156,9 +156,10 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
           width: "100%",
           height: `calc(100dvh - ${height * 0.05}px)`,
           position: "fixed",
-          overflow: "hidden",
+          touchAction: "auto",
           top: 0,
           zIndex: "100",
+          overflow: "auto",
         }}
       >
         <Stack
@@ -167,9 +168,7 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
           w="full"
           h={"full"}
           roundedTop={"2xl"}
-          style={{
-            touchAction: "auto",
-          }}
+          overflow={"auto"}
         >
           <DraggbleDrawerHeader
             currentHeight={currentHeight}
@@ -185,14 +184,10 @@ export const DraggbleDrawer: FC<PropsWithChildren<DraggbleDrawerProps>> = (
             {...bind()}
             roundedTop={"lg"}
             w="full"
-            h={"full"}
+            h={"100dvh"}
             spacing={6}
+            overflow={"auto"}
             px={4}
-            scrollBehavior={"smooth"}
-            {...(DRAWER_OPEN_STATES[DRAWER_OPEN_STATES.length - 1] ==
-              currentHeight && {
-              overflowY: "scroll",
-            })}
             ref={scrollRef as LegacyRef<HTMLDivElement>}
             onScroll={(e: UIEvent<HTMLDivElement>) => {
               e.preventDefault();

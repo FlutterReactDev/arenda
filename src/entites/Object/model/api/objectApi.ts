@@ -43,6 +43,7 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
         body: data,
         method: "POST",
       }),
+      invalidatesTags: ["room"],
     }),
 
     deleteObject: build.mutation<void, number>({
@@ -114,7 +115,7 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
       query: (objectId) => ({
         url: "/GetRoomsByAnObjectId/" + objectId,
       }),
-      providesTags: ["room"],
+      providesTags: ["room", "object"],
     }),
 
     getObjectsWithRooms: build.query<ObjectWithRooms[], void>({

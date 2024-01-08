@@ -1,4 +1,4 @@
-import { HStack, SimpleGrid, useMediaQuery } from "@chakra-ui/react";
+import { HStack, Heading, SimpleGrid, useMediaQuery } from "@chakra-ui/react";
 import Pagination from "@choc-ui/paginator";
 import { useSearchMap } from "@entites/Map";
 import {
@@ -55,6 +55,10 @@ export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
       skip: !objects?.result?.items?.length && !objectsIsSuccess,
     }
   );
+
+  if (!objectIsLoading && objectsIsSuccess && objects.meta.code === 404) {
+    return <Heading size={""}>Ничего не удалось найти</Heading>;
+  }
 
   if (withGrid) {
     return (
@@ -199,6 +203,7 @@ export const ObjectSearchList: FC<ObjectSearchListProps> = memo((props) => {
                 setCurrentPage(currentPage);
               }
             }}
+            pageNeighbours={2}
             {...(isLessThen900 && {
               size: "sm",
               pageNeighbours: 2,
