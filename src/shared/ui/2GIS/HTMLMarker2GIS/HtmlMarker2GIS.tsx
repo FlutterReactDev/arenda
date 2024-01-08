@@ -106,9 +106,4 @@ const HtmlMarker2GISComponent: FC<HtmlMarker2GISProps> = (props) => {
 /**
  * HTML маркер для 2ГИС карты.
  */
-export const HtmlMarker2GIS = memo(
-  HtmlMarker2GISComponent,
-  (oldProps, newProps) => {
-    return true;
-  }
-);
+export const HtmlMarker2GIS = memo(HtmlMarker2GISComponent);

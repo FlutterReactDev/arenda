@@ -41,6 +41,7 @@ export const HeaderMobileNav = () => {
                 <UserAccount
                   userName={`${currentUser?.name} ${currentUser?.surname}`}
                   onLogout={onClose}
+                  email={`${currentUser?.email}`}
                 />
                 <Button
                   bg={"white"}

@@ -1,12 +1,11 @@
+import { CloseIcon } from "@chakra-ui/icons";
 import { Box, HStack, IconButton, Stack } from "@chakra-ui/react";
-import { CommentItem } from "@entites/Comments";
-import { useSpring, a, config } from "@react-spring/web";
+import { a, config, useSpring } from "@react-spring/web";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import { useDrag } from "@use-gesture/react";
 import { MutableRefObject, memo, useEffect, useRef, useState } from "react";
 import { dragObjectAction } from "..";
-import { CloseIcon } from "@chakra-ui/icons";
 const initialHeight = window.innerHeight * 0.8;
 const Puller = memo(() => {
   return (
@@ -176,11 +175,7 @@ export const DragObjectReviews = () => {
             }
             e.stopPropagation();
           }}
-        >
-          <CommentItem></CommentItem>
-          <CommentItem></CommentItem>
-          <CommentItem></CommentItem>
-        </Stack>
+        ></Stack>
       </a.div>
       {commentIsOpen && (
         <Box

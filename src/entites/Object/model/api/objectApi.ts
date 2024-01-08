@@ -119,7 +119,7 @@ const objectApi = baseApiWithReAuth.injectEndpoints({
     }),
 
     getObjectsWithRooms: build.query<ObjectWithRooms[], void>({
-      async queryFn(arg, api, extraOptions, baseQuery) {
+      async queryFn(_arg, _api, _extraOptions, baseQuery) {
         try {
           const result: ObjectWithRooms[] = [];
           const objectTypes = (await baseQuery(
