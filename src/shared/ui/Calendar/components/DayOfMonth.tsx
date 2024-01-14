@@ -1,8 +1,9 @@
-import { Button, Tooltip, useMediaQuery } from "@chakra-ui/react";
-import { DateObj, RenderProps } from "dayzed";
-import React, { useMemo, memo, SyntheticEvent } from "react";
-import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
+import { TriangleDownIcon } from "@chakra-ui/icons";
+import { Box, Button, SlideFade, useMediaQuery } from "@chakra-ui/react";
 import { isEqual } from "date-fns";
+import { DateObj, RenderProps } from "dayzed";
+import React, { SyntheticEvent, memo, useMemo } from "react";
+import { DatepickerProps, DayOfMonthBtnStyleProps } from "../utils/commonTypes";
 
 interface DayOfMonthProps extends DatepickerProps {
   renderProps: RenderProps;
@@ -98,30 +99,54 @@ export const DayOfMonth: React.FC<DayOfMonthProps> = memo(
     };
 
     return (
-      <Tooltip
-        hasArrow
-        isOpen={isOpen()}
-        placement="top"
-        label={`${distance} суток`}
+      <Button
+        onClick={onClick}
+        onMouseEnter={onMouseHover}
+        isDisabled={disabled}
+        pos="relative"
+        {...(!isLessThan880 && {
+          _hover: {
+            bg: "red.500",
+            color: "white",
+          },
+        })}
+        {...styleBtnProps.defaultBtnProps}
+        {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
+        {...(isInRange && styleBtnProps.isInRangeBtnProps)}
+        {...(today && styleBtnProps.todayBtnProps)}
       >
-        <Button
-          onClick={onClick}
-          onMouseEnter={onMouseHover}
-          isDisabled={disabled}
-          {...(!isLessThan880 && {
-            _hover: {
-              bg: "red.500",
-              color: "white",
-            },
-          })}
-          {...styleBtnProps.defaultBtnProps}
-          {...(selected && !disabled && styleBtnProps.selectedBtnProps)}
-          {...(isInRange && styleBtnProps.isInRangeBtnProps)}
-          {...(today && styleBtnProps.todayBtnProps)}
-        >
-          {date.getDate()}
-        </Button>
-      </Tooltip>
+        {date.getDate()}
+        {isOpen() && (
+          <Box
+            pos="absolute"
+            top={0}
+            left={"50%"}
+            transform={"translate(-50%,-130%)"}
+            pointerEvents={"none"}
+          >
+            <SlideFade in offsetY={"20px"}>
+              <Box
+                rounded={"lg"}
+                bgColor={"gray.500"}
+                fontSize={"sm"}
+                py={1}
+                px={2}
+              >
+                <Box
+                  pos="absolute"
+                  left={"50%"}
+                  bottom={"1px"}
+                  transform={"translate(-50%,65%)"}
+                  color={"gray.500"}
+                >
+                  <TriangleDownIcon />
+                </Box>
+                {distance} суток
+              </Box>
+            </SlideFade>
+          </Box>
+        )}
+      </Button>
     );
   },
   function arePropsEqual(oldProps, newProps) {

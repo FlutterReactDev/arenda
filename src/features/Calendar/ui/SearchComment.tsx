@@ -29,6 +29,9 @@ interface SearchCommentProps extends InputProps {
 }
 export const SearchComment: FC<SearchCommentProps> = memo((props) => {
   const { includesAvailabilities, onEventClick, ...otherProps } = props;
+
+
+  
   const { query, setQuery } = useSearchFullname();
   const { isOpen, onClose, onOpen } = useDisclosure();
   const searchRef = useRef() as RefObject<HTMLDivElement>;

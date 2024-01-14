@@ -140,7 +140,7 @@ export const MobileSearchDatePicker = forwardRef<
           </Box>
         </HStack>
       </Box>
-      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen}>
+      <Drawer placement="bottom" onClose={onClose} isOpen={isOpen} trapFocus>
         <DrawerOverlay />
         <DrawerContent
           p="0"

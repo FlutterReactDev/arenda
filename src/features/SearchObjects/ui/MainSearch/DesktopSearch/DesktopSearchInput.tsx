@@ -12,7 +12,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { LegacyRef, MutableRefObject, forwardRef, useState } from "react";
-import { MdApartment } from "react-icons/md";
+import { HiLocationMarker } from "react-icons/hi";
 
 interface DesktopSearchInputProps {
   value: string;
@@ -116,7 +116,7 @@ export const DesktopSearchInput = forwardRef<
                 cursor={"pointer"}
               >
                 <ListIcon
-                  as={MdApartment}
+                  as={HiLocationMarker}
                   fontSize={"3xl"}
                   color="blackAlpha.800"
                 />

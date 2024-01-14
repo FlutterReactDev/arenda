@@ -145,7 +145,7 @@ export const DesktopSearch = () => {
             top={"-100%"}
             left={0}
             w="full"
-            h={"600px"}
+            h={"400px"}
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             //@ts-ignore
             ref={refs}
