@@ -1,16 +1,25 @@
 import { Button } from "@chakra-ui/react";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
-import { memo } from "react";
+import { memo, useTransition } from "react";
 import { calendarActions } from "..";
 import { toDay } from "../utils/toDay";
 
 export const GoTodayBtn = memo(() => {
+  const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
   const onClickToday = () => {
-    dispatch(calendarActions.setBeginDate(toDay(new Date())));
+    startTransition(() => {
+      dispatch(calendarActions.setBeginDate(toDay(new Date())));
+    });
   };
+
   return (
-    <Button  colorScheme="telegram" rounded={"full"} onClick={onClickToday}>
+    <Button
+      isLoading={isPending}
+      bgColor={"white"}
+      rounded={"full"}
+      onClick={onClickToday}
+    >
       Сегодня
     </Button>
   );

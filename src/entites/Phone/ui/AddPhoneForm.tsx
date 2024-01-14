@@ -9,8 +9,8 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FC } from "react";
+import { PhoneInput } from "./PhoneInput";
 
-import { PhoneInput } from "@shared/ui/PhoneInput";
 export interface AddPhoneFormProps {
   onChange: (data: Yup.InferType<typeof PhoneSchema>) => void;
 }

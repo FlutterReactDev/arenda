@@ -86,11 +86,11 @@ export const ObjectCell: FC<ObjectCellProps> = memo(
         }}
         {...(isSaturday(date) &&
           !isPast && {
-            bgColor: "red.300",
+            bgColor: "blue.300",
           })}
         {...(isSunday(date) &&
           !isPast && {
-            bgColor: "red.300",
+            bgColor: "blue.300",
           })}
         {...(isToday(date) && {
           bgColor: "#444",

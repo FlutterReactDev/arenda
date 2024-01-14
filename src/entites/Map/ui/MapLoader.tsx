@@ -11,7 +11,7 @@ export const MapLoader = () => {
       boxShadow={"2xl"}
     >
       <Center w={"full"} h="full">
-        <CircularProgress isIndeterminate color="red.600" />
+        <CircularProgress isIndeterminate color="telegram.600" />
       </Center>
     </Box>
   );

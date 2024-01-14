@@ -1,5 +1,6 @@
 import { SmallAddIcon } from "@chakra-ui/icons";
 import { Box, Text, useMediaQuery } from "@chakra-ui/react";
+import { getRelativeCurrencySymbol } from "@shared/utils/getCurrencySymbol";
 import { isEqual } from "date-fns";
 import { FC, memo } from "react";
 
@@ -13,6 +14,7 @@ interface CalendarDetailItemCell {
   onMouseDown: (date: Date) => void;
   onMouseUp: (date: Date) => void;
   date: Date;
+  currency: string;
 }
 
 export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
@@ -26,6 +28,7 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
       onMouseMove,
       onMouseDown,
       onMouseUp,
+      currency,
     } = props;
     const [isSm] = useMediaQuery("(max-width: 600px)");
     const onMove = () => {
@@ -84,12 +87,11 @@ export const CalendarDetailItemCell: FC<CalendarDetailItemCell> = memo(
             transform: "translateX(50%)",
           })}
           bottom={"0"}
-          maxW={"55px"}
           whiteSpace={"nowrap"}
           overflow={"hidden"}
           zIndex={10}
         >
-          {cost}$
+          {cost} {getRelativeCurrencySymbol(currency)}
         </Text>
         <Text
           fontSize={["sm", "md", "md"]}

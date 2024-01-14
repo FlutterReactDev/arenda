@@ -57,7 +57,7 @@ export const Day: FC<DayProps> = memo(
               {...(isWeekday &&
                 !isPastDay && {
                   color: "white",
-                  bgColor: "red.500",
+                  bgColor: "blue.400",
                 })}
               {...(isToday && {
                 color: "#fff",

@@ -1,6 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Center,
   Flex,
   Grid,
   GridItem,
@@ -8,7 +9,7 @@ import {
   Hide,
   IconButton,
   Stack,
-  useMediaQuery
+  useMediaQuery,
 } from "@chakra-ui/react";
 
 import { calendarActions } from "..";
@@ -19,10 +20,11 @@ import { memo, useCallback, useEffect, useState } from "react";
 import {
   getColumnDays,
   getCommonSettings,
-  getCurrentObjects,
+  getObjectGroup,
 } from "../model/selectors";
 import { Day } from "./Day";
 
+import { Loader } from "@shared/ui/Loader";
 import { ActionTop } from "./ActionTop";
 import { CalendarCollapseGroup } from "./CalendarCollapseGroup";
 import { CalendarScroller } from "./CalendarScroller";
@@ -37,10 +39,13 @@ import { SmallGoToDateBtn } from "./SmallGoToDateBtn";
 
 export const Calendar = memo(() => {
   const dispatch = useAppDispatch();
+  const appIsLoading = useAppSelector((state) => state.calendar.appLoading);
+
+  const objectsGroup = useAppSelector(getObjectGroup);
 
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
   const days = useAppSelector(getColumnDays);
-  const objects = useAppSelector(getCurrentObjects);
+
   const [rangeObjectId, setRangeObjectId] = useState<null | number>(null);
 
   const { sidebarWidth } = useAppSelector(getCommonSettings);
@@ -171,18 +176,33 @@ export const Calendar = memo(() => {
       </Grid>
 
       <Box position={"relative"}>
-        <CalendarCollapseGroup title="Эконом">
-          {objects.map((object) => {
+        {appIsLoading && (
+          <Center p={4}>
+            <Loader />
+          </Center>
+        )}
+        {!appIsLoading &&
+          objectsGroup.map(({ name, objects }, idx) => {
             return (
-              <ObjectItem
-                setRangeObjectId={onRangeObjectId}
-                rangeObjectId={rangeObjectId}
-                {...object}
-                key={object.id}
-              />
+              <CalendarCollapseGroup
+                title={`${name}`}
+                {...(idx != 0 && {
+                  defaultIsOpen: false,
+                })}
+              >
+                {objects.map((object) => {
+                  return (
+                    <ObjectItem
+                      setRangeObjectId={onRangeObjectId}
+                      rangeObjectId={rangeObjectId}
+                      {...object}
+                      key={object.id}
+                    />
+                  );
+                })}
+              </CalendarCollapseGroup>
             );
           })}
-        </CalendarCollapseGroup>
 
         <CalendarScroller />
       </Box>

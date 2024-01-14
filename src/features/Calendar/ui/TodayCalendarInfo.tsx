@@ -179,7 +179,7 @@ export const TodayCalendarInfo = memo(() => {
         </HStack>
         <HStack>
           <Button variant={"link"} fontWeight={"medium"}>
-            Всего объектов:
+            Всего номеров:
           </Button>
           <Text fontWeight={"medium"}> {objects.length}</Text>
         </HStack>

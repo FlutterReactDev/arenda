@@ -12,13 +12,6 @@ export const CalendarSchema = object({
     }
     return schema;
   }),
-
-  minimumStayPeriod: string().when("type", (type, schema) => {
-    if (type[0] == "setThePrice") {
-      return schema.required("Выберите один из предложенных вариантов");
-    }
-    return schema;
-  }),
   clientFullName: string(),
   phoneNumber: string(),
   comment: string(),

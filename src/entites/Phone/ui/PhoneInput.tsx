@@ -3,7 +3,7 @@ import { FC } from "react";
 import { CountrySelector, usePhoneInput } from "react-international-phone";
 import "react-international-phone/style.css";
 export const PhoneInput: FC<InputProps> = (props) => {
-  const { value, onChange } = props;
+  const { value, onChange, ...otherProps } = props;
   const phoneInput = usePhoneInput({
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -51,6 +51,7 @@ export const PhoneInput: FC<InputProps> = (props) => {
           value={phoneInput.phone}
           onChange={phoneInput.handlePhoneValueChange}
           ref={phoneInput.inputRef}
+          {...otherProps}
         />
       </HStack>
     </>

@@ -187,13 +187,7 @@ const HotelGeneralInformationForm: FC<
       <FormContainer>
         <FormCard title={`Название ${getDeclension(objectTypeName, "р")}`}>
           <FormControl isInvalid={!!errors.name?.message}>
-            <Input
-              {...register("name")}
-              placeholder={`Укажите название ${getDeclension(
-                objectTypeName,
-                "р"
-              )}`}
-            />
+            <Input {...register("name")} placeholder={objectTypeName} />
             <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
             <FormHelperText>
               это название будут видеть гости при поиске (если у вас нет

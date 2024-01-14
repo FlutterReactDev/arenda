@@ -54,9 +54,7 @@ import {
   useEditAvailabilityMutation,
 } from "@entites/RoomCalendar";
 import { yupResolver } from "@hookform/resolvers/yup";
-import {
-  getRelativeCurrencySymbol
-} from "@shared/utils/getCurrencySymbol";
+import { getRelativeCurrencySymbol } from "@shared/utils/getCurrencySymbol";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
 import {
@@ -169,6 +167,7 @@ export const SidebarForm = memo(() => {
     setValue,
     reset,
     formState: { errors },
+    getValues,
   } = useForm<CalendarSchemaType>({
     resolver: yupResolver(CalendarSchema),
     defaultValues: {
@@ -283,7 +282,8 @@ export const SidebarForm = memo(() => {
           },
         })
           .unwrap()
-          .then(() => {
+          .then(() => {})
+          .finally(() => {
             dispatch(
               calendarActions.createAvailability({
                 id,
@@ -431,7 +431,7 @@ export const SidebarForm = memo(() => {
           cost: Number(data.costPerDay) as number,
           dates: eachDayOfInterval({
             start: data.minDate,
-            end: data.maxDate,
+            end: subDays(data.maxDate, 1),
           }),
           objectId,
         });
@@ -471,9 +471,9 @@ export const SidebarForm = memo(() => {
               />
             </Box>
             <Stack spacing={0}>
-              <Text>ID 123912321</Text>
-              <Text>Хуйевый пансионат</Text>
-              <Text>Китай</Text>
+              <Text>ID {object?.id}</Text>
+              <Text>{object?.name}</Text>
+              <Text>{object?.address}</Text>
             </Stack>
           </HStack>
 
@@ -550,9 +550,15 @@ export const SidebarForm = memo(() => {
                         h={12}
                       >
                         {(value &&
-                          format(value, "d LLLL yyyy", {
-                            locale: ru,
-                          })) ||
+                          format(
+                            getValues().type == "setThePrice"
+                              ? subDays(value, 1)
+                              : value,
+                            "d LLLL yyyy",
+                            {
+                              locale: ru,
+                            }
+                          )) ||
                           ""}
                       </Button>
                     </PopoverTrigger>
@@ -564,7 +570,10 @@ export const SidebarForm = memo(() => {
                       <Flex h="full" w="full">
                         <CalendarPanel
                           dayzedHookProps={{
-                            selected: value,
+                            selected:
+                              getValues().type == "setThePrice"
+                                ? subDays(value, 1)
+                                : value,
                             onDateSelected: ({ date }) => {
                               if (isBefore(date, minDate)) {
                                 setValue("minDate", date);
@@ -573,7 +582,10 @@ export const SidebarForm = memo(() => {
                               endOnClose();
                             },
                             monthsToDisplay: 1,
-                            date: value,
+                            date:
+                              getValues().type == "setThePrice"
+                                ? subDays(value, 1)
+                                : value,
                             firstDayOfWeek: 1,
                             minDate: subDays(new Date(), 1),
                             maxDate: new Date(
@@ -655,9 +667,9 @@ export const SidebarForm = memo(() => {
                       <QuestionOutlineIcon />
                     </Tooltip>
                   </FormLabel>
-                  <Button variant={"link"} colorScheme="blue">
+                  {/* <Button variant={"link"} colorScheme="blue">
                     Настройка цен
-                  </Button>
+                  </Button> */}
                 </HStack>
 
                 <InputGroup>
@@ -684,66 +696,9 @@ export const SidebarForm = memo(() => {
                 <FormErrorMessage>
                   {errors.costPerDay?.message}
                 </FormErrorMessage>
-                <Button variant={"link"} colorScheme="blue">
+                {/* <Button variant={"link"} colorScheme="blue">
                   Расширенный выбор дат
-                </Button>
-              </FormControl>
-
-              <FormControl isInvalid={!!errors.minimumStayPeriod?.message}>
-                <FormLabel>
-                  Минимальный срок проживания{" "}
-                  <Tooltip
-                    hasArrow
-                    label="Действует при заселении в выбранные даты."
-                    placement="top"
-                  >
-                    <QuestionOutlineIcon />
-                  </Tooltip>
-                </FormLabel>
-                <Select
-                  placeholder="Выберите минимальный срок проживания"
-                  {...register("minimumStayPeriod")}
-                >
-                  <option value="1">1 сутки</option>
-                  <option value="2">2 суток</option>
-                  <option value="3">3 суток</option>
-                  <option value="4">4 суток</option>
-                  <option value="5">5 суток</option>
-                  <option value="6">6 суток</option>
-                  <option value="7">7 суток</option>
-                  <option value="8">8 суток</option>
-                  <option value="9">9 суток</option>
-                  <option value="10">10 суток</option>
-                  <option value="11">11 суток</option>
-                  <option value="12">12 суток</option>
-                  <option value="13">13 суток</option>
-                  <option value="14">14 суток</option>
-                  <option value="15">15 суток</option>
-                  <option value="16">16 суток</option>
-                  <option value="17">17 суток</option>
-                  <option value="18">18 суток</option>
-                  <option value="19">19 суток</option>
-                  <option value="20">20 суток</option>
-                  <option value="21">21 суток</option>
-                  <option value="22">22 суток</option>
-                  <option value="23">23 суток</option>
-                  <option value="24">24 суток</option>
-                  <option value="25">25 суток</option>
-                  <option value="26">26 суток</option>
-                  <option value="27">27 суток</option>
-                  <option value="28">28 суток</option>
-                  <option value="29">29 суток</option>
-                  <option value="30">30 суток</option>
-                  <option value="45">45 суток</option>
-                  <option value="60">60 суток</option>
-                  <option value="90">90 суток</option>
-                </Select>
-                <FormErrorMessage>
-                  {errors.minimumStayPeriod?.message}
-                </FormErrorMessage>
-                <Button variant={"link"} colorScheme="blue">
-                  Сезонные цены
-                </Button>
+                </Button> */}
               </FormControl>
             </>
           )}

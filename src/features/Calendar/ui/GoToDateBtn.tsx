@@ -1,22 +1,29 @@
 import { CalendarIcon } from "@chakra-ui/icons";
 import {
+  Button,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
   useDisclosure,
   useOutsideClick,
-  Popover,
-  PopoverTrigger,
-  Button,
-  PopoverContent,
 } from "@chakra-ui/react";
 import { CalendarPanel, DefaultConfigs } from "@shared/ui/Calendar";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { useAppSelector } from "@shared/utils/hooks/useAppSelecter";
-import { subMonths, addMonths } from "date-fns";
-import { useRef, MutableRefObject, LegacyRef, memo } from "react";
+import { addMonths, subMonths } from "date-fns";
+import {
+  LegacyRef,
+  MutableRefObject,
+  memo,
+  useRef,
+  useTransition,
+} from "react";
 import { calendarActions } from "..";
 import { getCalendarActions } from "../model/selectors";
 import { toDay } from "../utils/toDay";
 
 export const GoToDateBtn = memo(() => {
+  const [isPending, startTransition] = useTransition();
   const dispatch = useAppDispatch();
   const datepickerRef = useRef() as MutableRefObject<HTMLElement>;
   const { isOpen, onClose, onOpen } = useDisclosure();
@@ -32,9 +39,9 @@ export const GoToDateBtn = memo(() => {
         <Button
           rightIcon={<CalendarIcon />}
           rounded="full"
-          colorScheme="green"
+          bgColor={"white"}
           onClick={onOpen}
-        
+          isLoading={isPending}
         >
           Перейти к дате
         </Button>
@@ -44,8 +51,10 @@ export const GoToDateBtn = memo(() => {
           dayzedHookProps={{
             selected: beginDate,
             onDateSelected: ({ date }) => {
-              dispatch(calendarActions.setBeginDate(date));
-              onClose();
+              startTransition(() => {
+                dispatch(calendarActions.setBeginDate(date));
+                onClose();
+              });
             },
             monthsToDisplay: 2,
             date: beginDate,

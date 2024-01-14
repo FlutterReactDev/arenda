@@ -1,40 +1,57 @@
 import { Select } from "@chakra-ui/react";
+import {
+  useGetCurrenciesQuery,
+  useGetRoomCategoriesQuery,
+} from "@entites/CommonReference";
 import { useGetAllObjectsQuery, useGetObjectRoomsQuery } from "@entites/Object";
-import { useEffect, useState } from "react";
-import { useObjects } from "../model/useObjects";
+import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
+import { useEffect } from "react";
+import { calendarActions } from "..";
 import { CalendarObject } from "../model/types";
-import { useGetCurrenciesQuery } from "@entites/CommonReference";
+import { useObjects } from "../model/useObjects";
 
 export const ChangeObjectRoom = () => {
-  const { setObjects } = useObjects();
-  const [objectId, setObjectId] = useState<null | number>(null);
+  const dispatch = useAppDispatch();
+  const { setObjects, currentObject, setCurrentObject } = useObjects();
 
-  const { data: objectsData, isSuccess: objectIsSuccess } =
-    useGetAllObjectsQuery();
-  const { data: roomsData, isSuccess: roomsIsSuccess } = useGetObjectRoomsQuery(
-    objectId as number,
-    {
-      skip: !objectIsSuccess && !objectId,
-    }
-  );
+  const {
+    data: objectsData,
+    isSuccess: objectIsSuccess,
+    isFetching: objectIsLoading,
+  } = useGetAllObjectsQuery();
+  const {
+    data: roomsData,
+    isSuccess: roomsIsSuccess,
+    isFetching: roomsIsLoading,
+  } = useGetObjectRoomsQuery(currentObject as number, {
+    skip: !objectIsSuccess || !currentObject,
+    refetchOnMountOrArgChange: true,
+  });
 
   const { data: currencyData, isSuccess: currencyIsSuccess } =
     useGetCurrenciesQuery();
-
+  const { data: roomCategory, isSuccess: roomCategoryIsSuccess } =
+    useGetRoomCategoriesQuery();
   useEffect(() => {
-    if (objectIsSuccess && objectsData.length) {
-      setObjectId(objectsData[0].id);
+    if (objectIsSuccess && objectsData.length && !currentObject) {
+      setCurrentObject(objectsData[0].id);
     }
   }, [objectIsSuccess]);
 
   useEffect(() => {
-    if (roomsIsSuccess && roomsData && currencyIsSuccess) {
-      const objects: CalendarObject[] = roomsData.map(
+    if (
+      roomsIsSuccess &&
+      roomsData &&
+      currencyIsSuccess &&
+      roomCategoryIsSuccess
+    ) {
+      const objectsData: CalendarObject[] = roomsData.map(
         ({
           anObjectRoomDescription: { ownName },
           anObjectRoomBookingSettings: { checkInAfter, checkOutAfter },
           anObjectRoomBaseCost: { pricePerDay, currencyId },
           id,
+          categoryType,
         }) => ({
           id: id,
           name: ownName,
@@ -45,18 +62,36 @@ export const ChangeObjectRoom = () => {
           checkOut: checkOutAfter,
           objectDefaultPerDayCost: pricePerDay,
           currency: currencyData.filter(({ id }) => id == currencyId)[0].symbol,
+          roomCategoryName: roomCategory.filter(
+            ({ value }) => value == categoryType
+          )[0].name,
         })
       );
 
-      setObjects(objects);
+      setObjects(objectsData);
     }
-  }, [roomsIsSuccess, roomsData, currencyIsSuccess]);
+  }, [roomsIsSuccess, roomsData, currencyIsSuccess, roomCategoryIsSuccess]);
+
+  useEffect(() => {
+    if (roomsIsLoading) {
+      dispatch(calendarActions.setAppIsLoading(true));
+      return;
+    }
+
+    if (objectIsLoading) {
+      dispatch(calendarActions.setAppIsLoading(true));
+      return;
+    }
+
+    dispatch(calendarActions.setAppIsLoading(false));
+  }, [dispatch, objectIsLoading, roomsIsLoading]);
+
   return (
     <>
-      {objectIsSuccess && objectId && (
+      {objectIsSuccess && currentObject && (
         <Select
-          onChange={(e) => setObjectId(Number(e.target.value))}
-          value={objectId}
+          onChange={(e) => setCurrentObject(Number(e.target.value))}
+          value={currentObject}
           bgColor="white"
         >
           {objectsData.map(({ name, id }) => {

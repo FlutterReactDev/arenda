@@ -34,7 +34,7 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
           ...(center && {
             center,
           }),
-          zoom: 10,
+          zoom: 9,
           style: "26015706-6204-4b41-bae9-c84dcd126160",
         }}
         onMousedown={() => {
@@ -57,7 +57,7 @@ export const SearchMap: FC<PropsWithChildren<SearchMapProps>> = memo(
               label={{
                 offset: [0, -15],
                 text: `${
-                  marker.context.stop_factors &&
+                  marker.context?.stop_factors &&
                   marker.context.stop_factors[0].name.match(/\d/g)?.join("")
                 } сом`,
                 fontSize: 12,

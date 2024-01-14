@@ -14,13 +14,15 @@ import { ChevronDownIcon } from "@chakra-ui/icons";
 import { toDay } from "../utils/toDay";
 import { useAppDispatch } from "@shared/utils/hooks/useAppDispatch";
 import { calendarActions } from "..";
-import { memo } from "react";
+import { memo, startTransition } from "react";
 
 export const GoToMonth = memo(() => {
   const dispatch = useAppDispatch();
   const { beginDate } = useAppSelector(getCalendarActions);
   const onDateClick = (date: Date) => {
-    dispatch(calendarActions.setBeginDate(startOfMonth(date)));
+    startTransition(() => {
+      dispatch(calendarActions.setBeginDate(startOfMonth(date)));
+    });
   };
   return (
     <Menu isLazy>
@@ -28,7 +30,7 @@ export const GoToMonth = memo(() => {
         as={Button}
         textTransform={"capitalize"}
         rounded={"full"}
-        colorScheme="purple"
+        bgColor={"white"}
         rightIcon={<ChevronDownIcon />}
       >
         {format(beginDate, "MMMM yyyy ", { locale: ru })}

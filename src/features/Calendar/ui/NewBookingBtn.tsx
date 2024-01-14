@@ -15,7 +15,7 @@ export const NewBookingBtn = memo(() => {
 
   return (
     <>
-      <Button rounded={"full"} colorScheme="blue" onClick={onOpen}>
+      <Button rounded={"full"} bgColor={"white"} onClick={onOpen}>
         Новое бронирование
       </Button>
       <Modal isOpen={isOpen} onClose={onClose} size={["full", "md", "md"]}>

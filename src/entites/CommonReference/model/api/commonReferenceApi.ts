@@ -17,6 +17,7 @@ import {
   PaymentType,
   RepairType,
   ReportingDocumentType,
+  RoomCategories,
   RoomNameTypes,
   SmokingOnSite,
 } from "../types";
@@ -68,7 +69,7 @@ const commonReferencePrivateApi = baseApiWithReAuth.injectEndpoints({
         url: "/AdditionalService",
       }),
     }),
-    getRoomCategories: build.query({
+    getRoomCategories: build.query<RoomCategories[], void>({
       query: () => ({
         url: "/RoomCategories",
       }),

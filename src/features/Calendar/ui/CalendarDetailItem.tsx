@@ -90,7 +90,7 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
     id,
     objectId,
   } = props;
-  const { objectDefaultPerDayCost, seasonsPrice } = useAppSelector(
+  const { objectDefaultPerDayCost, seasonsPrice, currency } = useAppSelector(
     getObject(objectId)
   );
   const [isLessThan968] = useMediaQuery("(max-width: 968px)");
@@ -255,6 +255,7 @@ export const CalendarDetailItem: FC<CalendarDetailItemProps> = memo((props) => {
                       });
                     }).length
                   }
+                  currency={currency}
                   onMouseDown={onDown}
                   onMouseMove={onMove}
                   onMouseUp={onUp}

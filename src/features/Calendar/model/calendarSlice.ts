@@ -41,6 +41,7 @@ const initialState = {
     objectId: null,
   },
   objects: [],
+  currentObject: null,
   currentVisbleId: 0,
   pagination: {
     currentPage: 1,
@@ -58,6 +59,7 @@ const initialState = {
     maxDate: null,
   },
   searchClientFullname: "",
+  appLoading: false,
 } as EmploymentCalendarState;
 
 const correctDate = (date: Date, isHotel: boolean): Date => {
@@ -103,6 +105,13 @@ const calendarSlice = createSlice({
   reducers: {
     setObjects(state, actions) {
       state.objects = actions.payload;
+    },
+
+    setCurrentObject(state, action) {
+      state.currentObject = action.payload;
+    },
+    setAppIsLoading(state, action) {
+      state.appLoading = action.payload;
     },
     increaseDay(state) {
       state.actions.beginDate = correctDate(

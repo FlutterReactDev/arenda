@@ -12,6 +12,7 @@ import {
   VerifyEmail,
 } from "../types/UserType";
 import { BaseResponse } from "@shared/type";
+import { calendarActions } from "@features/Calendar";
 
 const userApi = baseApiWithReAuth?.injectEndpoints({
   endpoints: (build) => ({
@@ -21,6 +22,7 @@ const userApi = baseApiWithReAuth?.injectEndpoints({
         body: data,
         method: "POST",
       }),
+      invalidatesTags: ["object"],
     }),
 
     register: build.mutation<
@@ -41,6 +43,15 @@ const userApi = baseApiWithReAuth?.injectEndpoints({
         url: "/Logout",
         method: "POST",
       }),
+      async onQueryStarted(_, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          dispatch(calendarActions.setCurrentObject(null));
+          dispatch(calendarActions.setObjects([]));
+        } catch (e) {
+          console.log(e);
+        }
+      },
     }),
 
     getResetPassword: build.mutation<BaseResponse<string>, string>({
@@ -92,7 +103,6 @@ const userApi = baseApiWithReAuth?.injectEndpoints({
           const { data } = await queryFulfilled;
           dispatch(userAction.setUserData(data.result));
         } catch (e) {
-          console.log(e);
           dispatch(userAction.setUserData(undefined));
         }
       },

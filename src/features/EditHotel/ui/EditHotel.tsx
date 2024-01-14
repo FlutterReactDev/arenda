@@ -110,7 +110,7 @@ export const EditHotel = () => {
             return (
               <EditForm>
                 <HotelGeneralInformationForm
-                  objectTypeName="хуй"
+                  objectTypeName="Объекта"
                   stateValue={{
                     anObjectAdditionalComfort,
                     anObjectDetail,

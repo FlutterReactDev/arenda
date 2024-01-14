@@ -1,4 +1,4 @@
-import { Button, HStack, Stack, useToast } from "@chakra-ui/react";
+import { Box, Button, Center, HStack, Stack, useToast } from "@chakra-ui/react";
 import {
   useGetBedTypesQuery,
   useGetCleaningFeeTypesQuery,
@@ -23,7 +23,6 @@ import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
 import { SucessAlert } from "@shared/ui/Alerts/SucessAlert";
 import { CollapseFormCard } from "@shared/ui/CollapseFormCard";
 import { Loader } from "@shared/ui/Loader";
-import { PageLoader } from "@shared/ui/PageLoader";
 import { useEditRoom } from "../model/useEditRoom";
 
 export const EditRoom = () => {
@@ -47,7 +46,7 @@ export const EditRoom = () => {
     data: roomCategories,
     isLoading: roomCategoriesIsLoading,
     isSuccess: roomCategoriesIsSuccess,
-  } = useGetRoomCategoriesQuery("");
+  } = useGetRoomCategoriesQuery();
 
   const { data: roomNameTypes, isSuccess: roomNameTypesIsSuccess } =
     useGetRoomTypeNamesQuery(30);
@@ -605,8 +604,34 @@ export const EditRoom = () => {
           />
         </Stack>
       )}
-      {roomEditIsLoading && <PageLoader />}
-      {roomIsLoading && <PageLoader />}
+      {roomEditIsLoading && (
+        <Box
+          pos={"fixed"}
+          bgColor={"blackAlpha.500"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+        >
+          <Center w="full" h="full">
+            <Loader />
+          </Center>
+        </Box>
+      )}
+      {roomIsLoading && (
+        <Box
+          pos={"fixed"}
+          bgColor={"blackAlpha.500"}
+          top={0}
+          left={0}
+          right={0}
+          bottom={0}
+        >
+          <Center w="full" h="full">
+            <Loader />
+          </Center>
+        </Box>
+      )}
     </>
   );
 };

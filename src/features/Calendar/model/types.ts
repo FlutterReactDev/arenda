@@ -11,6 +11,8 @@ export interface EmploymentCalendarState {
   searchPopover: SearchPopover;
   searchAvailibilityRoomsModal: SearchAvailibilityRoomsModal;
   searchClientFullname: string;
+  appLoading: boolean;
+  currentObject: number | null;
 }
 
 export interface DeleteModal {
@@ -80,6 +82,7 @@ export interface CalendarObject {
   checkIn: string;
   checkOut: string;
   currency: string;
+  roomCategoryName: null | string;
 }
 
 export interface CalendarAvailability {

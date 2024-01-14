@@ -60,10 +60,21 @@ export const getPagination = (state: RootState) => state.calendar.pagination;
 
 export const getCommonSettings = (state: RootState) => state.calendar.common;
 export const getCalendar = (state: RootState) => state.calendar.calendar;
-export const getCalendarActions = (state: RootState) => state.calendar.actions;
+export const getCalendarActions = createSelector(
+  [selectBeginDate, selectCountDay],
+  (beginDate, countDay) => {
+    return {
+      beginDate,
+      countDay,
+    };
+  }
+);
 export const getSidebar = (state: RootState) => state.calendar.sidebar;
 export const getDeleteModal = (state: RootState) => state.calendar.deleteModal;
-export const getObjects = (state: RootState) => state.calendar.objects;
+export const getObjects = createSelector([selectObjects], (objects) => {
+  return objects;
+});
+
 export const getSearchAvailibilityRoomsModal = (state: RootState) =>
   state.calendar.searchAvailibilityRoomsModal;
 export const getObject = (objectId: number) =>
@@ -111,6 +122,26 @@ export const getCurrentObjects = createSelector(
     return searchFilteredObjects;
   }
 );
+
+export const getObjectGroup = createSelector([getCurrentObjects], (objects) => {
+  const categories = [
+    ...new Set(
+      objects.map(({ roomCategoryName }) => {
+        return roomCategoryName;
+      })
+    ),
+  ];
+
+  return categories.map((name) => {
+    return {
+      name,
+      objects: objects.filter(
+        ({ roomCategoryName }) => roomCategoryName == name
+      ),
+    };
+  });
+});
+
 export const getCurrentObjectsAvailibility = createSelector(
   [getCurrentObjects],
   (objects) => {

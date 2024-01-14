@@ -23,9 +23,10 @@ import { useLoginMutation } from "@entites/User/model/api/userApi";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { FetchBaseQueryError } from "@reduxjs/toolkit/dist/query";
 import { ErrorAlert } from "@shared/ui/Alerts/ErrorAlert";
-import { PhoneInput } from "@shared/ui/PhoneInput";
+
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+import { PhoneInput } from "@entites/Phone";
 import { useLocation, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 const LoginForm = () => {
