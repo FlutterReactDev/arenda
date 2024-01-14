@@ -52,7 +52,7 @@ export const CreateRoom = () => {
     data: roomCategories,
     isLoading: roomCategoriesIsLoading,
     isSuccess: roomCategoriesIsSuccess,
-  } = useGetRoomCategoriesQuery("");
+  } = useGetRoomCategoriesQuery();
   // const {
   //   data: fromBookingToCheckInOptions,
   //   isLoading: fromBookingToCheckInIsLoading,
